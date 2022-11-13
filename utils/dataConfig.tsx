@@ -13,7 +13,6 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { pink } from '@mui/material/colors';
 import PieChartIcon from '@mui/icons-material/PieChart';
-import SendIcon from '@mui/icons-material/Send';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import FolderIcon from '@mui/icons-material/Folder';
 import AppsIcon from '@mui/icons-material/Apps';
