@@ -38,18 +38,17 @@ const validationSchema = yup.object({
   description: yup.string().required('Description is required'),
   price: yup.string().required('Price is required'),
   productCategoryID: yup.number(),
-  variants: yup.array(
+  variants: yup.array<any>(
     yup.object({
       name: yup.string(),
       property: yup.string(),
       addPrice: yup.number(),
     })
   ),
-  assets: yup.array(
+  assets: yup.array<any>(
     yup.object({
       type: yup.string(),
       data: yup.string(),
-      isMain: yup.number(),
     })
   ),
 });
@@ -77,8 +76,8 @@ export default function AddProduct() {
       description: '',
       price: '',
       productCategoryID: 0,
-      variants: [],
-      assets: [],
+      variants: [] as any,
+      assets: [] as any,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -125,7 +124,7 @@ export default function AddProduct() {
   //Show Image
   const [arrayImage, setArrayImage] = useState([]);
   const [mainImage, setMainImage] = useState(formik.values.mainImg);
-  const editorRef = useRef(null);
+  const editorRef = useRef<any>(null);
 
   useEffect(() => {
     if (mainImage.length != 0) {
@@ -159,11 +158,11 @@ export default function AddProduct() {
     }
   }, [mainImage, arrayImage]);
 
-  const log = () => {
-    if (editorRef.current) {
-      formik.values.description = editorRef.current.getContent();
-    }
-  };
+  // const log = () => {
+  //   if (editorRef.current) {
+  //     formik.values.description = editorRef.current.getContent();
+  //   }
+  // };
 
   return (
     <div>

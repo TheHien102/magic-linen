@@ -287,7 +287,7 @@ export default function ListDetailProduct({ rows }: IListDetailProduct) {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = rows.map((n: any) => n.name);
       setSelected(newSelected);
       return;
     }
@@ -358,7 +358,7 @@ export default function ListDetailProduct({ rows }: IListDetailProduct) {
               rows.sort(getComparator(order, orderBy)).slice() */}
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+                .map((row: any, index) => {
                   const isItemSelected = isSelected(row.name);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
