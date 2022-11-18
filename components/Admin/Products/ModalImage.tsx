@@ -13,11 +13,16 @@ import { Slider } from '@mui/material';
 import getCroppedImg from './CropImage/CropImage';
 
 interface IModalImage {
+  title: string;
   mainImage?: string;
   setArrayImage: any;
 }
 
-export default function ModalImage({ mainImage, setArrayImage }: IModalImage) {
+export default function ModalImage({
+  mainImage,
+  setArrayImage,
+  title,
+}: IModalImage) {
   const [open, setOpen] = useState(false);
   const [openModalCrop, setOpenModalCrop] = useState(false);
   const [croppedImage, setCroppedImage] = useState(null);
@@ -64,13 +69,19 @@ export default function ModalImage({ mainImage, setArrayImage }: IModalImage) {
   }, []);
   return (
     <div>
-      <Button
-        onClick={handleOpen}
-        variant='contained'
-        sx={{ fontWeight: 'bold' }}
-      >
-        {mainImage == '' ? 'Add main Image' : 'Add sub images'}
-      </Button>
+      <Box sx={{ fontWeight: 'bold' }}>
+        {/* {mainImage == '' ? 'Add main Image' : 'Add sub images'} */}
+        <UploadImage
+          handleOpen={handleOpen}
+          hideText={true}
+          title={title}
+          setUploadComplete={setOpenModalCrop}
+          setImagePath={setImagePath}
+          onFileChange={(file) => {
+            setFileImage(file);
+          }}
+        />
+      </Box>
       <Modal
         aria-labelledby='transition-modal-title'
         aria-describedby='transition-modal-description'
@@ -98,13 +109,7 @@ export default function ModalImage({ mainImage, setArrayImage }: IModalImage) {
             <Typography id='transition-modal-title' variant='h6' component='h2'>
               Choose file to upload
             </Typography>
-            <UploadImage
-              setUploadComplete={setOpenModalCrop}
-              setImagePath={setImagePath}
-              onFileChange={(file) => {
-                setFileImage(file);
-              }}
-            />
+
             {openModalCrop && (
               <>
                 <Box

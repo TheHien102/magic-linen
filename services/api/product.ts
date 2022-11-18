@@ -14,4 +14,11 @@ export const ProductApi = {
       },
     });
   },
+  categoryList: async function (token: string | undefined) {
+    return await http.get(API_URL.categoryList, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };

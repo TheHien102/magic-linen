@@ -9,4 +9,5 @@ export const API_URL = {
   adminProduct: `${BASEURL}/product`,
   createAdmin: `${BASEURL}/account/create_admin`,
   listAdmin: `${BASEURL}/account/list`,
+  categoryList: `${BASEURL}/category/list`,
 };

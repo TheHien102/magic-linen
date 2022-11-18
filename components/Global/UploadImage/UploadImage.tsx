@@ -6,13 +6,19 @@ interface UploadFileProps {
   onFileChange: (file: File) => void;
   setImagePath?: any;
   uploadComplete?: boolean;
+  hideText?: boolean;
   setUploadComplete?: any;
+  handleOpen: any;
+  title: string;
 }
 
 const UploadImage: React.FC<UploadFileProps> = ({
+  title,
+  hideText,
   uploadComplete,
   setUploadComplete,
   onFileChange,
+  handleOpen,
   setImagePath,
 }) => {
   const [file, setFile] = useState<any>();
@@ -20,14 +26,13 @@ const UploadImage: React.FC<UploadFileProps> = ({
     onDrop: (acceptedFiles: File[]) => {
       onFileChange(acceptedFiles[0]);
       setFile(acceptedFiles[0]);
-      console.log('file: ', file);
 
       const reader = new FileReader();
       reader.readAsDataURL(acceptedFiles[0]);
       reader.onloadend = () => {
-        console.log('path: ', reader.result);
         setImagePath(reader.result);
         setUploadComplete(true);
+        handleOpen();
       };
     },
   });
@@ -39,6 +44,7 @@ const UploadImage: React.FC<UploadFileProps> = ({
         <Button
           sx={{
             backgroundColor: '#efc109',
+            fontWeight: 'bold',
             color: '#000',
             ':hover': {
               backgroundColor: '#b59205',
@@ -47,11 +53,13 @@ const UploadImage: React.FC<UploadFileProps> = ({
           variant='contained'
           size='small'
         >
-          Choose Files
+          {title}
         </Button>
-        <Typography sx={{ marginLeft: '10px' }} color={'black'}>
-          {file ? ` ${file.path}` : 'No file chosen'}
-        </Typography>
+        {!hideText && (
+          <Typography sx={{ marginLeft: '10px' }} color={'black'}>
+            {file ? ` ${file.path}` : 'No file chosen'}
+          </Typography>
+        )}
       </Box>
     </Box>
   );

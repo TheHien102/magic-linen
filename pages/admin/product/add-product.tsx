@@ -1,35 +1,44 @@
-import { LockOutlined } from '@mui/icons-material';
 import {
   Avatar,
   Box,
   Button,
   Checkbox,
+  Chip,
+  dividerClasses,
   FormControlLabel,
   Grid,
   MenuItem,
   Paper,
   Select,
+  styled,
   TextField,
   Typography,
 } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-// import styles from '../../../styles/Home.module.css';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { SetStateAction, useEffect, useRef, useState } from 'react';
+import { Key, SetStateAction, useEffect, useRef, useState } from 'react';
 import { ProductApi } from '../../../services/api/product';
 import { getCookie } from '../../../services/cookies';
 import ModalImage from '../../../components/Admin/Products/ModalImage';
 import Image from 'next/image';
 import { Editor } from '@tinymce/tinymce-react';
 import CloseIcon from '@mui/icons-material/Close';
+import { ColorPicker, useColor } from 'react-color-palette';
+import 'react-color-palette/lib/css/styles.css';
+import { MuiChipsInput, MuiChipsInputChip } from 'mui-chips-input';
+import Modal from '@mui/material/Modal';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import { GetServerSidePropsContext } from 'next';
+import ModalVariant from '../../../components/Admin/Products/ModalVariant/ModalVariant';
+import Variant from '../../../components/Admin/Products/Variant/Variant';
+import Size from '../../../components/Admin/Products/Size/Size';
+import Color from '../../../components/Admin/Products/Color/Color';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -53,20 +62,8 @@ const validationSchema = yup.object({
   ),
 });
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const names = ['S', 'M', 'L', 'XL', 'XXL'];
-
-export default function AddProduct() {
+export default function AddProduct({ categoryList }: any) {
+  console.log('props: ', categoryList);
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -106,21 +103,6 @@ export default function AddProduct() {
     formik.values.productCategoryID = id;
   };
 
-  const [size, setSize] = useState<string[]>([]);
-
-  const handleChangeSize = (event: SelectChangeEvent<typeof size>) => {
-    const {
-      target: { value },
-    } = event;
-    setSize(typeof value === 'string' ? value.split(',') : value);
-    let data = {
-      name: 'size',
-      property: value.at(value.length - 1),
-      addPrice: 0,
-    };
-    formik.values.variants.push(data);
-  };
-
   //Show Image
   const [arrayImage, setArrayImage] = useState([]);
   const [mainImage, setMainImage] = useState(formik.values.mainImg);
@@ -158,11 +140,7 @@ export default function AddProduct() {
     }
   }, [mainImage, arrayImage]);
 
-  // const log = () => {
-  //   if (editorRef.current) {
-  //     formik.values.description = editorRef.current.getContent();
-  //   }
-  // };
+  const [openModalVariant, setOpenModalVariant] = useState(false);
 
   return (
     <div>
@@ -204,6 +182,7 @@ export default function AddProduct() {
                 <Box
                   sx={{
                     border: '2px solid gray',
+                    borderRadius: '5px',
                     width: 300,
                     height: 350,
                     display: 'flex',
@@ -233,13 +212,14 @@ export default function AddProduct() {
                     </Box>
                   ) : (
                     <ModalImage
+                      title='Add main Image'
                       mainImage={mainImage}
                       setArrayImage={setMainImage}
                     />
                   )}
                 </Box>
                 <Grid container sx={{ marginTop: '5px' }} spacing={3.5}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={3}>
                     <TextField
                       label='Name'
                       fullWidth
@@ -290,7 +270,7 @@ export default function AddProduct() {
                       }
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={3}>
                     <FormControl fullWidth size='small'>
                       <InputLabel id='productCategoryID'>Type</InputLabel>
                       <Select
@@ -301,54 +281,26 @@ export default function AddProduct() {
                         sx={{ color: 'black' }}
                         onChange={(e: any) => handleChangeType(e)}
                       >
-                        <MenuItem value={10}>Skirt</MenuItem>
-                        <MenuItem value={20}>Shirt</MenuItem>
-                        <MenuItem value={7}>Clothes</MenuItem>
+                        {categoryList &&
+                          categoryList.length !== 0 &&
+                          categoryList.map((data: any, index: number) => (
+                            <MenuItem key={index} value={data.id}>
+                              {data.categoryName}
+                            </MenuItem>
+                          ))}
                       </Select>
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <FormControl fullWidth size='small'>
-                      <InputLabel id='variants'>Size</InputLabel>
-                      <Select
-                        labelId='variants'
-                        id='variants'
-                        multiple
-                        value={size}
-                        onChange={handleChangeSize}
-                        input={<OutlinedInput label='Size' />}
-                        renderValue={(selected) => selected.join(', ')}
-                        MenuProps={MenuProps}
-                      >
-                        {names.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            <Checkbox checked={size.indexOf(name) > -1} />
-                            <ListItemText primary={name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Size />
                   </Grid>
-                  <Grid item xs={12}>
-                    {/* <TextField
-                      label='Description'
-                      fullWidth
-                      id='description'
-                      size='small'
-                      name='description'
-                      value={formik.values.description}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.description &&
-                        Boolean(formik.errors.description)
-                      }
-                      helperText={
-                        formik.touched.description && formik.errors.description
-                      }
-                      FormHelperTextProps={{
-                        style: { position: 'absolute', bottom: '-25px' },
-                      }}
-                    /> */}
+                  <Grid item xs={12} md={6}>
+                    <Color />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Variant />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
                     <Editor
                       apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                       onInit={(evt, editor) => (editorRef.current = editor)}
@@ -392,14 +344,11 @@ export default function AddProduct() {
                       }}
                     />
                   </Grid>
-                  {/* <Grid item xs={12} md={6}>
-                    <ModalImage
-                      mainImage={mainImage}
-                      setArrayImage={setMainImage}
-                    />
-                  </Grid> */}
                   <Grid item xs={12} md={6}>
-                    <ModalImage setArrayImage={setArrayImage} />
+                    <ModalImage
+                      title='Add subs Image'
+                      setArrayImage={setArrayImage}
+                    />
                   </Grid>
                 </Grid>
               </Box>
@@ -407,6 +356,7 @@ export default function AddProduct() {
                 <Box
                   sx={{
                     border: '2px solid gray',
+                    borderRadius: '5px',
                     marginTop: '20px',
                     p: 1,
                     width: 'fit-content',
@@ -447,4 +397,30 @@ export default function AddProduct() {
       </Layout>
     </div>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const token = await getCookie('token', ctx);
+
+  if (token) {
+    try {
+      const [res] = await Promise.all([ProductApi.categoryList(token)]);
+      return {
+        props: {
+          categoryList: res.data.data,
+        },
+      };
+    } catch (e) {}
+
+    return {
+      props: {},
+    };
+  } else {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
 }

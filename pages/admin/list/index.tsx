@@ -13,6 +13,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ListAdmin = (props: any) => {
   console.log('data: ', props.data.data);
@@ -64,7 +66,12 @@ const ListAdmin = (props: any) => {
                     {data.status === 1 ? 'Active' : 'Disable'}
                   </TableCell>
                   <TableCell align='right'>
-                    <Button variant='contained'>Edit</Button>
+                    <Button variant='contained'>
+                      <EditIcon />
+                    </Button>
+                    <Button variant='contained' color={'error'} sx={{ ml: 1 }}>
+                      <DeleteIcon />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
