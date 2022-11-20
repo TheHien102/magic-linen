@@ -8,8 +8,8 @@ interface UploadFileProps {
   uploadComplete?: boolean;
   hideText?: boolean;
   setUploadComplete?: any;
-  handleOpen: any;
-  title: string;
+  handleOpen?: any;
+  title?: string;
 }
 
 const UploadImage: React.FC<UploadFileProps> = ({
