@@ -86,7 +86,9 @@ export default function AddProduct({ categoryList }: any) {
       try {
         const res = await ProductApi.addProduct(token as string, values);
         console.log('success: ', res);
-        // console.log(' values: ', values);
+        if (res) {
+          router.push('/admin/product');
+        }
       } catch (error) {
         console.log('error: ', error);
       }
@@ -138,9 +140,9 @@ export default function AddProduct({ categoryList }: any) {
           };
         });
     }
-  }, [mainImage, arrayImage]);
 
-  const [openModalVariant, setOpenModalVariant] = useState(false);
+    console.log('variants: ', formik.values.variants);
+  }, [mainImage, arrayImage]);
 
   return (
     <div>
@@ -292,13 +294,13 @@ export default function AddProduct({ categoryList }: any) {
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Size />
+                    <Size formikData={formik.values.variants} />
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Color />
+                    <Color formikData={formik.values.variants} />
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Variant />
+                    <Variant formikData={formik.values.variants} />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Editor

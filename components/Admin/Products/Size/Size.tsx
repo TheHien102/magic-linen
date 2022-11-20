@@ -11,9 +11,10 @@ import {
   Button,
 } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
+import SizeItem from './SizeItem';
 
 interface IProperty {
   id: number;
@@ -36,24 +37,26 @@ const MenuProps = {
 
 const names = ['S', 'M', 'L', 'XL', 'XXL'];
 
-const Size = (props: Props) => {
+interface ISize {
+  formikData: any;
+}
+
+const Size = ({ formikData }: ISize) => {
   const [size, setSize] = useState<string[]>([]);
+  const [valueField, setValueField] = useState<any>();
+
   const handleChangeSize = (event: SelectChangeEvent<typeof size>) => {
     const {
       target: { value },
     } = event;
     setSize(typeof value === 'string' ? value.split(',') : value);
-    let data = {
-      name: 'size',
-      property: value.at(value.length - 1),
-      addPrice: 0,
-    };
-    //   formik.values.variants.push(data);
-    console.log('size: ', size);
+    console.log('value pick: ', value);
+    setValueField(size.at(size.length - 1));
   };
 
   const handleDelete = (i: string) => {
     setSize(size.filter((item) => item !== i));
+    console.log('delete');
   };
 
   return (
@@ -85,31 +88,13 @@ const Size = (props: Props) => {
           ))}
         </Select>
       </FormControl>
-      {size.map((data, i) => (
-        <Grid container sx={{ marginTop: '5px' }} key={data} spacing={1}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              label={'Property'}
-              defaultValue={data}
-              fullWidth
-              disabled
-              size='small'
-            />
-          </Grid>
-          <Grid item xs={12} md={4.5}>
-            <TextField label={'Price'} fullWidth size='small' />
-          </Grid>
-          <Grid item xs={12} md={1.5}>
-            <Button
-              sx={{ mt: 0.3 }}
-              variant='outlined'
-              color='error'
-              onClick={() => handleDelete(data)}
-            >
-              <IndeterminateCheckBoxIcon color='error' />
-            </Button>
-          </Grid>
-        </Grid>
+      {size.map((data) => (
+        <SizeItem
+          key={data}
+          formikData={formikData}
+          data={data}
+          handleDelete={() => handleDelete(data)}
+        />
       ))}
     </Box>
   );

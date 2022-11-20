@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import VariantItemDetail from './VariantItemDetail';
 
 interface IProperty {
   id: number;
@@ -9,7 +10,11 @@ interface IProperty {
   addPrice: number;
 }
 
-const VariantItem = () => {
+interface IVariantItem {
+  formikData: any;
+}
+
+const VariantItem = ({ formikData }: IVariantItem) => {
   const [property, setProperty] = useState<IProperty[]>([
     // { id: 100, name: 'cc', addPrice: 10 },
     // { id: 200, name: 'cc1', addPrice: 10 },
@@ -32,46 +37,58 @@ const VariantItem = () => {
     setProperty(property.filter((item) => item.id !== i));
   };
 
+  const valueRef = useRef<any>(0);
+  const valueRefProperty = useRef<any>('');
+  const valueRefName = useRef<any>('');
+  const handleOnBlur = () => {
+    let dataFormik = {
+      name: valueRefName.current.value,
+      property: valueRefProperty.current.value,
+      addPrice: valueRef.current.value,
+    };
+    if (valueRef.current.value != '') {
+      formikData.push(dataFormik);
+    }
+
+    console.log('dataFormik: ', dataFormik);
+  };
+
   return (
     <>
-      <TextField label={'Name variant'} fullWidth size='small' />
+      <TextField
+        label={'Name variant'}
+        inputRef={valueRefName}
+        onBlur={() => handleOnBlur()}
+        fullWidth
+        size='small'
+      />
       <Grid container sx={{ marginTop: '5px' }} spacing={1}>
         <Grid item xs={12} md={6}>
-          <TextField label={'Property'} fullWidth size='small' />
+          <TextField
+            label={'Property'}
+            inputRef={valueRefProperty}
+            onBlur={() => handleOnBlur()}
+            fullWidth
+            size='small'
+          />
         </Grid>
         <Grid item xs={12} md={4.5}>
-          <TextField label={'Price'} fullWidth size='small' />
+          <TextField
+            label={'Price'}
+            inputRef={valueRef}
+            onBlur={() => handleOnBlur()}
+            fullWidth
+            size='small'
+          />
         </Grid>
       </Grid>
       {property.map((data, i) => (
-        <Grid container sx={{ marginTop: '5px' }} key={data.id} spacing={1}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              label={'Property'}
-              defaultValue={data.name}
-              fullWidth
-              size='small'
-            />
-          </Grid>
-          <Grid item xs={12} md={4.5}>
-            <TextField
-              label={'Price'}
-              fullWidth
-              defaultValue={data.name}
-              size='small'
-            />
-          </Grid>
-          <Grid item xs={12} md={1.5}>
-            <Button
-              sx={{ mt: 0.3 }}
-              variant='outlined'
-              color='error'
-              onClick={() => handleDelete(data.id)}
-            >
-              <IndeterminateCheckBoxIcon color='error' />
-            </Button>
-          </Grid>
-        </Grid>
+        <VariantItemDetail
+          data={data}
+          nameField={valueRefName.current.value}
+          formikData={formikData}
+          key={data.id}
+        />
       ))}
       <Button
         variant='outlined'

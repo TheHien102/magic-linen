@@ -13,7 +13,11 @@ interface IProperty {
   addPrice: number;
 }
 
-const Variant = (props: Props) => {
+interface IVariant {
+  formikData: any;
+}
+
+const Variant = ({ formikData }: IVariant) => {
   const [openModalVariant, setOpenModalVariant] = useState(false);
   const [countVariant, setCountVariant] = useState(0);
   const [variant, setVariant] = useState<any>([]);
@@ -49,8 +53,6 @@ const Variant = (props: Props) => {
 
   return (
     <>
-      {/* <ModalVariant open={openModalVariant} setOpen={setOpenModalVariant} />
-       */}
       {variant &&
         variant.length !== 0 &&
         variant.map((_data: any, index: React.Key | null | undefined) => (
@@ -76,7 +78,7 @@ const Variant = (props: Props) => {
             >
               <HighlightOffIcon />
             </Button>
-            <VariantItem />
+            <VariantItem formikData={formikData} />
           </Box>
         ))}
       <Button

@@ -18,7 +18,7 @@ import {
 import React, { useState } from 'react';
 import { ColorPicker, useColor } from 'react-color-palette';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
-import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
+import ColorItem from './ColorItem';
 
 interface ChipData {
   key: number;
@@ -27,11 +27,11 @@ interface ChipData {
 
 let nextId = 0;
 
-const ListItem = styled('li')(({ theme }) => ({
-  margin: theme.spacing(0.5),
-}));
+interface IColor {
+  formikData: any;
+}
 
-const Color = () => {
+const Color = ({ formikData }: IColor) => {
   const [color, setColor] = useColor('hex', '#121212');
   const [openModalColor, setOpenModalColor] = useState(false);
   const handleOpenModalColor = () => setOpenModalColor(true);
@@ -143,34 +143,40 @@ const Color = () => {
           );
         })} */}
         {chipData.map((data, index) => (
-          <Grid container sx={{ marginTop: '5px' }} key={data.key} spacing={1}>
-            <Grid item xs={12} md={6}>
-              <ListItem>
-                <Chip
-                  label={'blue'}
-                  sx={{
-                    backgroundColor: data.label,
-                    color: data.label,
-                    border: '1px solid gray',
-                  }}
-                  //   onDelete={handleDelete(data)}
-                />
-              </ListItem>
-            </Grid>
-            <Grid item xs={12} md={4.5}>
-              <TextField label={'Price'} fullWidth size='small' />
-            </Grid>
-            <Grid item xs={12} md={1.5}>
-              <Button
-                sx={{ mt: 0.3 }}
-                variant='outlined'
-                color='error'
-                onClick={handleDelete(data.key)}
-              >
-                <IndeterminateCheckBoxIcon color='error' />
-              </Button>
-            </Grid>
-          </Grid>
+          // <Grid container sx={{ marginTop: '5px' }} key={data.key} spacing={1}>
+          //   <Grid item xs={12} md={6}>
+          //     <ListItem>
+          //       <Chip
+          //         label={'blue'}
+          //         sx={{
+          //           backgroundColor: data.label,
+          //           color: data.label,
+          //           border: '1px solid gray',
+          //         }}
+          //         //   onDelete={handleDelete(data)}
+          //       />
+          //     </ListItem>
+          //   </Grid>
+          //   <Grid item xs={12} md={4.5}>
+          //     <TextField label={'Price'} fullWidth size='small' />
+          //   </Grid>
+          //   <Grid item xs={12} md={1.5}>
+          //     <Button
+          //       sx={{ mt: 0.3 }}
+          //       variant='outlined'
+          //       color='error'
+          //       onClick={handleDelete(data.key)}
+          //     >
+          //       <IndeterminateCheckBoxIcon color='error' />
+          //     </Button>
+          //   </Grid>
+          // </Grid>
+          <ColorItem
+            data={data}
+            key={data.key}
+            handleDelete={handleDelete(data.key)}
+            formikData={formikData}
+          />
         ))}
       </Paper>
     </>

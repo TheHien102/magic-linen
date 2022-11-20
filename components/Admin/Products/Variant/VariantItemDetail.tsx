@@ -1,21 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Box, Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
-interface ISizeItem {
-  formikData: any;
-  data: any;
-  handleDelete: any;
-}
+type Props = { data: any; formikData: any; nameField: string };
 
-const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
+const VariantItemDetail = ({ data, formikData, nameField }: Props) => {
   const valueRef = useRef<any>(0);
+  const valueRefProperty = useRef<any>('');
 
   const handleOnBlur = () => {
     let dataFormik = {
-      name: 'size',
-      property: data,
+      name: nameField,
+      property: valueRefProperty.current.value,
       addPrice: valueRef.current.value,
     };
     if (valueRef.current.value != '') {
@@ -28,17 +25,19 @@ const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
       <Grid item xs={12} md={6}>
         <TextField
           label={'Property'}
-          defaultValue={data}
+          defaultValue={data.name}
+          inputRef={valueRefProperty}
           fullWidth
-          disabled
+          onBlur={() => handleOnBlur()}
           size='small'
         />
       </Grid>
       <Grid item xs={12} md={4.5}>
         <TextField
           label={'Price'}
-          inputRef={valueRef}
           fullWidth
+          defaultValue={data.name}
+          inputRef={valueRef}
           onBlur={() => handleOnBlur()}
           size='small'
         />
@@ -48,7 +47,7 @@ const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
           sx={{ mt: 0.3 }}
           variant='outlined'
           color='error'
-          onClick={handleDelete}
+          // onClick={() => handleDelete(data.id)}
         >
           <IndeterminateCheckBoxIcon color='error' />
         </Button>
@@ -57,4 +56,4 @@ const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
   );
 };
 
-export default SizeItem;
+export default VariantItemDetail;
