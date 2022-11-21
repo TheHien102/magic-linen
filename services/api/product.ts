@@ -21,4 +21,24 @@ export const ProductApi = {
       },
     });
   },
+  listProductPerPage: async function (id: number, token: string) {
+    return await http.get(`${API_URL.adminProduct}/list`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        page: 1,
+        size: 1,
+        sort: ['string'],
+      },
+    });
+  },
+  getProductById: async function (id: string, token: string) {
+    return await http.get(`${API_URL.getProductById}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };

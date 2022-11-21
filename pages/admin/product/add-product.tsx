@@ -304,6 +304,7 @@ export default function AddProduct({ categoryList }: any) {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Editor
+                      id='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                       apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                       onInit={(evt, editor) => (editorRef.current = editor)}
                       // onChange={() => log()}

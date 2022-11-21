@@ -22,6 +22,12 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { toUTCTime } from '../../../utils/common';
 import Image from 'next/image';
+import { Button } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { ProductApi } from '../../../services/api/product';
+import { useEffect, useState } from 'react';
+import { getCookie } from '../../../services/cookies';
+import { useRouter } from 'next/router';
 
 interface Data {
   name: string;
@@ -268,13 +274,34 @@ interface IListDetailProduct {
   rows: any;
 }
 
-export default function ListDetailProduct({ rows }: IListDetailProduct) {
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+export default function ListDetailProduct() {
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Data>('name');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rows, setRows] = useState<any>([]);
+  const router = useRouter();
+
+  //Calling API product
+  const ListProduct = async () => {
+    const token = await getCookie('token');
+
+    const listProduct = await ProductApi.listProductPerPage(1, token as string);
+    console.log('listProduct: ', listProduct);
+    setRows(listProduct.data.data);
+  };
+
+  useEffect(() => {
+    ListProduct();
+  }, []);
+
+  const handleEdit = (id: string) => {
+    router.push({
+      pathname: `/admin/product/${id}`,
+    });
+  };
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -365,7 +392,7 @@ export default function ListDetailProduct({ rows }: IListDetailProduct) {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      // onClick={(event) => handleClick(event, row.name)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -406,6 +433,18 @@ export default function ListDetailProduct({ rows }: IListDetailProduct) {
                       <TableCell>{row.discount}</TableCell>
                       <TableCell>{row.status}</TableCell>
                       <TableCell>{toUTCTime(row.createdDate)}</TableCell>
+                      <TableCell align={'right'}>
+                        <Button variant='contained'>
+                          <EditIcon onClick={() => handleEdit(row.id)} />
+                        </Button>
+                        <Button
+                          variant='contained'
+                          color={'error'}
+                          sx={{ ml: 1 }}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}

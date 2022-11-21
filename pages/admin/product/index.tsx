@@ -1,18 +1,19 @@
 import Head from 'next/head';
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
 import ListDetailProduct from '../../../components/Admin/Products/Products';
 import { AccountApi } from '../../../services/api/account';
 import { PagesApi } from '../../../services/api/pages';
 import { getCookie } from '../../../services/cookies';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface IProduct {
   // roles: any;
 }
 
 const Product = (props: any) => {
-  console.log('data: ', props);
   return (
     <>
       <Head>
@@ -22,35 +23,35 @@ const Product = (props: any) => {
       </Head>
       <Layout>
         <Box>
-          <ListDetailProduct rows={props.props.data.data} />
+          <ListDetailProduct />
         </Box>
       </Layout>
     </>
   );
 };
 
-Product.getInitialProps = async () => {
-  const token = getCookie('token');
-  const [res, data] = await Promise.all([
-    AccountApi.roleAdmin(token as string | undefined),
-    PagesApi.adminProduct(1, token as string),
-  ]);
-  return {
-    props: {
-      ...res,
-      ...data,
-    },
-  };
+// Product.getInitialProps = async () => {
+//   const token = getCookie('token');
+//   const [res, data] = await Promise.all([
+//     AccountApi.roleAdmin(token as string | undefined),
+//     PagesApi.adminProduct(1, token as string),
+//   ]);
+//   return {
+//     props: {
+//       ...res,
+//       ...data,
+//     },
+//   };
+// };
 
-  // const res = await AccountApi.roleAdmin(token as string | undefined);
-  // return { ...res };
+// const res = await AccountApi.roleAdmin(token as string | undefined);
+// return { ...res };
 
-  // Fetch data from external API
-  // const token = localStorage.getItem('token');
-  // const res = await AccountApi.roleAdmin(token as string | undefined);
-  // console.log('res: ', res);
-  // // Pass data to the page via props
-  // return { ...res };
-};
+// Fetch data from external API
+// const token = localStorage.getItem('token');
+// const res = await AccountApi.roleAdmin(token as string | undefined);
+// console.log('res: ', res);
+// // Pass data to the page via props
+// return { ...res };
 
 export default Product;

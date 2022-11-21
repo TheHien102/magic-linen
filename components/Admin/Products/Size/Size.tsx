@@ -39,9 +39,11 @@ const names = ['S', 'M', 'L', 'XL', 'XXL'];
 
 interface ISize {
   formikData: any;
+  sizeArray?: any;
 }
 
-const Size = ({ formikData }: ISize) => {
+const Size = ({ formikData, sizeArray }: ISize) => {
+  console.log('sizeArray: ', sizeArray);
   const [size, setSize] = useState<string[]>([]);
   const [valueField, setValueField] = useState<any>();
 
@@ -50,7 +52,7 @@ const Size = ({ formikData }: ISize) => {
       target: { value },
     } = event;
     setSize(typeof value === 'string' ? value.split(',') : value);
-    console.log('value pick: ', value);
+    console.log('value pick: ', size);
     setValueField(size.at(size.length - 1));
   };
 
