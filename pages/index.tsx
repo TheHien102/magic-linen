@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { Layout } from '../components/Global/Layout/Layout';
+import HomeLinen from '../components/Home/Home';
 
 export default function Home() {
   return (
@@ -9,7 +10,9 @@ export default function Home() {
         <meta name='description' content='Magic Linen' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Layout></Layout>
+      <Layout>
+        <HomeLinen />
+      </Layout>
     </>
   );
 }
