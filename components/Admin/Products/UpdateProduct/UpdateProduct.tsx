@@ -38,6 +38,7 @@ import { ProductApi } from '../../../../services/api/product';
 import { getCookie } from '../../../../services/cookies';
 import ModalImage from '../../../../components/Admin/Products/ModalImage';
 import ItemList from '../../Dashboard/ItemList';
+import { VariantParams } from '../../../../services/types';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -67,49 +68,92 @@ interface IUpdateProduct {
 
 interface IItemVariant {
   name: string;
-  data: any[];
+  data: VariantParams[];
 }
 
 const UpdateProduct = ({ data }: IUpdateProduct) => {
-  const DATA_DETAIL = data.itemProduct ? data.itemProduct : data;
-  const DATA_VARIANT = data.variantList;
+  const DATA_DETAIL = data ? data.itemProduct : '';
+  const [variants, setVariants] = useState<VariantParams[]>([]);
+  // const DATA_VARIANT: VariantParams[] = data ? data.variants : [];
+  const [sizeArray, setSizeArray] = useState<VariantParams[]>([]);
+  const [colorArray, setColorArray] = useState<VariantParams[]>([]);
+  const [variantsArray, setVariantsArray] = useState<IItemVariant[]>([]);
 
-  let SizeArray: any[] = [];
-  let ColorArray: any[] = [];
-  let VariantsArray: any[] = [];
-  console.log('data DATA_DETAIL: ', DATA_DETAIL);
-  console.log('data : ', data);
-  //Filter variant list
+  // let SizeArray: VariantParams[] = [];
+  // let ColorArray: VariantParams[] = [];
+  // new variants is here
+  // let VariantsArray: IItemVariant[] = [];
+
   useEffect(() => {
-    console.log('variantList: ', DATA_VARIANT);
-    for (let i = 0; i < DATA_VARIANT.length; i++) {
-      console.log('object');
-      if (DATA_VARIANT.at(i).name === 'size') {
-        SizeArray.push(DATA_VARIANT.at(i));
-      } else {
-        if (DATA_VARIANT.at(i).name === 'color') {
-          ColorArray.push(DATA_VARIANT.at(i));
+    setVariants(data.variants);
+  }, []);
+
+  useEffect(() => {
+    if (variants.length > 0) {
+      for (let i = 0; i < variants.length; i++) {
+        if (variants[i].name === 'size') {
+          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
         } else {
-          let isPush = false;
-          VariantsArray.map((item: IItemVariant) => {
-            if (item.name === DATA_VARIANT.at(i).name) {
-              item.data.push(DATA_VARIANT.at(i));
-              isPush = true;
-            }
-          });
-          if (!isPush) {
-            VariantsArray.push({
-              name: DATA_VARIANT.at(i).name,
-              data: [DATA_VARIANT.at(i)],
-            });
+          if (variants[i].name === 'color') {
+            setColorArray((colorArray) => [...colorArray, variants[i]]);
+          } else {
+            // let isPush = false;
+            // variantsArray.map((item: IItemVariant) => {
+            //   if (item.name === variants[i].name) {
+            //     item.data.push(variants[i]);
+            //     isPush = true;
+            //   }
+            // });
+            // if (!isPush) {
+            //   let newData: VariantParams[] = [];
+            //   newData.push(variants[i]);
+            //   variantsArray.push({
+            //     name: variants[i].name,
+            //     data: newData,
+            //   });
+            // }
           }
         }
       }
+      console.log('SizeArray: ', sizeArray);
+      console.log('ColorArray: ', colorArray);
+      console.log('VariantsArray: ', variantsArray);
     }
-    console.log('SizeArray: ', SizeArray);
-    console.log('ColorArray: ', ColorArray);
-    console.log('VariantsArray: ', VariantsArray);
-  }, []);
+  }, [variants]);
+
+  //Filter variant list
+  // useEffect(() => {
+  //   console.log('variantList: ', DATA_VARIANT);
+  //   for (let i = 0; i < DATA_VARIANT.length; i++) {
+  //     console.log('object');
+  //     if (DATA_VARIANT[i].name === 'size') {
+  //       SizeArray.push(DATA_VARIANT[i]);
+  //     } else {
+  //       if (DATA_VARIANT[i].name === 'color') {
+  //         ColorArray.push(DATA_VARIANT[i]);
+  //       } else {
+  //         let isPush = false;
+  //         VariantsArray.map((item: IItemVariant) => {
+  //           if (item.name === DATA_VARIANT[i].name) {
+  //             item.data.push(DATA_VARIANT[i]);
+  //             isPush = true;
+  //           }
+  //         });
+  //         if (!isPush) {
+  //           let newData: VariantParams[] = [];
+  //           newData.push(DATA_VARIANT[i]);
+  //           VariantsArray.push({
+  //             name: DATA_VARIANT[i].name,
+  //             data: newData,
+  //           });
+  //         }
+  //       }
+  //     }
+  //   }
+  //   console.log('SizeArray: ', SizeArray);
+  //   console.log('ColorArray: ', ColorArray);
+  //   console.log('VariantsArray: ', VariantsArray);
+  // }, []);
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -328,10 +372,14 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Size
-                  sizeArray={SizeArray}
-                  formikData={formik.values.variants}
-                />
+                <>
+                  {sizeArray.length > 0 && (
+                    <Size
+                      sizeArray={sizeArray}
+                      formikData={formik.values.variants}
+                    />
+                  )}
+                </>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Color formikData={formik.values.variants} />

@@ -2,10 +2,11 @@ import React, { useRef, useState } from 'react';
 import { Box, Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import { VariantParams } from '../../../../services/types';
 
 interface ISizeItem {
   formikData: any;
-  data: any;
+  data: VariantParams;
   handleDelete: any;
 }
 
@@ -18,6 +19,7 @@ const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
       property: data,
       addPrice: valueRef.current.value,
     };
+    console.log('data Formik: ', dataFormik);
     if (valueRef.current.value != '') {
       formikData.push(dataFormik);
     }
@@ -39,6 +41,7 @@ const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
           label={'Price'}
           inputRef={valueRef}
           fullWidth
+          defaultValue={0}
           onBlur={() => handleOnBlur()}
           size='small'
         />

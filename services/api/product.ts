@@ -21,16 +21,11 @@ export const ProductApi = {
       },
     });
   },
-  listProductPerPage: async function (id: number, token: string) {
-    return await http.get(`${API_URL.adminProduct}/list`, {
+  listProductPerPage: async function (token: string) {
+    return await http.get(`${API_URL.adminListProduct}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
-      },
-      data: {
-        page: 1,
-        size: 1,
-        sort: ['string'],
       },
     });
   },

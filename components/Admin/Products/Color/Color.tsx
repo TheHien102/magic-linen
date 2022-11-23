@@ -19,6 +19,7 @@ import React, { useState } from 'react';
 import { ColorPicker, useColor } from 'react-color-palette';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import ColorItem from './ColorItem';
+import { VariantParams } from '../../../../services/types';
 
 interface ChipData {
   key: number;
@@ -38,10 +39,10 @@ const Color = ({ formikData }: IColor) => {
   const handleCloseModalColor = () => setOpenModalColor(false);
   const handleGetColor = () => {};
 
-  const [chipData, setChipData] = useState<readonly ChipData[]>([]);
+  const [chipData, setChipData] = useState<readonly VariantParams[]>([]);
 
   const handleDelete = (i: number) => () => {
-    setChipData(chipData.filter((item) => item.key !== i));
+    setChipData(chipData.filter((item) => item.variantId !== i));
     // console.log('chipDa');
   };
 
@@ -92,7 +93,13 @@ const Color = ({ formikData }: IColor) => {
                     [
                       // with a new array
                       ...chipData, // that contains all the old items
-                      { key: nextId++, label: color.hex }, // and one new item at the end
+                      {
+                        variantId: nextId++,
+                        name: 'color',
+                        property: color.hex,
+                        addPrice: 0,
+                        status: 1,
+                      },
                     ]
                   )
                 // console.log('object: ', color)
@@ -173,8 +180,8 @@ const Color = ({ formikData }: IColor) => {
           // </Grid>
           <ColorItem
             data={data}
-            key={data.key}
-            handleDelete={handleDelete(data.key)}
+            key={data.variantId}
+            handleDelete={handleDelete(data.variantId)}
             formikData={formikData}
           />
         ))}

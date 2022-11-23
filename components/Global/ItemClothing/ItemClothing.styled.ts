@@ -18,7 +18,7 @@ export const Text = styled.a`
 `;
 
 export const WrapColor = styled.div`
-  ${tw`flex gap-3`}
+  ${tw`flex gap-3 mt-1`}
 `;
 
 export const WrapPrice = styled.div`

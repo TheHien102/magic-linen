@@ -2,8 +2,9 @@ import React, { useRef } from 'react';
 import { Box, Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import { VariantParams } from '../../../../services/types';
 
-type Props = { data: any; formikData: any; nameField: string };
+type Props = { data: VariantParams; formikData: any; nameField: string };
 
 const VariantItemDetail = ({ data, formikData, nameField }: Props) => {
   const valueRef = useRef<any>(0);

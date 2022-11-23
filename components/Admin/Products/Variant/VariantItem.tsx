@@ -3,6 +3,7 @@ import { Box, Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import VariantItemDetail from './VariantItemDetail';
+import { VariantParams } from '../../../../services/types';
 
 interface IProperty {
   id: number;
@@ -15,7 +16,7 @@ interface IVariantItem {
 }
 
 const VariantItem = ({ formikData }: IVariantItem) => {
-  const [property, setProperty] = useState<IProperty[]>([
+  const [property, setProperty] = useState<VariantParams[]>([
     // { id: 100, name: 'cc', addPrice: 10 },
     // { id: 200, name: 'cc1', addPrice: 10 },
     // { id: 13, name: 'cc2', addPrice: 10 },
@@ -34,7 +35,7 @@ const VariantItem = ({ formikData }: IVariantItem) => {
   };
 
   const handleDelete = (i: number) => {
-    setProperty(property.filter((item) => item.id !== i));
+    setProperty(property.filter((item) => item.variantId !== i));
   };
 
   const valueRef = useRef<any>(0);
@@ -87,7 +88,7 @@ const VariantItem = ({ formikData }: IVariantItem) => {
           data={data}
           nameField={valueRefName.current.value}
           formikData={formikData}
-          key={data.id}
+          key={data.variantId}
         />
       ))}
       <Button

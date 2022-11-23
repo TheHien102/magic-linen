@@ -11,10 +11,11 @@ import {
   Button,
 } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
-import React, { useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import SizeItem from './SizeItem';
+import { VariantParams } from '../../../../services/types';
 
 interface IProperty {
   id: number;
@@ -35,30 +36,94 @@ const MenuProps = {
   },
 };
 
-const names = ['S', 'M', 'L', 'XL', 'XXL'];
+const namesDefault = ['S', 'M', 'L', 'XL', 'XXL'];
+const names: VariantParams[] = [
+  {
+    id: 0,
+    name: 'size',
+    property: 'S',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'M',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'L',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'XL',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'XXL',
+    addPrice: 0,
+    status: 1,
+  },
+];
 
 interface ISize {
   formikData: any;
-  sizeArray?: any;
+  sizeArray: VariantParams[];
 }
 
 const Size = ({ formikData, sizeArray }: ISize) => {
   console.log('sizeArray: ', sizeArray);
-  const [size, setSize] = useState<string[]>([]);
+  const [size, setSize] = useState<VariantParams[]>([]);
+  console.log('size inside: ', size);
+
   const [valueField, setValueField] = useState<any>();
+
+  useEffect(() => {
+    setSize(sizeArray);
+  }, []);
 
   const handleChangeSize = (event: SelectChangeEvent<typeof size>) => {
     const {
       target: { value },
     } = event;
-    setSize(typeof value === 'string' ? value.split(',') : value);
-    console.log('value pick: ', size);
-    setValueField(size.at(size.length - 1));
+
+    let newSize: VariantParams = {
+      id: 99,
+      name: 'size',
+      property: value[value.length - 1],
+      addPrice: 0,
+      status: 1,
+    };
+    setSize(newSize);
+    console.log('newSize pick: ', newSize);
+    console.log('value event: ', event.target.value);
+    // setValueField(size.at(size.length - 1));
+    // console.log('size index: ', size.indexOf('M'));
   };
 
   const handleDelete = (i: string) => {
-    setSize(size.filter((item) => item !== i));
+    setSize(size.filter((item: any) => item !== i));
     console.log('delete');
+  };
+
+  const handleChecked = (
+    event: ChangeEvent<HTMLInputElement>,
+    it: VariantParams
+  ) => {
+    if (event.target.checked) {
+      console.log('checked');
+    } else {
+      console.log('unchecked');
+    }
   };
 
   return (
@@ -77,27 +142,42 @@ const Size = ({ formikData, sizeArray }: ISize) => {
           id='variants'
           multiple
           value={size}
-          onChange={handleChangeSize}
+          // onChange={handleChangeSize}
           input={<OutlinedInput label='Size' />}
-          renderValue={(selected) => selected.join(', ')}
+          // renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={size.indexOf(name) > -1} />
-              <ListItemText primary={name} />
+          {/* {names.length > 0 ? (
+            'name.map'
+          ) : (
+            <>
+              {names.map((it) => (
+                <MenuItem key={it.name} value={it.name}>
+                  <Checkbox checked={size.indexOf(it.name) > -1} />
+                  <ListItemText primary={it.name} />
+                </MenuItem>
+              ))}
+            </>
+          )} */}
+          {names.map((it) => (
+            <MenuItem key={it.property} value={it.property}>
+              <Checkbox
+                checked={size.indexOf(it) > -1}
+                // onChange={(e) => handleChecked(e, it)}
+              />
+              <ListItemText primary={it.property} />
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      {size.map((data) => (
+      {/* {size.map((data: any) => (
         <SizeItem
           key={data}
           formikData={formikData}
           data={data}
           handleDelete={() => handleDelete(data)}
         />
-      ))}
+      ))} */}
     </Box>
   );
 };

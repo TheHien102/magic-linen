@@ -288,7 +288,7 @@ export default function ListDetailProduct() {
   const ListProduct = async () => {
     const token = await getCookie('token');
 
-    const listProduct = await ProductApi.listProductPerPage(1, token as string);
+    const listProduct = await ProductApi.listProductPerPage(token as string);
     console.log('listProduct: ', listProduct);
     setRows(listProduct.data.data);
   };

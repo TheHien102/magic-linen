@@ -17,6 +17,7 @@ import {
   Modal,
 } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
+import { VariantParams } from '../../../../services/types';
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -26,7 +27,7 @@ interface IColorItem {
   formikData: any;
   handleDelete: any;
 
-  data: any;
+  data: VariantParams;
 }
 
 const ColorItem = ({ data, formikData, handleDelete }: IColorItem) => {
@@ -35,7 +36,7 @@ const ColorItem = ({ data, formikData, handleDelete }: IColorItem) => {
   const handleOnBlur = () => {
     let dataFormik = {
       name: 'color',
-      property: data.label,
+      property: data.property,
       addPrice: valueRef.current.value,
     };
     if (valueRef.current.value != '') {
@@ -50,8 +51,8 @@ const ColorItem = ({ data, formikData, handleDelete }: IColorItem) => {
           <Chip
             label={'blue'}
             sx={{
-              backgroundColor: data.label,
-              color: data.label,
+              backgroundColor: data.property,
+              color: data.property,
               border: '1px solid gray',
             }}
           />

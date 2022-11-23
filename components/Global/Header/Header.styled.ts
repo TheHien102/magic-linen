@@ -6,7 +6,7 @@ export const Header = styled.div`
 `;
 
 export const Center = styled.div`
-  ${tw`flex justify-center`}
+  ${tw`flex justify-center border-0 border-b-[1px] border-gray mb-3 border-solid`}
 `;
 
 export const WrapImage = styled.figure`
@@ -14,7 +14,7 @@ export const WrapImage = styled.figure`
 `;
 
 export const Navbar = styled.div`
-  ${tw`flex gap-10  justify-center`}
+  ${tw`flex gap-10  justify-center mb-3`}
 `;
 
 export const Text = styled.a`
