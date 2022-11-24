@@ -7,30 +7,30 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import VariantItem from './VariantItem';
 import { IItemVariant } from '../../../../services/interface';
 import { VariantParams } from '../../../../services/types';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 type IVariant = {
   formikData: any;
   variantsArray: VariantParams[];
+  variantName: string;
 };
 
-const Variant = ({ formikData, variantsArray }: IVariant) => {
-  // const [openModalVariant, setOpenModalVariant] = useState(false);
+const Variant = ({ formikData, variantsArray, variantName }: IVariant) => {
   const [countVariant, setCountVariant] = useState(0);
   const [variant, setVariant] = useState<VariantParams[]>([]);
-  // const [property, setProperty] = useState<VariantParams[]>([
-  //   // { id: 100, name: 'cc', addPrice: 10 },
-  //   // { id: 200, name: 'cc1', addPrice: 10 },
-  //   // { id: 13, name: 'cc2', addPrice: 10 },
-  // ]);
 
   useEffect(() => {
-    console.log('variantsArray new: ', variantsArray);
     setVariant(variantsArray);
-  }, [variantsArray]);
+  }, []);
+
+  useEffect(() => {
+    if (variant.length > 0) {
+      console.log(variant);
+    }
+  }, [variant]);
 
   const handleAddVariant = () => {
     setCountVariant(countVariant + 1);
-    // property.id = count
     let data = {
       id: countVariant,
       name: '',
@@ -40,7 +40,7 @@ const Variant = ({ formikData, variantsArray }: IVariant) => {
   };
 
   const handleDeleteVariant = (i: number) => {
-    setVariant(variant.filter((item) => item.id !== i));
+    setVariant(variant.filter(item => item.id !== i));
   };
 
   // const handleChange = (e: any, i: number) => {
@@ -54,42 +54,49 @@ const Variant = ({ formikData, variantsArray }: IVariant) => {
 
   return (
     <>
-      {variant &&
-        variant.length !== 0 &&
-        variant.map((_data) => (
-          <Box
-            key={_data.property}
-            sx={[
-              {
-                border: '1px solid gray',
-                p: 3,
-                mt: 3,
-                borderRadius: 2,
-                position: 'relative',
-              },
-            ]}
-          >
-            <Button
-              sx={{
-                position: 'absolute',
-                top: -5,
-                right: -15,
-              }}
-              onClick={() => handleDeleteVariant(_data.id)}
-            >
-              <HighlightOffIcon />
-            </Button>
-            <VariantItem data={_data} formikData={formikData} />
-          </Box>
+      <Box
+        sx={[
+          {
+            border: '1px solid gray',
+            p: 3,
+            mt: 3,
+            borderRadius: 2,
+            position: 'relative',
+          },
+        ]}
+      >
+        <p>{variantName}</p>
+        {/* <Button
+          sx={{
+            position: 'absolute',
+            top: -5,
+            right: -15,
+          }}
+          // onClick={() => handleDeleteVariant(_data.id)}
+        >
+          <HighlightOffIcon />
+        </Button> */}
+        {variant.map((data, index) => (
+          <>
+            <VariantItem data={data} formikData={formikData} />
+          </>
         ))}
+      </Box>
       <Button
+        variant='outlined'
+        sx={{ mt: 1, width: '100% ' }}
+        // onClick={() => handleAdd()}
+      >
+        <AddBoxIcon />
+      </Button>
+      {/* <Button
         variant='outlined'
         sx={{ fontWeight: 'bold', mt: 1 }}
         onClick={() => handleAddVariant()}
       >
         New variant &nbsp;
         <PlaylistAddIcon />
-      </Button>
+      </Button> */}
     </>
   );
 };

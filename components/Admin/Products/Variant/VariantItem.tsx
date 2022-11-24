@@ -26,7 +26,7 @@ const VariantItem = ({ formikData, data }: IVariantItem) => {
   };
 
   const handleDelete = (i: number) => {
-    setProperty(property.filter((item) => item.id !== i));
+    setProperty(property.filter(item => item.id !== i));
   };
 
   const valueRef = useRef<any>(0);
@@ -47,19 +47,12 @@ const VariantItem = ({ formikData, data }: IVariantItem) => {
 
   return (
     <>
-      <TextField
-        label={'Name variant'}
-        inputRef={valueRefName}
-        defaultValue={data.name}
-        onBlur={() => handleOnBlur()}
-        fullWidth
-        size='small'
-      />
       <Grid container sx={{ marginTop: '5px' }} spacing={1}>
         <Grid item xs={12} md={6}>
           <TextField
             label={'Property'}
             inputRef={valueRefProperty}
+            defaultValue={data.property}
             onBlur={() => handleOnBlur()}
             fullWidth
             size='small'
@@ -69,27 +62,21 @@ const VariantItem = ({ formikData, data }: IVariantItem) => {
           <TextField
             label={'Price'}
             inputRef={valueRef}
+            defaultValue={data.addPrice}
             onBlur={() => handleOnBlur()}
             fullWidth
             size='small'
           />
         </Grid>
       </Grid>
-      {property.map((data, i) => (
+      {/* {property.map((data, i) => (
         <VariantItemDetail
           data={data}
           nameField={valueRefName.current.value}
           formikData={formikData}
           key={data.id}
         />
-      ))}
-      <Button
-        variant='outlined'
-        sx={{ mt: 1, width: '100% ' }}
-        onClick={() => handleAdd()}
-      >
-        <AddBoxIcon />
-      </Button>
+      ))} */}
     </>
   );
 };
