@@ -62,6 +62,7 @@ const ColorItem = ({ data, formikData, handleDelete }: IColorItem) => {
         <TextField
           label={'Price'}
           inputRef={valueRef}
+          defaultValue={data.addPrice}
           onBlur={() => handleOnBlur()}
           fullWidth
           size='small'

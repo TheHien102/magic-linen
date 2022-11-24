@@ -23,6 +23,7 @@ import company3 from '../assets/images/company3.jpg';
 import company4 from '../assets/images/company4.jpg';
 import company5 from '../assets/images/company5.jpg';
 import company6 from '../assets/images/company6.jpg';
+import { VariantParams } from '../services/types';
 
 export const menuData = [
   {
@@ -88,5 +89,43 @@ export const companyData = [
   {
     url: company6,
     alt: 'company6',
+  },
+];
+
+export const names: VariantParams[] = [
+  {
+    id: 0,
+    name: 'size',
+    property: 'S',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'M',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'L',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'XL',
+    addPrice: 0,
+    status: 1,
+  },
+  {
+    id: 0,
+    name: 'size',
+    property: 'XXL',
+    addPrice: 0,
+    status: 1,
   },
 ];

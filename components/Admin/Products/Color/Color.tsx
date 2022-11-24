@@ -15,35 +15,52 @@ import {
   Typography,
   Modal,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ColorPicker, useColor } from 'react-color-palette';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import ColorItem from './ColorItem';
 import { VariantParams } from '../../../../services/types';
 
-interface ChipData {
-  key: number;
-  label: string;
-}
-
 let nextId = 0;
 
 interface IColor {
   formikData: any;
+  colorArray: VariantParams[];
 }
 
-const Color = ({ formikData }: IColor) => {
+const Color = ({ formikData, colorArray }: IColor) => {
   const [color, setColor] = useColor('hex', '#121212');
   const [openModalColor, setOpenModalColor] = useState(false);
   const handleOpenModalColor = () => setOpenModalColor(true);
   const handleCloseModalColor = () => setOpenModalColor(false);
-  const handleGetColor = () => {};
 
-  const [chipData, setChipData] = useState<readonly VariantParams[]>([]);
+  const [chipData, setChipData] = useState<VariantParams[]>([]);
 
-  const handleDelete = (i: number) => () => {
-    setChipData(chipData.filter((item) => item.variantId !== i));
+  useEffect(() => {
+    setChipData(colorArray);
+  }, [colorArray]);
+
+  const handleDelete = (i: string) => () => {
+    setChipData(chipData.filter((item) => item.property !== i));
     // console.log('chipDa');
+  };
+
+  const handleOK = () => {
+    setChipData(
+      // Replace the state
+      [
+        // with a new array
+        ...chipData, // that contains all the old items
+        {
+          id: nextId++,
+          name: 'color',
+          property: color.hex,
+          addPrice: 0,
+          status: 1,
+        },
+      ]
+    );
+    handleCloseModalColor();
   };
 
   return (
@@ -84,34 +101,13 @@ const Color = ({ formikData }: IColor) => {
               mt: 3,
             }}
           >
-            <Button
-              variant='contained'
-              onClick={
-                () =>
-                  setChipData(
-                    // Replace the state
-                    [
-                      // with a new array
-                      ...chipData, // that contains all the old items
-                      {
-                        variantId: nextId++,
-                        name: 'color',
-                        property: color.hex,
-                        addPrice: 0,
-                        status: 1,
-                      },
-                    ]
-                  )
-                // console.log('object: ', color)
-              }
-            >
+            <Button variant='contained' onClick={() => handleOK()}>
               OK
             </Button>
             <Button variant='contained' onClick={handleCloseModalColor}>
               Cancel
             </Button>
           </Box>
-          {/* <ColorPicker /> */}
         </Box>
       </Modal>
       <Paper
@@ -133,55 +129,11 @@ const Color = ({ formikData }: IColor) => {
           New Color
           <ColorLensIcon />
         </Button>
-
-        {/* {chipData.map((data, index) => {
-          return (
-            <ListItem key={data.key}>
-              <Chip
-                label={'blue'}
-                sx={{
-                  backgroundColor: data.label,
-                  color: data.label,
-                  border: '1px solid gray',
-                }}
-                onDelete={handleDelete(data)}
-              />
-            </ListItem>
-          );
-        })} */}
-        {chipData.map((data, index) => (
-          // <Grid container sx={{ marginTop: '5px' }} key={data.key} spacing={1}>
-          //   <Grid item xs={12} md={6}>
-          //     <ListItem>
-          //       <Chip
-          //         label={'blue'}
-          //         sx={{
-          //           backgroundColor: data.label,
-          //           color: data.label,
-          //           border: '1px solid gray',
-          //         }}
-          //         //   onDelete={handleDelete(data)}
-          //       />
-          //     </ListItem>
-          //   </Grid>
-          //   <Grid item xs={12} md={4.5}>
-          //     <TextField label={'Price'} fullWidth size='small' />
-          //   </Grid>
-          //   <Grid item xs={12} md={1.5}>
-          //     <Button
-          //       sx={{ mt: 0.3 }}
-          //       variant='outlined'
-          //       color='error'
-          //       onClick={handleDelete(data.key)}
-          //     >
-          //       <IndeterminateCheckBoxIcon color='error' />
-          //     </Button>
-          //   </Grid>
-          // </Grid>
+        {chipData.map((data) => (
           <ColorItem
             data={data}
-            key={data.variantId}
-            handleDelete={handleDelete(data.variantId)}
+            key={data.property}
+            handleDelete={handleDelete(data.property)}
             formikData={formikData}
           />
         ))}

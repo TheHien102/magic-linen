@@ -294,10 +294,13 @@ export default function AddProduct({ categoryList }: any) {
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Size formikData={formik.values.variants} />
+                    <Size sizeArray={[]} formikData={formik.values.variants} />
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Color formikData={formik.values.variants} />
+                    <Color
+                      colorArray={[]}
+                      formikData={formik.values.variants}
+                    />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Variant formikData={formik.values.variants} />

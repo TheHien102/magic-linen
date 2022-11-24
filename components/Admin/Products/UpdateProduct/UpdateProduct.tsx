@@ -1,44 +1,30 @@
 import {
-  Avatar,
   Box,
   Button,
-  Checkbox,
-  Chip,
-  dividerClasses,
-  FormControlLabel,
   Grid,
-  MenuItem,
   Paper,
   Select,
-  styled,
   TextField,
   Typography,
 } from '@mui/material';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import { SelectChangeEvent } from '@mui/material/Select';
-import { Key, SetStateAction, useEffect, useRef, useState } from 'react';
+import { SetStateAction, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Editor } from '@tinymce/tinymce-react';
 import CloseIcon from '@mui/icons-material/Close';
-import { ColorPicker, useColor } from 'react-color-palette';
 import 'react-color-palette/lib/css/styles.css';
-import { MuiChipsInput, MuiChipsInputChip } from 'mui-chips-input';
-import Modal from '@mui/material/Modal';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import ModalVariant from '../../../../components/Admin/Products/ModalVariant/ModalVariant';
 import Variant from '../../../../components/Admin/Products/Variant/Variant';
 import Size from '../../../../components/Admin/Products/Size/Size';
 import Color from '../../../../components/Admin/Products/Color/Color';
 import { ProductApi } from '../../../../services/api/product';
 import { getCookie } from '../../../../services/cookies';
 import ModalImage from '../../../../components/Admin/Products/ModalImage';
-import ItemList from '../../Dashboard/ItemList';
 import { VariantParams } from '../../../../services/types';
+import { IItemVariant } from '../../../../services/interface';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -66,11 +52,6 @@ interface IUpdateProduct {
   data: any;
 }
 
-interface IItemVariant {
-  name: string;
-  data: VariantParams[];
-}
-
 const UpdateProduct = ({ data }: IUpdateProduct) => {
   const DATA_DETAIL = data ? data.itemProduct : '';
   const [variants, setVariants] = useState<VariantParams[]>([]);
@@ -78,11 +59,6 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
   const [sizeArray, setSizeArray] = useState<VariantParams[]>([]);
   const [colorArray, setColorArray] = useState<VariantParams[]>([]);
   const [variantsArray, setVariantsArray] = useState<IItemVariant[]>([]);
-
-  // let SizeArray: VariantParams[] = [];
-  // let ColorArray: VariantParams[] = [];
-  // new variants is here
-  // let VariantsArray: IItemVariant[] = [];
 
   useEffect(() => {
     setVariants(data.variants);
@@ -97,63 +73,42 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
           if (variants[i].name === 'color') {
             setColorArray((colorArray) => [...colorArray, variants[i]]);
           } else {
-            // let isPush = false;
-            // variantsArray.map((item: IItemVariant) => {
-            //   if (item.name === variants[i].name) {
-            //     item.data.push(variants[i]);
-            //     isPush = true;
-            //   }
-            // });
-            // if (!isPush) {
-            //   let newData: VariantParams[] = [];
-            //   newData.push(variants[i]);
-            //   variantsArray.push({
-            //     name: variants[i].name,
-            //     data: newData,
-            //   });
-            // }
+            let isPush = false;
+            variantsArray.map((item) => {
+              if (item.name === variants[i].name) {
+                let newItem = item;
+
+                newItem.data.push(variants[i]);
+
+                setVariantsArray(
+                  variantsArray.map((variant) =>
+                    variant.name === newItem.name ? newItem : variant
+                  )
+                );
+                isPush = true;
+              }
+            });
+            if (!isPush) {
+              let newData: VariantParams[] = [];
+              newData.push(variants[i]);
+              let newData2: IItemVariant = {
+                name: variants[i].name,
+                data: newData,
+              };
+              setVariantsArray((variantsArray) => [...variantsArray, newData2]);
+            }
           }
         }
       }
-      console.log('SizeArray: ', sizeArray);
-      console.log('ColorArray: ', colorArray);
-      console.log('VariantsArray: ', variantsArray);
+
+      console.log('VariantsArray new: ', variantsArray);
     }
   }, [variants]);
 
-  //Filter variant list
-  // useEffect(() => {
-  //   console.log('variantList: ', DATA_VARIANT);
-  //   for (let i = 0; i < DATA_VARIANT.length; i++) {
-  //     console.log('object');
-  //     if (DATA_VARIANT[i].name === 'size') {
-  //       SizeArray.push(DATA_VARIANT[i]);
-  //     } else {
-  //       if (DATA_VARIANT[i].name === 'color') {
-  //         ColorArray.push(DATA_VARIANT[i]);
-  //       } else {
-  //         let isPush = false;
-  //         VariantsArray.map((item: IItemVariant) => {
-  //           if (item.name === DATA_VARIANT[i].name) {
-  //             item.data.push(DATA_VARIANT[i]);
-  //             isPush = true;
-  //           }
-  //         });
-  //         if (!isPush) {
-  //           let newData: VariantParams[] = [];
-  //           newData.push(DATA_VARIANT[i]);
-  //           VariantsArray.push({
-  //             name: DATA_VARIANT[i].name,
-  //             data: newData,
-  //           });
-  //         }
-  //       }
-  //     }
-  //   }
-  //   console.log('SizeArray: ', SizeArray);
-  //   console.log('ColorArray: ', ColorArray);
-  //   console.log('VariantsArray: ', VariantsArray);
-  // }, []);
+  useEffect(() => {
+    console.log('change', variantsArray);
+  }, [variantsArray]);
+
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -189,7 +144,6 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
   const handleChangeType = (e: {
     target: { value: SetStateAction<number> };
   }) => {
-    // let typeValue = event.target.value;
     setAge(e.target.value);
     let id = Number(e.target.value);
     formik.values.productCategoryID = id;
@@ -382,10 +336,16 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                 </>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Color formikData={formik.values.variants} />
+                <Color
+                  colorArray={colorArray}
+                  formikData={formik.values.variants}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
-                <Variant formikData={formik.values.variants} />
+                <Variant
+                  variantsArray={[]}
+                  formikData={formik.values.variants}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Editor

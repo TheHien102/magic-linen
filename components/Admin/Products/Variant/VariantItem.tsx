@@ -6,12 +6,6 @@ import VariantItemDetail from './VariantItemDetail';
 import { VariantParams } from '../../../../services/types';
 import { IVariantItem } from '../../../../services/interface';
 
-interface IProperty {
-  id: number;
-  name: string;
-  addPrice: number;
-}
-
 const VariantItem = ({ formikData }: IVariantItem) => {
   const [property, setProperty] = useState<VariantParams[]>([
     // { id: 100, name: 'cc', addPrice: 10 },

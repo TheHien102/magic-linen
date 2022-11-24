@@ -5,3 +5,8 @@ export interface IVariantItem {
   data: VariantParams;
   handleDelete: any;
 }
+
+export interface IItemVariant {
+  name: string;
+  data: VariantParams[];
+}
