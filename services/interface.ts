@@ -1,12 +1,12 @@
 import { VariantParams } from './types';
 
-export interface IVariantItem {
+export type IVariantItem = {
   formikData: any;
   data: VariantParams;
   handleDelete: any;
-}
+};
 
-export interface IItemVariant {
+export type IItemVariant = {
   name: string;
   data: VariantParams[];
-}
+};

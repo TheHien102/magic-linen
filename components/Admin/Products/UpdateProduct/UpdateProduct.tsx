@@ -60,6 +60,8 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
   const [colorArray, setColorArray] = useState<VariantParams[]>([]);
   const [variantsArray, setVariantsArray] = useState<IItemVariant[]>([]);
 
+  let OtherVariants: IItemVariant[] = [];
+
   useEffect(() => {
     setVariants(data.variants);
   }, []);
@@ -68,45 +70,36 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
+          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray((colorArray) => [...colorArray, variants[i]]);
+            setColorArray(colorArray => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            variantsArray.map((item) => {
+            OtherVariants.map(item => {
               if (item.name === variants[i].name) {
-                let newItem = item;
-
-                newItem.data.push(variants[i]);
-
-                setVariantsArray(
-                  variantsArray.map((variant) =>
-                    variant.name === newItem.name ? newItem : variant
-                  )
-                );
+                item.data.push(variants[i]);
                 isPush = true;
               }
             });
             if (!isPush) {
-              let newData: VariantParams[] = [];
-              newData.push(variants[i]);
-              let newData2: IItemVariant = {
+              const newData: IItemVariant = {
                 name: variants[i].name,
-                data: newData,
+                data: [variants[i]],
               };
-              setVariantsArray((variantsArray) => [...variantsArray, newData2]);
+              OtherVariants.push(newData);
             }
           }
         }
       }
-
-      console.log('VariantsArray new: ', variantsArray);
     }
+    setVariantsArray(OtherVariants);
   }, [variants]);
 
   useEffect(() => {
-    console.log('change', variantsArray);
+    if (variantsArray.length > 0) {
+      console.log('change', variantsArray);
+    }
   }, [variantsArray]);
 
   const router = useRouter();
@@ -122,7 +115,7 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
       assets: [] as any,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       //   router.push('/dashboard');
       const token = getCookie('token');
 
@@ -157,8 +150,8 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
   useEffect(() => {
     if (mainImage.length != 0) {
       fetch(mainImage[mainImage.length - 1])
-        .then((res) => res.blob())
-        .then((blob) => {
+        .then(res => res.blob())
+        .then(blob => {
           const file = new File([blob], 'dot.png', blob);
           const reader = new FileReader();
           reader.readAsDataURL(file);
@@ -170,8 +163,8 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
 
     if (arrayImage.length != 0) {
       fetch(arrayImage[arrayImage.length - 1])
-        .then((res) => res.blob())
-        .then((blob) => {
+        .then(res => res.blob())
+        .then(blob => {
           const file = new File([blob], 'dot.png', blob);
           const reader = new FileReader();
           reader.readAsDataURL(file);
@@ -353,7 +346,7 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={(stringifiedHtmlValue) => {
+                  onEditorChange={stringifiedHtmlValue => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{
