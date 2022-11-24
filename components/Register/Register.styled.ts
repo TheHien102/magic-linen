@@ -5,14 +5,26 @@ export const Register = styled.div`
   ${tw``}
 `;
 
-export const Input = styled.input<{ widthFull?: boolean }>`
-  ${tw`h-14 text-[16px] px-4 mt-2`}
+export const MarginTop = styled.div`
+  ${tw`mt-5`}
+`;
 
-  &:focus {
-    border: 1px solid #979797;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
-  }
+export const WrapBtn = styled.div`
+  ${tw`mt-20`}
+`;
 
-  ${({ widthFull }) => widthFull && tw`w-full`}
+export const Flex = styled.div`
+  ${tw`flex flex-col`}
+`;
+
+export const Col1 = styled.div`
+  ${tw`w-[48.5%]`}
+`;
+
+export const Col2 = styled.div`
+  ${tw`w-[48%]`}
+`;
+
+export const WrapInput = styled.div`
+  ${tw`flex justify-between`}
 `;

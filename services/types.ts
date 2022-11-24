@@ -31,7 +31,6 @@ export type VariantParams = {
   name: string;
   property: string;
   addPrice: number;
-  status: 1;
 };
 
 export type AssetsParams = {

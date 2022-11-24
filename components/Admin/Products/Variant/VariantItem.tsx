@@ -6,7 +6,7 @@ import VariantItemDetail from './VariantItemDetail';
 import { VariantParams } from '../../../../services/types';
 import { IVariantItem } from '../../../../services/interface';
 
-const VariantItem = ({ formikData }: IVariantItem) => {
+const VariantItem = ({ formikData, data }: IVariantItem) => {
   const [property, setProperty] = useState<VariantParams[]>([
     // { id: 100, name: 'cc', addPrice: 10 },
     // { id: 200, name: 'cc1', addPrice: 10 },
@@ -50,6 +50,7 @@ const VariantItem = ({ formikData }: IVariantItem) => {
       <TextField
         label={'Name variant'}
         inputRef={valueRefName}
+        defaultValue={data.name}
         onBlur={() => handleOnBlur()}
         fullWidth
         size='small'

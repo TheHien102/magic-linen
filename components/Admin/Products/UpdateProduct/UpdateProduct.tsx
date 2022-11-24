@@ -70,13 +70,13 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
+          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray(colorArray => [...colorArray, variants[i]]);
+            setColorArray((colorArray) => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            OtherVariants.map(item => {
+            OtherVariants.map((item) => {
               if (item.name === variants[i].name) {
                 item.data.push(variants[i]);
                 isPush = true;
@@ -115,7 +115,7 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
       assets: [] as any,
     },
     validationSchema: validationSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       //   router.push('/dashboard');
       const token = getCookie('token');
 
@@ -150,8 +150,8 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
   useEffect(() => {
     if (mainImage.length != 0) {
       fetch(mainImage[mainImage.length - 1])
-        .then(res => res.blob())
-        .then(blob => {
+        .then((res) => res.blob())
+        .then((blob) => {
           const file = new File([blob], 'dot.png', blob);
           const reader = new FileReader();
           reader.readAsDataURL(file);
@@ -163,8 +163,8 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
 
     if (arrayImage.length != 0) {
       fetch(arrayImage[arrayImage.length - 1])
-        .then(res => res.blob())
-        .then(blob => {
+        .then((res) => res.blob())
+        .then((blob) => {
           const file = new File([blob], 'dot.png', blob);
           const reader = new FileReader();
           reader.readAsDataURL(file);
@@ -335,10 +335,13 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                <Variant
-                  variantsArray={[]}
-                  formikData={formik.values.variants}
-                />
+                {variantsArray.map((data, index) => (
+                  <Variant
+                    key={index}
+                    variantsArray={data.data}
+                    formikData={formik.values.variants}
+                  />
+                ))}
               </Grid>
               <Grid item xs={12} md={6}>
                 <Editor
@@ -346,7 +349,7 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={stringifiedHtmlValue => {
+                  onEditorChange={(stringifiedHtmlValue) => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{

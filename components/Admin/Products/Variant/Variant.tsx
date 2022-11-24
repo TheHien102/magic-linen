@@ -8,15 +8,15 @@ import VariantItem from './VariantItem';
 import { IItemVariant } from '../../../../services/interface';
 import { VariantParams } from '../../../../services/types';
 
-interface IVariant {
+type IVariant = {
   formikData: any;
-  variantsArray: IItemVariant[];
-}
+  variantsArray: VariantParams[];
+};
 
 const Variant = ({ formikData, variantsArray }: IVariant) => {
   // const [openModalVariant, setOpenModalVariant] = useState(false);
   const [countVariant, setCountVariant] = useState(0);
-  const [variant, setVariant] = useState<IItemVariant[]>([]);
+  const [variant, setVariant] = useState<VariantParams[]>([]);
   // const [property, setProperty] = useState<VariantParams[]>([
   //   // { id: 100, name: 'cc', addPrice: 10 },
   //   // { id: 200, name: 'cc1', addPrice: 10 },
@@ -40,7 +40,7 @@ const Variant = ({ formikData, variantsArray }: IVariant) => {
   };
 
   const handleDeleteVariant = (i: number) => {
-    setVariant(variant.filter((item) => item.data.id !== i));
+    setVariant(variant.filter((item) => item.id !== i));
   };
 
   // const handleChange = (e: any, i: number) => {
@@ -58,7 +58,7 @@ const Variant = ({ formikData, variantsArray }: IVariant) => {
         variant.length !== 0 &&
         variant.map((_data) => (
           <Box
-            key={_data.data.id}
+            key={_data.property}
             sx={[
               {
                 border: '1px solid gray',
@@ -79,7 +79,7 @@ const Variant = ({ formikData, variantsArray }: IVariant) => {
             >
               <HighlightOffIcon />
             </Button>
-            <VariantItem formikData={formikData} />
+            <VariantItem data={_data} formikData={formikData} />
           </Box>
         ))}
       <Button

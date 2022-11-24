@@ -56,7 +56,6 @@ const Color = ({ formikData, colorArray }: IColor) => {
           name: 'color',
           property: color.hex,
           addPrice: 0,
-          status: 1,
         },
       ]
     );
