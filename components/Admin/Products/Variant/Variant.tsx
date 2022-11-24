@@ -40,7 +40,7 @@ const Variant = ({ formikData, variantsArray, variantName }: IVariant) => {
   };
 
   const handleDeleteVariant = (i: number) => {
-    setVariant(variant.filter(item => item.id !== i));
+    setVariant(variant.filter((item) => item.id !== i));
   };
 
   // const handleChange = (e: any, i: number) => {
@@ -65,8 +65,16 @@ const Variant = ({ formikData, variantsArray, variantName }: IVariant) => {
           },
         ]}
       >
-        <p>{variantName}</p>
-        {/* <Button
+        {/* <p>{variantName}</p> */}
+        <TextField
+          label={'New variant'}
+          // inputRef={valueRefProperty}
+          defaultValue={variantName}
+          // onBlur={() => handleOnBlur()}
+          fullWidth
+          size='small'
+        />
+        <Button
           sx={{
             position: 'absolute',
             top: -5,
@@ -75,20 +83,20 @@ const Variant = ({ formikData, variantsArray, variantName }: IVariant) => {
           // onClick={() => handleDeleteVariant(_data.id)}
         >
           <HighlightOffIcon />
-        </Button> */}
+        </Button>
         {variant.map((data, index) => (
           <>
             <VariantItem data={data} formikData={formikData} />
           </>
         ))}
+        <Button
+          variant='outlined'
+          sx={{ mt: 1, width: '100% ' }}
+          // onClick={() => handleAdd()}
+        >
+          <AddBoxIcon />
+        </Button>
       </Box>
-      <Button
-        variant='outlined'
-        sx={{ mt: 1, width: '100% ' }}
-        // onClick={() => handleAdd()}
-      >
-        <AddBoxIcon />
-      </Button>
       {/* <Button
         variant='outlined'
         sx={{ fontWeight: 'bold', mt: 1 }}

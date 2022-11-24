@@ -26,7 +26,7 @@ const VariantItem = ({ formikData, data }: IVariantItem) => {
   };
 
   const handleDelete = (i: number) => {
-    setProperty(property.filter(item => item.id !== i));
+    setProperty(property.filter((item) => item.id !== i));
   };
 
   const valueRef = useRef<any>(0);
@@ -68,15 +68,26 @@ const VariantItem = ({ formikData, data }: IVariantItem) => {
             size='small'
           />
         </Grid>
+        <Grid item xs={12} md={1.5}>
+          <Button
+            sx={{ mt: 0.3 }}
+            variant='outlined'
+            color='error'
+            // onClick={() => handleDelete(data.id)}
+          >
+            <IndeterminateCheckBoxIcon color='error' />
+          </Button>
+        </Grid>
       </Grid>
-      {/* {property.map((data, i) => (
+
+      {property.map((data, i) => (
         <VariantItemDetail
           data={data}
           nameField={valueRefName.current.value}
           formikData={formikData}
           key={data.id}
         />
-      ))} */}
+      ))}
     </>
   );
 };
