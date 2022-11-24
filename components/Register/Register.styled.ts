@@ -1,12 +1,8 @@
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
-export const Container = styled.div`
-  ${tw`container`}
-`;
-
-export const LabelInput = styled.label`
-  ${tw`font-semibold text-[14px]`}
+export const Register = styled.div`
+  ${tw``}
 `;
 
 export const Input = styled.input<{ widthFull?: boolean }>`

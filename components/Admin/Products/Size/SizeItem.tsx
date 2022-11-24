@@ -2,15 +2,9 @@ import React, { useRef, useState } from 'react';
 import { Box, Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import { VariantParams } from '../../../../services/types';
+import { IVariantItem } from '../../../../services/interface';
 
-interface ISizeItem {
-  formikData: any;
-  data: VariantParams;
-  handleDelete: any;
-}
-
-const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
+const SizeItem = ({ formikData, data, handleDelete }: IVariantItem) => {
   const valueRef = useRef<any>(0);
 
   const handleOnBlur = () => {
@@ -30,7 +24,7 @@ const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
       <Grid item xs={12} md={6}>
         <TextField
           label={'Property'}
-          defaultValue={data}
+          defaultValue={data.property}
           fullWidth
           disabled
           size='small'
@@ -41,7 +35,7 @@ const SizeItem = ({ formikData, data, handleDelete }: ISizeItem) => {
           label={'Price'}
           inputRef={valueRef}
           fullWidth
-          defaultValue={0}
+          defaultValue={data ? data.addPrice : 0}
           onBlur={() => handleOnBlur()}
           size='small'
         />

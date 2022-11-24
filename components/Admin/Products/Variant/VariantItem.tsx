@@ -4,15 +4,12 @@ import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import VariantItemDetail from './VariantItemDetail';
 import { VariantParams } from '../../../../services/types';
+import { IVariantItem } from '../../../../services/interface';
 
 interface IProperty {
   id: number;
   name: string;
   addPrice: number;
-}
-
-interface IVariantItem {
-  formikData: any;
 }
 
 const VariantItem = ({ formikData }: IVariantItem) => {
@@ -35,7 +32,7 @@ const VariantItem = ({ formikData }: IVariantItem) => {
   };
 
   const handleDelete = (i: number) => {
-    setProperty(property.filter((item) => item.variantId !== i));
+    setProperty(property.filter((item) => item.id !== i));
   };
 
   const valueRef = useRef<any>(0);
@@ -88,7 +85,7 @@ const VariantItem = ({ formikData }: IVariantItem) => {
           data={data}
           nameField={valueRefName.current.value}
           formikData={formikData}
-          key={data.variantId}
+          key={data.id}
         />
       ))}
       <Button
