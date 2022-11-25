@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -6,28 +6,17 @@ import VariantItemDetail from './VariantItemDetail';
 import { VariantParams } from '../../../../services/types';
 import { IVariantItem } from '../../../../services/interface';
 
-const VariantItem = ({ formikData, data }: IVariantItem) => {
-  const [property, setProperty] = useState<VariantParams[]>([
-    // { id: 100, name: 'cc', addPrice: 10 },
-    // { id: 200, name: 'cc1', addPrice: 10 },
-    // { id: 13, name: 'cc2', addPrice: 10 },
-  ]);
-  const [count, setCount] = useState(0);
+const VariantItem = ({ formikData, data, handleDelete }: IVariantItem) => {
+  // const [properties, setProperties] = useState<VariantParams>();
 
-  const handleAdd = () => {
-    setCount(count + 1);
-    // property.id = count
-    let data = {
-      id: count,
-      name: '',
-      addPrice: 0,
-    };
-    setProperty((property: any) => [...property, data]);
-  };
+  // useEffect(() => {
+  //   setProperties(data);
+  // }, []);
 
-  const handleDelete = (i: number) => {
-    setProperty(property.filter((item) => item.id !== i));
-  };
+  // const handleDelete = (id: number) => {
+  //   // console.log('i: ', i);
+  //   setProperties(properties.filter((item) => item.id !== i));
+  // };
 
   const valueRef = useRef<any>(0);
   const valueRefProperty = useRef<any>('');
@@ -73,21 +62,21 @@ const VariantItem = ({ formikData, data }: IVariantItem) => {
             sx={{ mt: 0.3 }}
             variant='outlined'
             color='error'
-            // onClick={() => handleDelete(data.id)}
+            onClick={() => handleDelete(data.id)}
           >
             <IndeterminateCheckBoxIcon color='error' />
           </Button>
         </Grid>
       </Grid>
 
-      {property.map((data, i) => (
+      {/* {property.map((data, i) => (
         <VariantItemDetail
           data={data}
           nameField={valueRefName.current.value}
           formikData={formikData}
           key={data.id}
         />
-      ))}
+      ))} */}
     </>
   );
 };

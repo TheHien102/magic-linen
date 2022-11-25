@@ -8,11 +8,12 @@ import { ProductApi } from '../../../services/api/product';
 import { getCookie } from '../../../services/cookies';
 
 interface IProductInfo {
-  data: any;
+  res: any;
+  categoryList: any;
 }
 
-const ProductInfo = (data: IProductInfo) => {
-  console.log('IProductInfo: ', data);
+const ProductInfo = ({ res, categoryList }: IProductInfo) => {
+  // console.log('IProductInfo: ', props);
   return (
     <>
       <Head>
@@ -21,7 +22,7 @@ const ProductInfo = (data: IProductInfo) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
-        <UpdateProduct data={data.data} />
+        <UpdateProduct data={res.data} categoryList={categoryList.data.data} />
       </Layout>
     </>
   );
@@ -34,13 +35,16 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     try {
       const { productId } = ctx.query;
 
-      const [res] = await Promise.all([
+      const [res, categoryList] = await Promise.all([
         ProductApi.getProductById(productId as string, token),
+        ProductApi.categoryList(token),
       ]);
-      console.log('productId: ', productId);
+      console.log('categoryList: ', categoryList);
       return {
         props: {
-          ...res,
+          res: res,
+          categoryList: categoryList,
+          // categoryList.data.data,
         },
       };
     } catch (e) {

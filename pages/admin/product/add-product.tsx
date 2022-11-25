@@ -303,7 +303,12 @@ export default function AddProduct({ categoryList }: any) {
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Variant formikData={formik.values.variants} />
+                    <Variant
+                      variantName=''
+                      handleDeleteVariant={() => {}}
+                      variantsArray={[]}
+                      formikData={formik.values.variants}
+                    />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Editor

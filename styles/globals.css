@@ -5,7 +5,7 @@
   body {
     padding: 0;
     margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    font-family: 'Josefin Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
       Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   }
 
@@ -22,5 +22,25 @@
     box-sizing: border-box;
   }
 
+  .css-1elwnq4-MuiPaper-root-MuiAccordion-root.Mui-expanded {
+    margin:  0;
+}
 
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root {
+  box-shadow: none;
+  border: 1px solid #ebeae7;
+}
+
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root:nth-child(2) {
+  border-top: 0;
+}
+
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root:nth-child(3) {
+  border-top: 0;
+}
+
+
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root:before {
+  opacity: 0;
+}
 

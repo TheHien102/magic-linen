@@ -10,11 +10,11 @@ export const Flex = styled.div`
 `;
 
 export const ColLeft = styled.div`
-  ${tw`w-[45%] text-center `}
+  ${tw`w-[45%]  `}
 `;
 
-export const MiddleLine = styled.div`
-  ${tw`border-0 border-r-2 w-1 h-[400px] border-solid border-[#e4e3df]`}
+export const BtnWrap = styled.div`
+  ${tw`border-0 border-b-[1px] py-4 cursor-pointer uppercase w-full border-solid border-[#e4e3df]`}
 `;
 
 export const ColRight = styled.div`

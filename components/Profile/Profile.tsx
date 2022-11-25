@@ -16,9 +16,10 @@ const ProfileUser = (props: Props) => {
       <Breadcrumb />
       <HeaderTitle title='My Account' />
       <S.Flex>
-        <S.ColLeft></S.ColLeft>
+        <S.ColLeft>
+          <S.BtnWrap>Logout</S.BtnWrap>
+        </S.ColLeft>
         <S.ColRight>
-          <S.Title>New customer</S.Title>
           <S.Content>
             By creating an account you will be able to shop faster, stay up to
             date on your order status, and easily access your purchase history.

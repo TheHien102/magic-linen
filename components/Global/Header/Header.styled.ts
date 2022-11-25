@@ -14,7 +14,7 @@ export const WrapImage = styled.figure`
 `;
 
 export const Navbar = styled.div`
-  ${tw`flex gap-10  justify-center mb-3`}
+  ${tw`flex gap-10  justify-center border-0 border-b-[1px] py-2 border-gray mb-3 border-solid`}
 `;
 
 export const Text = styled.a`

@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Grid,
+  MenuItem,
   Paper,
   Select,
   TextField,
@@ -23,8 +24,9 @@ import Color from '../../../../components/Admin/Products/Color/Color';
 import { ProductApi } from '../../../../services/api/product';
 import { getCookie } from '../../../../services/cookies';
 import ModalImage from '../../../../components/Admin/Products/ModalImage';
-import { VariantParams } from '../../../../services/types';
+import { AssetsParams, VariantParams } from '../../../../services/types';
 import { IItemVariant } from '../../../../services/interface';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -50,33 +52,37 @@ const validationSchema = yup.object({
 
 interface IUpdateProduct {
   data: any;
+  categoryList: any;
 }
 
-const UpdateProduct = ({ data }: IUpdateProduct) => {
+const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const DATA_DETAIL = data ? data.itemProduct : '';
   const [variants, setVariants] = useState<VariantParams[]>([]);
   // const DATA_VARIANT: VariantParams[] = data ? data.variants : [];
   const [sizeArray, setSizeArray] = useState<VariantParams[]>([]);
   const [colorArray, setColorArray] = useState<VariantParams[]>([]);
   const [variantsArray, setVariantsArray] = useState<IItemVariant[]>([]);
-
+  const [arrayImage, setArrayImage] = useState<AssetsParams[]>([]);
+  const editorRef = useRef<any>(null);
   let OtherVariants: IItemVariant[] = [];
 
   useEffect(() => {
     setVariants(data.variants);
+    setArrayImage(DATA_DETAIL.assets);
+    console.log('data: ', data);
   }, []);
 
   useEffect(() => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
+          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray(colorArray => [...colorArray, variants[i]]);
+            setColorArray((colorArray) => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            OtherVariants.map(item => {
+            OtherVariants.map((item) => {
               if (item.name === variants[i].name) {
                 item.data.push(variants[i]);
                 isPush = true;
@@ -96,11 +102,32 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
     setVariantsArray(OtherVariants);
   }, [variants]);
 
-  useEffect(() => {
-    if (variantsArray.length > 0) {
-      console.log('change', variantsArray);
-    }
-  }, [variantsArray]);
+  // useEffect(() => {
+  //   if (variantsArray.length > 0) {
+  //     console.log('change', variantsArray);
+  //   }
+  // }, [variantsArray]);
+
+  const [countVariant, setCountVariant] = useState(0);
+
+  const handleDeleteVariant = (i: string) => {
+    setVariantsArray(variantsArray.filter((item) => item.name !== i));
+  };
+
+  const handleAddVariant = () => {
+    setCountVariant(countVariant + 1);
+    let data = {
+      id: countVariant,
+      name: '',
+      property: '',
+      addPrice: 0,
+    };
+    let newVariant = {
+      name: '',
+      data: [data],
+    };
+    setVariantsArray((variantsArray) => [...variantsArray, newVariant]);
+  };
 
   const router = useRouter();
   const formik = useFormik({
@@ -115,7 +142,7 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
       assets: [] as any,
     },
     validationSchema: validationSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       //   router.push('/dashboard');
       const token = getCookie('token');
 
@@ -143,15 +170,13 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
   };
 
   //Show Image
-  const [arrayImage, setArrayImage] = useState([]);
   const [mainImage, setMainImage] = useState(formik.values.mainImg);
-  const editorRef = useRef<any>(null);
 
   useEffect(() => {
     if (mainImage.length != 0) {
       fetch(mainImage[mainImage.length - 1])
-        .then(res => res.blob())
-        .then(blob => {
+        .then((res) => res.blob())
+        .then((blob) => {
           const file = new File([blob], 'dot.png', blob);
           const reader = new FileReader();
           reader.readAsDataURL(file);
@@ -161,29 +186,29 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
         });
     }
 
-    if (arrayImage.length != 0) {
-      fetch(arrayImage[arrayImage.length - 1])
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], 'dot.png', blob);
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onloadend = () => {
-            let data = {
-              type: 'image',
-              data: reader.result,
-            };
-            formik.values.assets.push(data);
-          };
-        });
-    }
+    // if (arrayImage.length != 0) {
+    //   fetch(arrayImage[arrayImage.length - 1])
+    //     .then((res) => res.blob())
+    //     .then((blob) => {
+    //       const file = new File([blob], 'dot.png', blob);
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onloadend = () => {
+    //         let data = {
+    //           type: 'image',
+    //           data: reader.result,
+    //         };
+    //         formik.values.assets.push(data);
+    //       };
+    //     });
+    // }
 
     console.log('variants: ', formik.values.variants);
   }, [mainImage, arrayImage]);
 
   return (
     <Grid>
-      <Paper elevation={10}>
+      <Paper elevation={10} sx={{ pb: '50px' }}>
         <form>
           <Grid
             display={'flex'}
@@ -304,17 +329,18 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                     labelId='productCategoryID'
                     id='productCategoryID'
                     value={age}
+                    defaultValue={DATA_DETAIL.categoryDescription}
                     label='Type'
                     sx={{ color: 'black' }}
                     onChange={(e: any) => handleChangeType(e)}
                   >
-                    {/* {categoryList &&
+                    {categoryList &&
                       categoryList.length !== 0 &&
                       categoryList.map((data: any, index: number) => (
                         <MenuItem key={index} value={data.id}>
                           {data.categoryName}
                         </MenuItem>
-                      ))} */}
+                      ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -338,11 +364,20 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                 {variantsArray.map((data, index) => (
                   <Variant
                     key={data.name}
+                    handleDeleteVariant={handleDeleteVariant}
                     variantName={data.name}
                     variantsArray={data.data}
                     formikData={formik.values.variants}
                   />
                 ))}
+                <Button
+                  variant='outlined'
+                  sx={{ fontWeight: 'bold', mt: 1 }}
+                  onClick={() => handleAddVariant()}
+                >
+                  New variant &nbsp;
+                  <PlaylistAddIcon />
+                </Button>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Editor
@@ -350,7 +385,7 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={stringifiedHtmlValue => {
+                  onEditorChange={(stringifiedHtmlValue) => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{
@@ -411,22 +446,26 @@ const UpdateProduct = ({ data }: IUpdateProduct) => {
                 sx={{
                   display: 'flex',
                   gap: '10px',
+                  p: 3,
                 }}
               >
                 {arrayImage.length > 0 &&
                   arrayImage.map((data, index) => (
                     <figure
                       key={index}
-                      style={{ width: '150px', height: '150px', margin: 0 }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        margin: 0,
+                        position: 'relative',
+                      }}
                     >
-                      <img
-                        src={data}
+                      <Image
+                        src={data.link}
                         alt='chosen'
-                        style={{
-                          objectFit: 'contain',
-                          width: '100%',
-                          height: '100%',
-                        }}
+                        width={150}
+                        height={200}
+                        // layout={'responsive'}
                       />
                     </figure>
                   ))}

@@ -9,7 +9,7 @@ export const BannerSwiper = styled.div`
   }
 
   .mySwiper {
-    ${tw`h-[500px]`}
+    ${tw`h-[580px]`}
 
     .swiper-pagination-bullet {
       width: 9px;
