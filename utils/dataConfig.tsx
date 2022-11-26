@@ -65,6 +65,13 @@ export const menuData = [
   },
 ];
 
+export const categoryList = [
+  {
+    name: 'name',
+    list: ['n1', 'n2'],
+  },
+];
+
 export const companyData = [
   {
     url: company1,

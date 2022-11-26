@@ -39,4 +39,10 @@ export type AssetsParams = {
   link: string;
 };
 
+export type CategoryParams = {
+  id: number;
+  name: string;
+  categoryList?: CategoryParams[];
+};
+
 export type AdminProductParams = {};

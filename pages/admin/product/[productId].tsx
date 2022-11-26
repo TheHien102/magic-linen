@@ -13,7 +13,7 @@ interface IProductInfo {
 }
 
 const ProductInfo = ({ res, categoryList }: IProductInfo) => {
-  // console.log('IProductInfo: ', props);
+  console.log('IProductInfo: ', res);
   return (
     <>
       <Head>

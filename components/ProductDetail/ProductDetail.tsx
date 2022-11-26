@@ -1,101 +1,25 @@
-import React, { useRef, useState } from 'react';
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Box, Typography } from '@mui/material';
+import React from 'react';
+import ProductSwiper from './ProductSwiper/ProductSwiper';
 
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/free-mode';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
+type Props = {};
 
-// import required modules
-import { FreeMode, Navigation, Thumbs } from 'swiper';
-
-export default function ProductDetail() {
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
-
+const ProductDetail = (props: Props) => {
   return (
-    <>
-      <Swiper
-        loop={true}
-        spaceBetween={10}
-        navigation={true}
-        thumbs={{ swiper: thumbsSwiper }}
-        modules={[FreeMode, Navigation, Thumbs]}
-        className='mySwiper2'
-      >
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-1.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-2.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-3.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-4.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-5.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-6.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-7.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-8.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-9.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-10.jpg' />
-        </SwiperSlide>
-      </Swiper>
-      <Swiper
-        onSwiper={setThumbsSwiper}
-        loop={true}
-        spaceBetween={10}
-        slidesPerView={4}
-        freeMode={true}
-        watchSlidesProgress={true}
-        modules={[FreeMode, Navigation, Thumbs]}
-        className='mySwiper'
-      >
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-1.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-2.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-3.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-4.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-5.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-6.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-7.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-8.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-9.jpg' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src='https://swiperjs.com/demos/images/nature-10.jpg' />
-        </SwiperSlide>
-      </Swiper>
-    </>
+    <Box sx={{ display: 'flex', marginX: '120px' }}>
+      <Box sx={{ width: '65%' }}>
+        <ProductSwiper />
+      </Box>
+      <Box sx={{ w: '30%' }}>
+        <Typography
+          component={'h1'}
+          sx={{ fontWeight: 'semibold', fontSize: '24px' }}
+        >
+          LINEN BEACH SHIRT TAOS
+        </Typography>
+      </Box>
+    </Box>
   );
-}
+};
+
+export default ProductDetail;

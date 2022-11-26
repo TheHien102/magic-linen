@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Grid,
+  ListSubheader,
   MenuItem,
   Paper,
   Select,
@@ -24,7 +25,11 @@ import Color from '../../../../components/Admin/Products/Color/Color';
 import { ProductApi } from '../../../../services/api/product';
 import { getCookie } from '../../../../services/cookies';
 import ModalImage from '../../../../components/Admin/Products/ModalImage';
-import { AssetsParams, VariantParams } from '../../../../services/types';
+import {
+  AssetsParams,
+  CategoryParams,
+  VariantParams,
+} from '../../../../services/types';
 import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
@@ -52,11 +57,11 @@ const validationSchema = yup.object({
 
 interface IUpdateProduct {
   data: any;
-  categoryList: any;
+  categoryList: CategoryParams[];
 }
 
 const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
-  const DATA_DETAIL = data ? data.itemProduct : '';
+  const DATA_DETAIL = data ? data : '';
   const [variants, setVariants] = useState<VariantParams[]>([]);
   // const DATA_VARIANT: VariantParams[] = data ? data.variants : [];
   const [sizeArray, setSizeArray] = useState<VariantParams[]>([]);
@@ -65,7 +70,8 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const [arrayImage, setArrayImage] = useState<AssetsParams[]>([]);
   const editorRef = useRef<any>(null);
   let OtherVariants: IItemVariant[] = [];
-
+  console.log('DATA_DETAIL: ', DATA_DETAIL);
+  console.log('categoryList: ', categoryList);
   useEffect(() => {
     setVariants(data.variants);
     setArrayImage(DATA_DETAIL.assets);
@@ -167,6 +173,20 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     setAge(e.target.value);
     let id = Number(e.target.value);
     formik.values.productCategoryID = id;
+  };
+
+  const mapListItem: any = (data: CategoryParams[]) => {
+    data.map((it) => {
+      if (it.categoryList) {
+        return mapListItem(it.categoryList);
+      } else {
+        return (
+          <MenuItem key={it.id} sx={{ fontWeight: 'bold' }} value={it.name}>
+            {it.name}
+          </MenuItem>
+        );
+      }
+    });
   };
 
   //Show Image
@@ -324,7 +344,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               </Grid>
               <Grid item xs={12} md={3}>
                 <FormControl fullWidth size='small'>
-                  <InputLabel id='productCategoryID'>Type</InputLabel>
+                  {/* <InputLabel id='productCategoryID'>Type</InputLabel>
                   <Select
                     labelId='productCategoryID'
                     id='productCategoryID'
@@ -337,10 +357,14 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                     {categoryList &&
                       categoryList.length !== 0 &&
                       categoryList.map((data: any, index: number) => (
-                        <MenuItem key={index} value={data.id}>
-                          {data.categoryName}
+                        <MenuItem key={index} value={data.categoryDescription}>
+                          {data.categoryDescription}
                         </MenuItem>
                       ))}
+                  </Select> */}
+                  <InputLabel htmlFor='grouped-select'>Grouping</InputLabel>
+                  <Select defaultValue='' id='grouped-select' label='Grouping'>
+                    <>{mapListItem(categoryList)}</>
                   </Select>
                 </FormControl>
               </Grid>
@@ -361,7 +385,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                {variantsArray.map((data, index) => (
+                {variantsArray.map((data) => (
                   <Variant
                     key={data.name}
                     handleDeleteVariant={handleDeleteVariant}

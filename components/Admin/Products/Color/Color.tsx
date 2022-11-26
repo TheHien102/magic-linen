@@ -38,7 +38,7 @@ const Color = ({ formikData, colorArray }: IColor) => {
 
   useEffect(() => {
     setChipData(colorArray);
-  }, []);
+  }, [colorArray]);
 
   const handleDelete = (i: string) => () => {
     setChipData(chipData.filter((item) => item.property !== i));

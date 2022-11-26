@@ -10,5 +10,5 @@ export const API_URL = {
   getProductById: `${BASEURL}/product/get`,
   createAdmin: `${BASEURL}/account/create_admin`,
   listAdmin: `${BASEURL}/account/list`,
-  categoryList: `${BASEURL}/category/list`,
+  categoryList: `${BASEURL}/category/getSorted`,
 };
