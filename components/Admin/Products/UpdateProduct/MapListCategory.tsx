@@ -24,7 +24,7 @@ const MapListCategory = ({ data, fontsize, left }: IMap) => {
             <MapListCategory
               data={item.categoryList}
               fontsize={fontsize * 0.9}
-              left={left + 12}
+              left={left + 24}
             />
           )}
         </>
