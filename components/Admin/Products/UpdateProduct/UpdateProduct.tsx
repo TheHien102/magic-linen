@@ -363,7 +363,11 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   </Select> */}
                   <InputLabel htmlFor='grouped-select'>Grouping</InputLabel>
                   <Select defaultValue='' id='grouped-select' label='Grouping'>
-                    <MapListCategory data={categoryList} />
+                    <MapListCategory
+                      data={categoryList}
+                      fontsize={24}
+                      left={0}
+                    />
                   </Select>
                 </FormControl>
               </Grid>
