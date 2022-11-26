@@ -1,11 +1,5 @@
 import http from '../http';
-import {
-  AccountParams,
-  LoginPrams,
-  LoginAdminPrams,
-  ResetPasswordParams,
-  TokenResponse,
-} from '../types';
+import { LoginAdminPrams, TokenResponse } from '../types';
 import { API_URL } from './urls';
 
 export const AccountApi = {

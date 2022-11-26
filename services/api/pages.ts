@@ -1,19 +1,11 @@
 import http from '../http';
-import {
-  AboutPageResponse,
-  HomePageResponse,
-  ContactParams,
-  ContactUsResponse,
-  UserCount,
-  PolicyPageResponse,
-  TermOfUsePageResponse,
-} from '../types';
+// import { HomePageResponse } from '../types';
 import { API_URL } from './urls';
 
 export const PagesApi = {
-  home: async function (): Promise<HomePageResponse> {
-    return await http.get(API_URL.home);
-  },
+  // home: async function (): Promise<HomePageResponse> {
+  //   return await http.get(API_URL.home);
+  // },
 
   listAdmin: async function (token: string, id: number) {
     return await http.get(
