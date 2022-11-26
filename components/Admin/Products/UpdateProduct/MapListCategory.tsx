@@ -6,7 +6,7 @@ interface IMap {
   data: CategoryParams[];
 }
 
-const MapListItem = ({ data }: IMap) => {
+const MapListCategory = ({ data }: IMap) => {
   return (
     <>
       {data.map(item => (
@@ -15,7 +15,7 @@ const MapListItem = ({ data }: IMap) => {
             {item.name}
           </MenuItem>
           {item.categoryList?.length && (
-            <MapListItem data={item.categoryList} />
+            <MapListCategory data={item.categoryList} />
           )}
         </>
       ))}
@@ -23,4 +23,4 @@ const MapListItem = ({ data }: IMap) => {
   );
 };
 
-export default MapListItem;
+export default MapListCategory;

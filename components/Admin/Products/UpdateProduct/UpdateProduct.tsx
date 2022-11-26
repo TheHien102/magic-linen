@@ -32,7 +32,7 @@ import {
 } from '../../../../services/types';
 import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import MapListItem from './MapListItem';
+import MapListCategory from './MapListCategory';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -363,7 +363,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   </Select> */}
                   <InputLabel htmlFor='grouped-select'>Grouping</InputLabel>
                   <Select defaultValue='' id='grouped-select' label='Grouping'>
-                    <MapListItem data={categoryList}></MapListItem>
+                    <MapListCategory data={categoryList} />
                   </Select>
                 </FormControl>
               </Grid>
