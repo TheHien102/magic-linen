@@ -32,6 +32,7 @@ import {
 } from '../../../../services/types';
 import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import MapListItem from './MapListItem';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -82,13 +83,13 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
+          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray((colorArray) => [...colorArray, variants[i]]);
+            setColorArray(colorArray => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            OtherVariants.map((item) => {
+            OtherVariants.map(item => {
               if (item.name === variants[i].name) {
                 item.data.push(variants[i]);
                 isPush = true;
@@ -117,7 +118,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const [countVariant, setCountVariant] = useState(0);
 
   const handleDeleteVariant = (i: string) => {
-    setVariantsArray(variantsArray.filter((item) => item.name !== i));
+    setVariantsArray(variantsArray.filter(item => item.name !== i));
   };
 
   const handleAddVariant = () => {
@@ -132,7 +133,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       name: '',
       data: [data],
     };
-    setVariantsArray((variantsArray) => [...variantsArray, newVariant]);
+    setVariantsArray(variantsArray => [...variantsArray, newVariant]);
   };
 
   const router = useRouter();
@@ -148,7 +149,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       assets: [] as any,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       //   router.push('/dashboard');
       const token = getCookie('token');
 
@@ -175,19 +176,17 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     formik.values.productCategoryID = id;
   };
 
-  const mapListItem: any = (data: CategoryParams[]) => {
-    data.map((it) => {
-      if (it.categoryList) {
-        return mapListItem(it.categoryList);
-      } else {
-        return (
-          <MenuItem key={it.id} sx={{ fontWeight: 'bold' }} value={it.name}>
-            {it.name}
-          </MenuItem>
-        );
-      }
-    });
-  };
+  // const mapListItem: any = (data: CategoryParams[]) => {
+  //   data.map(it => {
+  //     // if (it.categoryList) {
+  //     //   return mapListItem(it.categoryList);
+  //     // } else {
+  //     return (
+
+  //     );
+  //     // }
+  //   });
+  // };
 
   //Show Image
   const [mainImage, setMainImage] = useState(formik.values.mainImg);
@@ -195,8 +194,8 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   useEffect(() => {
     if (mainImage.length != 0) {
       fetch(mainImage[mainImage.length - 1])
-        .then((res) => res.blob())
-        .then((blob) => {
+        .then(res => res.blob())
+        .then(blob => {
           const file = new File([blob], 'dot.png', blob);
           const reader = new FileReader();
           reader.readAsDataURL(file);
@@ -364,7 +363,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   </Select> */}
                   <InputLabel htmlFor='grouped-select'>Grouping</InputLabel>
                   <Select defaultValue='' id='grouped-select' label='Grouping'>
-                    <>{mapListItem(categoryList)}</>
+                    <MapListItem data={categoryList}></MapListItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -385,7 +384,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                {variantsArray.map((data) => (
+                {variantsArray.map(data => (
                   <Variant
                     key={data.name}
                     handleDeleteVariant={handleDeleteVariant}
@@ -409,7 +408,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={(stringifiedHtmlValue) => {
+                  onEditorChange={stringifiedHtmlValue => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{
