@@ -18,19 +18,25 @@ import {
 } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { VariantParams } from '../../../../services/types';
+import { IVariantItem } from '../../../../services/interface';
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
 
-interface IColorItem {
-  formikData: any;
-  handleDelete: any;
+// interface IColorItem {
+//   formikData: any;
+//   handleDelete: any;
+//   handleOnChange: number;
+//   data: VariantParams;
+// }
 
-  data: VariantParams;
-}
-
-const ColorItem = ({ data, formikData, handleDelete }: IColorItem) => {
+const ColorItem = ({
+  data,
+  formikData,
+  handleDelete,
+  handleOnChange,
+}: IVariantItem) => {
   const valueRef = useRef<any>(0);
 
   const handleOnBlur = () => {
@@ -63,7 +69,7 @@ const ColorItem = ({ data, formikData, handleDelete }: IColorItem) => {
           label={'Price'}
           inputRef={valueRef}
           defaultValue={data.addPrice}
-          onBlur={() => handleOnBlur()}
+          onChange={(e) => handleOnChange(data, Number(e.target.value))}
           fullWidth
           size='small'
         />

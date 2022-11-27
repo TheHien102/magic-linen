@@ -1,21 +1,5 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  dividerClasses,
-  FormControlLabel,
-  Grid,
-  MenuItem,
-  Paper,
-  Select,
-  styled,
-  TextField,
-  Typography,
-  Modal,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Box, Button, Paper, Typography, Modal } from '@mui/material';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ColorPicker, useColor } from 'react-color-palette';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import ColorItem from './ColorItem';
@@ -26,31 +10,40 @@ let nextId = 0;
 interface IColor {
   formikData: any;
   colorArray: VariantParams[];
+  setColorArray: Dispatch<SetStateAction<VariantParams[]>>;
 }
 
-const Color = ({ formikData, colorArray }: IColor) => {
+const Color = ({ formikData, colorArray, setColorArray }: IColor) => {
   const [color, setColor] = useColor('hex', '#121212');
   const [openModalColor, setOpenModalColor] = useState(false);
   const handleOpenModalColor = () => setOpenModalColor(true);
   const handleCloseModalColor = () => setOpenModalColor(false);
 
-  const [chipData, setChipData] = useState<VariantParams[]>([]);
+  const handleOnChange = (data: VariantParams, price: number) => {
+    let newColor = {
+      id: data.id,
+      name: 'size',
+      property: data.property,
+      addPrice: price,
+    };
 
-  useEffect(() => {
-    setChipData(colorArray);
-  }, [colorArray]);
+    setColorArray(
+      colorArray.map((item) =>
+        item.property === data.property ? newColor : item
+      )
+    );
+  };
 
   const handleDelete = (i: string) => () => {
-    setChipData(chipData.filter((item) => item.property !== i));
-    // console.log('chipDa');
+    setColorArray(colorArray.filter((item) => item.property !== i));
   };
 
   const handleOK = () => {
-    setChipData(
+    setColorArray(
       // Replace the state
       [
         // with a new array
-        ...chipData, // that contains all the old items
+        ...colorArray, // that contains all the old items
         {
           id: nextId++,
           name: 'color',
@@ -128,10 +121,11 @@ const Color = ({ formikData, colorArray }: IColor) => {
           New Color
           <ColorLensIcon />
         </Button>
-        {chipData.map((data) => (
+        {colorArray.map((data) => (
           <ColorItem
             data={data}
             key={data.property}
+            handleOnChange={handleOnChange}
             handleDelete={handleDelete(data.property)}
             formikData={formikData}
           />

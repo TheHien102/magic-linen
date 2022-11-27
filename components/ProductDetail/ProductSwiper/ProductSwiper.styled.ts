@@ -18,6 +18,7 @@ export const ProductSwiper = styled.div`
 
     .swiper-button-prev {
       top: 22px;
+      left: 0;
     }
 
     .swiper-button-next {

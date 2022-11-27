@@ -13,7 +13,6 @@ interface IProductInfo {
 }
 
 const ProductInfo = ({ res, categoryList }: IProductInfo) => {
-  console.log('IProductInfo: ', res);
   return (
     <>
       <Head>
@@ -39,12 +38,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         ProductApi.getProductById(productId as string, token),
         ProductApi.categoryList(token),
       ]);
-      console.log('categoryList: ', categoryList);
       return {
         props: {
           res: res,
           categoryList: categoryList,
-          // categoryList.data.data,
         },
       };
     } catch (e) {

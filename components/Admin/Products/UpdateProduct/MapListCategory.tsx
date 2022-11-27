@@ -1,33 +1,37 @@
-import { MenuItem } from '@mui/material';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { CategoryParams } from '../../../../services/types';
 
 interface IMap {
   data: CategoryParams[];
   fontsize: number;
   left: number;
+  weight: string;
 }
 
-const MapListCategory = ({ data, fontsize, left }: IMap) => {
+const MapListCategory = ({ data, fontsize, left, weight }: IMap) => {
   return (
     <>
-      {data.map(item => (
-        <>
-          <MenuItem
-            key={item.id}
-            sx={{ fontSize: fontsize + 'px', left: left + 'px' }}
+      {data.map((item) => (
+        <Fragment key={item.id}>
+          <option
+            style={{
+              fontSize: fontsize + 'px',
+              fontWeight: weight,
+              left: left + 'px',
+            }}
             value={item.name}
           >
-            {item.name}
-          </MenuItem>
+            &nbsp; {item.name}
+          </option>
           {item.categoryList?.length && (
             <MapListCategory
               data={item.categoryList}
               fontsize={fontsize * 0.9}
               left={left + 24}
+              weight={'lighter'}
             />
           )}
-        </>
+        </Fragment>
       ))}
     </>
   );

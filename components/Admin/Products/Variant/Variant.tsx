@@ -1,5 +1,11 @@
 import { Box, Button, Grid, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import ModalVariant from '../ModalVariant/ModalVariant';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -9,42 +15,36 @@ import { VariantParams } from '../../../../services/types';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
 type IVariant = {
-  formikData: any;
+  // variantsArrayTemp: VariantParams[];
   variantsArray: VariantParams[];
+  setVariantsArray: Dispatch<SetStateAction<VariantParams[]>>;
+  index: number;
+  handleOnChangeVariantName: (index: number, name: string) => void;
   variantName: string;
   handleDeleteVariant: (value: string) => void;
 };
 
 const Variant = ({
-  formikData,
   variantsArray,
+  index,
+  setVariantsArray,
   variantName,
+  handleOnChangeVariantName,
   handleDeleteVariant,
 }: IVariant) => {
   const [variant, setVariant] = useState<VariantParams[]>([]);
+  const valueNameRef = useRef<any>(null);
 
   useEffect(() => {
     setVariant(variantsArray);
   }, []);
 
-  useEffect(() => {
-    if (variant.length > 0) {
-      console.log(variant);
-    }
-  }, [variant]);
+  // useEffect(() => {
+  //   if (variant.length > 0) {
+  //     console.log(variant);
+  //   }
+  // }, [variant]);
 
-  // const handleDeleteVariant = (i: string) => {
-  //   setVariant(variant.filter((item) => item.name !== i));
-  // };
-
-  // const handleChange = (e: any, i: number) => {
-  //   let data = {
-  //     id: i,
-  //     name: e.target.value,
-  //     addPrice: 0,
-  //   };
-  //   setProperty(property.map((item) => (item.id === i ? data : item)));
-  // };
   const [count, setCount] = useState(0);
 
   const handleAdd = () => {
@@ -63,6 +63,23 @@ const Variant = ({
     setVariant(variant.filter((item) => item.id !== id));
   };
 
+  const handleOnChange = (
+    data: VariantParams,
+    price: number,
+    property: string
+  ) => {
+    let newVariant = {
+      id: data.id,
+      name: variantName,
+      property: property,
+      addPrice: price,
+    };
+    console.log('newVariant: ', newVariant);
+    setVariantsArray(
+      variantsArray.map((item) => (item.name === data.name ? newVariant : item))
+    );
+  };
+
   return (
     <Box
       sx={[
@@ -77,9 +94,9 @@ const Variant = ({
     >
       <TextField
         label={'New variant'}
-        // inputRef={valueRefProperty}
+        inputRef={valueNameRef}
         defaultValue={variantName}
-        // onBlur={() => handleOnBlur()}
+        onChange={(e) => handleOnChangeVariantName(index, e.target.value)}
         fullWidth
         size='small'
       />
@@ -97,8 +114,8 @@ const Variant = ({
         <VariantItem
           key={data.id}
           data={data}
+          handleOnChange={handleOnChange}
           handleDelete={handleDelete}
-          formikData={formikData}
         />
       ))}
       <Button

@@ -2,10 +2,9 @@ import {
   Box,
   Button,
   Grid,
-  ListSubheader,
-  MenuItem,
   Paper,
   Select,
+  SelectChangeEvent,
   TextField,
   Typography,
 } from '@mui/material';
@@ -32,6 +31,7 @@ import {
 } from '../../../../services/types';
 import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import ItemCategory from './MapListCategory';
 import MapListCategory from './MapListCategory';
 
 const validationSchema = yup.object({
@@ -40,18 +40,20 @@ const validationSchema = yup.object({
   discount: yup.string(),
   description: yup.string().required('Description is required'),
   price: yup.string().required('Price is required'),
-  productCategoryID: yup.number(),
-  variants: yup.array<any>(
+  categoryDescription: yup.string(),
+  variants: yup.array<VariantParams>(
     yup.object({
+      id: yup.number(),
       name: yup.string(),
       property: yup.string(),
       addPrice: yup.number(),
     })
   ),
-  assets: yup.array<any>(
+  assets: yup.array<AssetsParams>(
     yup.object({
+      id: yup.number(),
       type: yup.string(),
-      data: yup.string(),
+      link: yup.string(),
     })
   ),
 });
@@ -63,33 +65,36 @@ interface IUpdateProduct {
 
 const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const DATA_DETAIL = data ? data : '';
+  // console.log('DATA_DETAIL : ', DATA_DETAIL);
   const [variants, setVariants] = useState<VariantParams[]>([]);
-  // const DATA_VARIANT: VariantParams[] = data ? data.variants : [];
   const [sizeArray, setSizeArray] = useState<VariantParams[]>([]);
   const [colorArray, setColorArray] = useState<VariantParams[]>([]);
-  const [variantsArray, setVariantsArray] = useState<IItemVariant[]>([]);
+  const [variantsArray, setVariantsArray] = useState<VariantParams[]>([]);
+  const [variantsList, setVariantsList] = useState<IItemVariant[]>([]);
   const [arrayImage, setArrayImage] = useState<AssetsParams[]>([]);
   const editorRef = useRef<any>(null);
+  const categoryRef = useRef<any>(null);
   let OtherVariants: IItemVariant[] = [];
-  console.log('DATA_DETAIL: ', DATA_DETAIL);
-  console.log('categoryList: ', categoryList);
+  let initCategory = DATA_DETAIL.categoryDescription.split(',').pop();
+
   useEffect(() => {
     setVariants(data.variants);
     setArrayImage(DATA_DETAIL.assets);
-    console.log('data: ', data);
+
+    //Handle category
   }, []);
 
   useEffect(() => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
+          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray(colorArray => [...colorArray, variants[i]]);
+            setColorArray((colorArray) => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            OtherVariants.map(item => {
+            OtherVariants.map((item) => {
               if (item.name === variants[i].name) {
                 item.data.push(variants[i]);
                 isPush = true;
@@ -106,19 +111,13 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
         }
       }
     }
-    setVariantsArray(OtherVariants);
+    setVariantsList(OtherVariants);
   }, [variants]);
-
-  // useEffect(() => {
-  //   if (variantsArray.length > 0) {
-  //     console.log('change', variantsArray);
-  //   }
-  // }, [variantsArray]);
 
   const [countVariant, setCountVariant] = useState(0);
 
   const handleDeleteVariant = (i: string) => {
-    setVariantsArray(variantsArray.filter(item => item.name !== i));
+    setVariantsList(variantsList.filter((item) => item.name !== i));
   };
 
   const handleAddVariant = () => {
@@ -133,10 +132,26 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       name: '',
       data: [data],
     };
-    setVariantsArray(variantsArray => [...variantsArray, newVariant]);
+    setVariantsList((variantsList) => [...variantsList, newVariant]);
+  };
+
+  const handleOnChangeVariantName = (index: number, name: string) => {
+    console.log('index', index);
+    console.log('name', name);
+    setVariantsList(
+      variantsList.map((item, i) => {
+        if (i === index) {
+          item.name = name;
+          return item;
+        } else {
+          return item;
+        }
+      })
+    );
   };
 
   const router = useRouter();
+
   const formik = useFormik({
     initialValues: {
       name: DATA_DETAIL.name,
@@ -144,91 +159,42 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       discount: DATA_DETAIL.discount,
       description: DATA_DETAIL.description,
       price: DATA_DETAIL.price,
-      productCategoryID: DATA_DETAIL.productCategoryID,
-      variants: [] as any,
-      assets: [] as any,
+      categoryDescription: initCategory,
+      variants: DATA_DETAIL.variants,
+      assets: DATA_DETAIL.assets,
     },
     validationSchema: validationSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       //   router.push('/dashboard');
       const token = getCookie('token');
-
+      // console.log(' arrayImg: ', arrayImage);
+      formik.values.mainImg = mainImage;
+      formik.values.assets = arrayImage;
+      formik.values.categoryDescription = categoryRef.current.value;
+      // console.log(' size list: ', sizeArray);
+      // console.log(' color list: ', colorArray);
+      console.log(' variants list: ', variantsArray);
+      // formik.setValues('assets', arrayImage);
+      // formik.values.assets.push(arrayImage);
       console.log(' values: ', values);
 
       try {
-        const res = await ProductApi.addProduct(token as string, values);
-        console.log('success: ', res);
-        if (res) {
-          router.push('/admin/product');
-        }
+        // const res = await ProductApi.addProduct(token as string, values);
+        // console.log('success: ', res);
+        // if (res) {
+        // router.push('/admin/product');
+        // }
       } catch (error) {
         console.log('error: ', error);
       }
     },
   });
-  const [age, setAge] = useState(0);
-
-  const handleChangeType = (e: {
-    target: { value: SetStateAction<number> };
-  }) => {
-    setAge(e.target.value);
-    let id = Number(e.target.value);
-    formik.values.productCategoryID = id;
-  };
-
-  // const mapListItem: any = (data: CategoryParams[]) => {
-  //   data.map(it => {
-  //     // if (it.categoryList) {
-  //     //   return mapListItem(it.categoryList);
-  //     // } else {
-  //     return (
-
-  //     );
-  //     // }
-  //   });
-  // };
-
-  //Show Image
   const [mainImage, setMainImage] = useState(formik.values.mainImg);
-
-  useEffect(() => {
-    if (mainImage.length != 0) {
-      fetch(mainImage[mainImage.length - 1])
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], 'dot.png', blob);
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onloadend = () => {
-            formik.values.mainImg = reader.result as any;
-          };
-        });
-    }
-
-    // if (arrayImage.length != 0) {
-    //   fetch(arrayImage[arrayImage.length - 1])
-    //     .then((res) => res.blob())
-    //     .then((blob) => {
-    //       const file = new File([blob], 'dot.png', blob);
-    //       const reader = new FileReader();
-    //       reader.readAsDataURL(file);
-    //       reader.onloadend = () => {
-    //         let data = {
-    //           type: 'image',
-    //           data: reader.result,
-    //         };
-    //         formik.values.assets.push(data);
-    //       };
-    //     });
-    // }
-
-    console.log('variants: ', formik.values.variants);
-  }, [mainImage, arrayImage]);
 
   return (
     <Grid>
       <Paper elevation={10} sx={{ pb: '50px' }}>
-        <form>
+        <form onSubmit={formik.handleSubmit}>
           <Grid
             display={'flex'}
             flexDirection={'column'}
@@ -277,6 +243,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   >
                     <CloseIcon />
                   </Box>
+
                   <Image
                     src={mainImage}
                     alt={'main image'}
@@ -287,8 +254,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               ) : (
                 <ModalImage
                   title='Add main Image'
-                  mainImage={mainImage}
-                  setArrayImage={setMainImage}
+                  setMainImage={setMainImage}
                 />
               )}
             </Box>
@@ -341,32 +307,23 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   }
                 />
               </Grid>
+
               <Grid item xs={12} md={3}>
                 <FormControl fullWidth size='small'>
-                  {/* <InputLabel id='productCategoryID'>Type</InputLabel>
+                  <InputLabel htmlFor='categoryDescription'>Type</InputLabel>
                   <Select
-                    labelId='productCategoryID'
-                    id='productCategoryID'
-                    value={age}
-                    defaultValue={DATA_DETAIL.categoryDescription}
+                    native
+                    defaultValue={initCategory}
                     label='Type'
-                    sx={{ color: 'black' }}
-                    onChange={(e: any) => handleChangeType(e)}
+                    name='categoryDescription'
+                    id='categoryDescription'
+                    inputRef={categoryRef}
                   >
-                    {categoryList &&
-                      categoryList.length !== 0 &&
-                      categoryList.map((data: any, index: number) => (
-                        <MenuItem key={index} value={data.categoryDescription}>
-                          {data.categoryDescription}
-                        </MenuItem>
-                      ))}
-                  </Select> */}
-                  <InputLabel htmlFor='grouped-select'>Grouping</InputLabel>
-                  <Select defaultValue='' id='grouped-select' label='Grouping'>
                     <MapListCategory
                       data={categoryList}
-                      fontsize={24}
+                      fontsize={18}
                       left={0}
+                      weight={'bold'}
                     />
                   </Select>
                 </FormControl>
@@ -376,6 +333,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   {sizeArray.length > 0 && (
                     <Size
                       sizeArray={sizeArray}
+                      setSizeArray={setSizeArray}
                       formikData={formik.values.variants}
                     />
                   )}
@@ -383,18 +341,22 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Color
+                  setColorArray={setColorArray}
                   colorArray={colorArray}
                   formikData={formik.values.variants}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                {variantsArray.map(data => (
+                {variantsList.map((data, index) => (
                   <Variant
                     key={data.name}
+                    index={index}
                     handleDeleteVariant={handleDeleteVariant}
                     variantName={data.name}
+                    // variantsArrayTemp={data.data}
                     variantsArray={data.data}
-                    formikData={formik.values.variants}
+                    handleOnChangeVariantName={handleOnChangeVariantName}
+                    setVariantsArray={setVariantsArray}
                   />
                 ))}
                 <Button
@@ -412,7 +374,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={stringifiedHtmlValue => {
+                  onEditorChange={(stringifiedHtmlValue) => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{
@@ -451,6 +413,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               <Grid item xs={12} md={6}>
                 <ModalImage
                   title='Add subs Image'
+                  arrayImage={arrayImage}
                   setArrayImage={setArrayImage}
                 />
               </Grid>
@@ -492,7 +455,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                         alt='chosen'
                         width={150}
                         height={200}
-                        // layout={'responsive'}
                       />
                     </figure>
                   ))}

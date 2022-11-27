@@ -34,7 +34,7 @@ export type VariantParams = {
 };
 
 export type AssetsParams = {
-  id: 0;
+  id: number;
   type: string;
   link: string;
 };

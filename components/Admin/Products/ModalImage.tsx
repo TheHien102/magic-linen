@@ -6,20 +6,22 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import UploadImage from '../../Global/UploadImage/UploadImage';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, Dispatch, SetStateAction } from 'react';
 import Cropper from 'react-easy-crop';
-import { Point, Area } from 'react-easy-crop/types';
 import { Slider } from '@mui/material';
 import getCroppedImg from './CropImage/CropImage';
+import { AssetsParams } from '../../../services/types';
 
 interface IModalImage {
   title: string;
-  mainImage?: string;
-  setArrayImage: any;
+  arrayImage?: AssetsParams[];
+  setMainImage?: Dispatch<string>;
+  setArrayImage?: Dispatch<SetStateAction<AssetsParams[]>>;
 }
 
 export default function ModalImage({
-  mainImage,
+  arrayImage,
+  setMainImage,
   setArrayImage,
   title,
 }: IModalImage) {
@@ -52,12 +54,46 @@ export default function ModalImage({
   const showCroppedImage = useCallback(async () => {
     try {
       const croppedImage = await getCroppedImg(imagePath, croppedAreaPixels);
-      //   console.log('donee', { croppedImage });
-      // const file = e.target.files[0];
 
       setCroppedImage(croppedImage);
-      setArrayImage((arrayImage: any) => [...arrayImage, croppedImage]);
-
+      if (setArrayImage) {
+        let data = {
+          id: 0,
+          type: 'image',
+          link: '' as any,
+        };
+        fetch(croppedImage)
+          .then((res) => res.blob())
+          .then((blob) => {
+            const file = new File([blob], 'dot.png', blob);
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+              data.link = await reader.result;
+              // setArrayImage([...arrayImage, data]);
+              // formik.setFieldValue('assets', arrayImage);
+              console.log('assets: ', data);
+              if (arrayImage) {
+                setArrayImage([...arrayImage, data]);
+                console.log('set ok: ');
+              }
+            };
+          });
+        //Be careful
+        // let data = { id: 0, type: 'image', link: croppedImage };
+      }
+      if (setMainImage) {
+        fetch(croppedImage)
+          .then((res) => res.blob())
+          .then((blob) => {
+            const file = new File([blob], 'dot.png', blob);
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+              setMainImage((await reader.result) as string);
+            };
+          });
+      }
       closeResetImage();
     } catch (e) {
       console.error(e);
@@ -70,7 +106,6 @@ export default function ModalImage({
   return (
     <div>
       <Box sx={{ fontWeight: 'bold' }}>
-        {/* {mainImage == '' ? 'Add main Image' : 'Add sub images'} */}
         <UploadImage
           handleOpen={handleOpen}
           hideText={true}
@@ -129,18 +164,7 @@ export default function ModalImage({
                     onZoomChange={setZoom}
                   />
                 </Box>
-                <Box
-                //   sx={{
-                //     position: 'absolute',
-                //     bottom: 0,
-                //     left: '50%',
-                //     width: '50%',
-                //     transform: 'translateX(-50%)',
-                //     height: '80px',
-                //     display: 'flex',
-                //     alignItems: 'center',
-                //   }}
-                >
+                <Box>
                   <Slider
                     value={zoom}
                     min={1}

@@ -1,23 +1,10 @@
-import React, { useRef, useState } from 'react';
-import { Box, Button, Grid, TextField } from '@mui/material';
+import React, { useRef } from 'react';
+import { Button, Grid, TextField } from '@mui/material';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import { IVariantItem } from '../../../../services/interface';
 
-const SizeItem = ({ formikData, data, handleDelete }: IVariantItem) => {
+const SizeItem = ({ data, handleDelete, handleOnChange }: IVariantItem) => {
   const valueRef = useRef<any>(0);
-
-  const handleOnBlur = () => {
-    let dataFormik = {
-      name: 'size',
-      property: data,
-      addPrice: valueRef.current.value,
-    };
-    console.log('data Formik: ', dataFormik);
-    if (valueRef.current.value != '') {
-      formikData.push(dataFormik);
-    }
-  };
 
   return (
     <Grid container sx={{ marginTop: '5px' }} spacing={1}>
@@ -36,7 +23,7 @@ const SizeItem = ({ formikData, data, handleDelete }: IVariantItem) => {
           inputRef={valueRef}
           fullWidth
           defaultValue={data ? data.addPrice : 0}
-          onBlur={() => handleOnBlur()}
+          onChange={(e) => handleOnChange(data, Number(e.target.value))}
           size='small'
         />
       </Grid>

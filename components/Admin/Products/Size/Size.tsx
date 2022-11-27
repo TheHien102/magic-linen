@@ -2,16 +2,19 @@ import {
   FormControl,
   InputLabel,
   Select,
-  SelectChangeEvent,
   MenuItem,
   Checkbox,
   Box,
-  Grid,
-  TextField,
-  Button,
 } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import SizeItem from './SizeItem';
@@ -32,31 +35,42 @@ const MenuProps = {
 interface ISize {
   formikData: any;
   sizeArray: VariantParams[];
+  setSizeArray: Dispatch<SetStateAction<VariantParams[]>>;
 }
 
-const Size = ({ formikData, sizeArray }: ISize) => {
-  const [size, setSize] = useState<VariantParams[]>([]);
-
-  useEffect(() => {
-    setSize(sizeArray);
-  }, []);
-
+const Size = ({ formikData, sizeArray, setSizeArray }: ISize) => {
   const handleDelete = (i: string) => {
-    setSize(size.filter((item) => item.property !== i));
+    setSizeArray(sizeArray.filter((item) => item.property !== i));
     console.log('delete');
   };
 
   const handleChecked = (it: VariantParams) => {
-    if (size.find((i) => i.property === it.property) != undefined) return true;
+    if (sizeArray.find((i) => i.property === it.property) != undefined)
+      return true;
     return false;
   };
 
   const handleModifySizeArray = (it: VariantParams) => {
     if (handleChecked(it)) {
-      setSize(size.filter((size) => size.property !== it.property));
+      setSizeArray(sizeArray.filter((size) => size.property !== it.property));
     } else {
-      setSize((size) => [...size, it]);
+      setSizeArray((size) => [...size, it]);
     }
+  };
+
+  const handleOnChange = (data: VariantParams, price: number) => {
+    let newSize = {
+      id: data.id,
+      name: 'size',
+      property: data.property,
+      addPrice: price,
+    };
+
+    setSizeArray(
+      sizeArray.map((item) =>
+        item.property === data.property ? newSize : item
+      )
+    );
   };
 
   return (
@@ -74,7 +88,7 @@ const Size = ({ formikData, sizeArray }: ISize) => {
           labelId='variants'
           id='variants'
           multiple
-          value={size}
+          value={sizeArray}
           input={<OutlinedInput label='Size' />}
           renderValue={(selected) => selected.map((e) => e.property).join(', ')}
           MenuProps={MenuProps}
@@ -91,11 +105,12 @@ const Size = ({ formikData, sizeArray }: ISize) => {
           ))}
         </Select>
       </FormControl>
-      {size.map((data) => (
+      {sizeArray.map((data) => (
         <SizeItem
           key={data.property}
           formikData={formikData}
           data={data}
+          handleOnChange={handleOnChange}
           handleDelete={() => handleDelete(data.property)}
         />
       ))}
