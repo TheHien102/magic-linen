@@ -6,79 +6,44 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import ModalVariant from '../ModalVariant/ModalVariant';
-import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import VariantItem from './VariantItem';
-import { IItemVariant } from '../../../../services/interface';
 import { VariantParams } from '../../../../services/types';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
 type IVariant = {
-  // variantsArrayTemp: VariantParams[];
-  variantsArray: VariantParams[];
-  setVariantsArray: Dispatch<SetStateAction<VariantParams[]>>;
   index: number;
-  handleOnChangeVariantName: (index: number, name: string) => void;
   variantName: string;
+  variantItems: VariantParams[];
   handleDeleteVariant: (value: string) => void;
-};
-
-const Variant = ({
-  variantsArray,
-  index,
-  setVariantsArray,
-  variantName,
-  handleOnChangeVariantName,
-  handleDeleteVariant,
-}: IVariant) => {
-  const [variant, setVariant] = useState<VariantParams[]>([]);
-  const valueNameRef = useRef<any>(null);
-
-  useEffect(() => {
-    setVariant(variantsArray);
-  }, []);
-
-  // useEffect(() => {
-  //   if (variant.length > 0) {
-  //     console.log(variant);
-  //   }
-  // }, [variant]);
-
-  const [count, setCount] = useState(0);
-
-  const handleAdd = () => {
-    setCount(count + 1);
-    let data = {
-      id: count,
-      name: variantName,
-      property: '',
-      addPrice: 0,
-    };
-    setVariant((variant) => [...variant, data]);
-  };
-
-  const handleDelete = (id: number) => {
-    console.log('id: ', id);
-    setVariant(variant.filter((item) => item.id !== id));
-  };
-
-  const handleOnChange = (
+  handleOnChangeVariantName: (index: number, name: string) => void;
+  handleAddOtherVariantItem: (name: string) => void;
+  handleChangeOtherVariantItem: (
+    index: number,
+    variantName: string,
     data: VariantParams,
     price: number,
     property: string
-  ) => {
-    let newVariant = {
-      id: data.id,
-      name: variantName,
-      property: property,
-      addPrice: price,
-    };
-    console.log('newVariant: ', newVariant);
-    setVariantsArray(
-      variantsArray.map((item) => (item.name === data.name ? newVariant : item))
-    );
-  };
+  ) => void;
+};
+
+const Variant = ({
+  index,
+  variantName,
+  variantItems,
+  handleDeleteVariant,
+  handleOnChangeVariantName,
+  handleAddOtherVariantItem,
+  handleChangeOtherVariantItem,
+}: IVariant) => {
+  const [items, setItems] = useState<VariantParams[]>([]);
+  const valueNameRef = useRef<any>(null);
+
+  useEffect(() => {
+    setItems(variantItems);
+  }, [variantItems]);
+
+  const handleDelete = (name: string) => {};
 
   return (
     <Box
@@ -96,7 +61,7 @@ const Variant = ({
         label={'New variant'}
         inputRef={valueNameRef}
         defaultValue={variantName}
-        onChange={(e) => handleOnChangeVariantName(index, e.target.value)}
+        onChange={e => handleOnChangeVariantName(index, e.target.value)}
         fullWidth
         size='small'
       />
@@ -110,18 +75,22 @@ const Variant = ({
       >
         <HighlightOffIcon />
       </Button>
-      {variant.map((data) => (
-        <VariantItem
-          key={data.id}
-          data={data}
-          handleOnChange={handleOnChange}
-          handleDelete={handleDelete}
-        />
-      ))}
+      <>
+        {items.map((item, index) => (
+          <VariantItem
+            key={item.property}
+            index={index}
+            variantName={variantName}
+            data={item}
+            handleOnChange={handleChangeOtherVariantItem}
+            handleDelete={handleDelete}
+          />
+        ))}
+      </>
       <Button
         variant='outlined'
         sx={{ mt: 1, width: '100% ' }}
-        onClick={() => handleAdd()}
+        onClick={() => handleAddOtherVariantItem(variantName)}
       >
         <AddBoxIcon />
       </Button>

@@ -33,6 +33,7 @@ import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import ItemCategory from './MapListCategory';
 import MapListCategory from './MapListCategory';
+import { it } from 'node:test';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -65,36 +66,42 @@ interface IUpdateProduct {
 
 const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const DATA_DETAIL = data ? data : '';
-  // console.log('DATA_DETAIL : ', DATA_DETAIL);
+  // all Variants
   const [variants, setVariants] = useState<VariantParams[]>([]);
+
+  // size variants only
   const [sizeArray, setSizeArray] = useState<VariantParams[]>([]);
+
+  // color variants only
   const [colorArray, setColorArray] = useState<VariantParams[]>([]);
-  const [variantsArray, setVariantsArray] = useState<VariantParams[]>([]);
+
+  // other variants
+  let OtherVariants: IItemVariant[] = []; // because in state can't catch for loop
   const [variantsList, setVariantsList] = useState<IItemVariant[]>([]);
+
   const [arrayImage, setArrayImage] = useState<AssetsParams[]>([]);
+
   const editorRef = useRef<any>(null);
   const categoryRef = useRef<any>(null);
-  let OtherVariants: IItemVariant[] = [];
+
   let initCategory = DATA_DETAIL.categoryDescription.split(',').pop();
 
   useEffect(() => {
     setVariants(data.variants);
     setArrayImage(DATA_DETAIL.assets);
-
-    //Handle category
   }, []);
 
   useEffect(() => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
+          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray((colorArray) => [...colorArray, variants[i]]);
+            setColorArray(colorArray => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            OtherVariants.map((item) => {
+            OtherVariants.map(item => {
               if (item.name === variants[i].name) {
                 item.data.push(variants[i]);
                 isPush = true;
@@ -117,10 +124,10 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const [countVariant, setCountVariant] = useState(0);
 
   const handleDeleteVariant = (i: string) => {
-    setVariantsList(variantsList.filter((item) => item.name !== i));
+    setVariantsList(variantsList.filter(item => item.name !== i));
   };
 
-  const handleAddVariant = () => {
+  const handleAddOtherVariant = () => {
     setCountVariant(countVariant + 1);
     let data = {
       id: countVariant,
@@ -132,7 +139,53 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       name: '',
       data: [data],
     };
-    setVariantsList((variantsList) => [...variantsList, newVariant]);
+    setVariantsList(variantsList => [...variantsList, newVariant]);
+  };
+
+  const handleAddOtherVariantItem = (name: string) => {
+    let data = {
+      id: 0,
+      name: '',
+      property: '',
+      addPrice: 0,
+    };
+    setVariantsList(
+      variantsList.map(iterator => {
+        if (iterator.name === name) {
+          iterator.data.push(data);
+          return iterator;
+        } else {
+          return iterator;
+        }
+      })
+    );
+  };
+
+  const handleChangeOtherVariantItem = (
+    index: number,
+    variantName: string,
+    data: VariantParams,
+    price: number,
+    property: string
+  ) => {
+    let newData = {
+      id: data.id,
+      name: variantName,
+      property: property,
+      addPrice: price,
+    };
+    setVariantsList(
+      variantsList.map(iterator => {
+        if (iterator.name === variantName) {
+          iterator.data = iterator.data.map((it, indexIt) =>
+            indexIt === index ? newData : it
+          );
+          return iterator;
+        } else {
+          return iterator;
+        }
+      })
+    );
   };
 
   const handleOnChangeVariantName = (index: number, name: string) => {
@@ -164,19 +217,13 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       assets: DATA_DETAIL.assets,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      //   router.push('/dashboard');
+    onSubmit: async values => {
       const token = getCookie('token');
-      // console.log(' arrayImg: ', arrayImage);
       formik.values.mainImg = mainImage;
       formik.values.assets = arrayImage;
       formik.values.categoryDescription = categoryRef.current.value;
-      // console.log(' size list: ', sizeArray);
-      // console.log(' color list: ', colorArray);
-      console.log(' variants list: ', variantsArray);
-      // formik.setValues('assets', arrayImage);
-      // formik.values.assets.push(arrayImage);
-      console.log(' values: ', values);
+      console.log('other variants list: ', variantsList);
+      // console.log(' values: ', values);
 
       try {
         // const res = await ProductApi.addProduct(token as string, values);
@@ -351,18 +398,18 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   <Variant
                     key={data.name}
                     index={index}
-                    handleDeleteVariant={handleDeleteVariant}
                     variantName={data.name}
-                    // variantsArrayTemp={data.data}
-                    variantsArray={data.data}
+                    variantItems={data.data}
+                    handleDeleteVariant={handleDeleteVariant}
                     handleOnChangeVariantName={handleOnChangeVariantName}
-                    setVariantsArray={setVariantsArray}
+                    handleAddOtherVariantItem={handleAddOtherVariantItem}
+                    handleChangeOtherVariantItem={handleChangeOtherVariantItem}
                   />
                 ))}
                 <Button
                   variant='outlined'
                   sx={{ fontWeight: 'bold', mt: 1 }}
-                  onClick={() => handleAddVariant()}
+                  onClick={() => handleAddOtherVariant()}
                 >
                   New variant &nbsp;
                   <PlaylistAddIcon />
@@ -374,7 +421,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={(stringifiedHtmlValue) => {
+                  onEditorChange={stringifiedHtmlValue => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{

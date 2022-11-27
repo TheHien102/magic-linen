@@ -4,44 +4,60 @@ import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox
 import { VariantParams } from '../../../../services/types';
 
 interface IVariantItem {
+  index: number;
+  variantName: string;
   data: VariantParams;
   handleDelete?: any;
   handleOnChange: (
+    index: number,
+    variantName: string,
     data: VariantParams,
     price: number,
     property: string
   ) => void;
 }
 
-const VariantItem = ({ data, handleDelete, handleOnChange }: IVariantItem) => {
+const VariantItem = ({
+  index,
+  variantName,
+  data,
+  handleDelete,
+  handleOnChange,
+}: IVariantItem) => {
   const valueRef = useRef<any>(0);
   const valueRefProperty = useRef<any>('');
 
   return (
     <Grid container sx={{ marginTop: '5px' }} spacing={1}>
       <Grid item xs={12} md={6}>
-        <TextField
-          label={'Property'}
-          inputRef={valueRefProperty}
-          defaultValue={data.property}
-          onChange={(e) =>
-            handleOnChange(
-              data,
-              valueRef.current.value,
-              valueRefProperty.current.value
-            )
-          }
-          fullWidth
-          size='small'
-        />
+        <>
+          <TextField
+            label={'Property'}
+            inputRef={valueRefProperty}
+            defaultValue={data.property}
+            onChange={e =>
+              handleOnChange(
+                index,
+                variantName,
+                data,
+                valueRef.current.value,
+                valueRefProperty.current.value
+              )
+            }
+            fullWidth
+            size='small'
+          />
+        </>
       </Grid>
       <Grid item xs={12} md={4.5}>
         <TextField
           label={'Price'}
           inputRef={valueRef}
           defaultValue={data.addPrice}
-          onChange={(e) =>
+          onChange={e =>
             handleOnChange(
+              index,
+              variantName,
               data,
               valueRef.current.value,
               valueRefProperty.current.value
