@@ -64,9 +64,12 @@ interface IUpdateProduct {
   categoryList: CategoryParams[];
 }
 
+let countVariant = 0;
+let otherVariantId = 0;
+
 const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const DATA_DETAIL = data ? data : '';
-  console.log('DATA_DETAIL: ', DATA_DETAIL);
+  // console.log('DATA_DETAIL: ', DATA_DETAIL);
   // all Variants
   const [variants, setVariants] = useState<VariantParams[]>([]);
 
@@ -94,13 +97,13 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
+          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray((colorArray) => [...colorArray, variants[i]]);
+            setColorArray(colorArray => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            OtherVariants.map((item) => {
+            OtherVariants.map(item => {
               if (item.name === variants[i].name) {
                 item.data.push(variants[i]);
                 isPush = true;
@@ -108,6 +111,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
             });
             if (!isPush) {
               const newData: IItemVariant = {
+                id: OtherVariants.length,
                 name: variants[i].name,
                 data: [variants[i]],
               };
@@ -120,36 +124,37 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     setVariantsList(OtherVariants);
   }, [variants]);
 
-  const [countVariant, setCountVariant] = useState(0);
+  // const [countVariant, setCountVariant] = useState(0);
 
   const handleDeleteVariant = (i: string) => {
-    setVariantsList(variantsList.filter((item) => item.name !== i));
+    setVariantsList(variantsList.filter(item => item.name !== i));
   };
 
   const handleAddOtherVariant = () => {
-    setCountVariant(countVariant + 1);
+    // setCountVariant(countVariant + 1);
     let data = {
-      id: countVariant,
+      id: countVariant--,
       name: '',
       property: '',
       addPrice: 0,
     };
     let newVariant = {
+      id: otherVariantId--,
       name: '',
       data: [data],
     };
-    setVariantsList((variantsList) => [...variantsList, newVariant]);
+    setVariantsList(variantsList => [...variantsList, newVariant]);
   };
 
   const handleAddOtherVariantItem = (name: string) => {
     let data = {
-      id: 0,
+      id: otherVariantId--,
       name: '',
       property: '',
       addPrice: 0,
     };
     setVariantsList(
-      variantsList.map((iterator) => {
+      variantsList.map(iterator => {
         if (iterator.name === name) {
           iterator.data.push(data);
           return iterator;
@@ -174,7 +179,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       addPrice: price,
     };
     setVariantsList(
-      variantsList.map((iterator) => {
+      variantsList.map(iterator => {
         if (iterator.name === variantName) {
           iterator.data = iterator.data.map((it, indexIt) =>
             indexIt === index ? newData : it
@@ -188,8 +193,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   };
 
   const handleOnChangeVariantName = (index: number, name: string) => {
-    console.log('index', index);
-    console.log('name', name);
     setVariantsList(
       variantsList.map((item, i) => {
         if (i === index) {
@@ -198,6 +201,15 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
         } else {
           return item;
         }
+      })
+    );
+  };
+
+  const handleDeleteVariantItem = (property: string) => {
+    setVariantsList(
+      variantsList.map(v => {
+        v.data = v.data.filter(_v => _v.property !== property);
+        return v;
       })
     );
   };
@@ -216,13 +228,13 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       assets: DATA_DETAIL.assets,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       const token = await getCookie('token');
       let finalArray: VariantParams[] = [];
       finalArray = sizeArray;
       finalArray = finalArray.concat(colorArray);
-      variantsList.forEach((value) => {
-        value.data.forEach((_value) => finalArray.push(_value));
+      variantsList.forEach(value => {
+        value.data.forEach(_value => finalArray.push(_value));
       });
 
       formik.values.mainImg = mainImage;
@@ -400,7 +412,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               <Grid item xs={12} md={6}>
                 {variantsList.map((data, index) => (
                   <Variant
-                    key={data.name}
+                    key={data.id}
                     index={index}
                     variantName={data.name}
                     variantItems={data.data}
@@ -408,6 +420,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                     handleOnChangeVariantName={handleOnChangeVariantName}
                     handleAddOtherVariantItem={handleAddOtherVariantItem}
                     handleChangeOtherVariantItem={handleChangeOtherVariantItem}
+                    handleDeleteVariantItem={handleDeleteVariantItem}
                   />
                 ))}
                 <Button
@@ -425,7 +438,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={(stringifiedHtmlValue) => {
+                  onEditorChange={stringifiedHtmlValue => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{
