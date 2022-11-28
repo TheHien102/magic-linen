@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import React, { useEffect } from 'react';
 import { AccountApi } from '../../../services/api/account';
 import { getCookie } from '../../../services/cookies';
@@ -27,47 +27,50 @@ import Avatar from '@mui/material/Avatar';
 import NestedList from '../../../components/Admin/Dashboard/NestedList';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
 
-interface IDashboard {}
+interface IDashboard {
+  role: any;
+}
 
-const Dashboard = (props: { data: any }) => {
-  const PERMISSION = props.data.group.permissions;
+const Dashboard = (props: any) => {
+  // const PERMISSION = props.data.group.permissions;
+  console.log('role', props);
   const [roles, setRoles] = useState({});
 
-  console.log('PERMISSION: ', PERMISSION);
+  // console.log('PERMISSION: ', PERMISSION);
 
-  const checkPermission = () => {
-    // let ROLE_CREATE_GROUP = false;
-    // let ROLE_VIEW_GROUP = false;
-    // let ROLE_UPDATE_GROUP = false;
-    // let ROLE_CREATE_PERMISSION = false;
-    let rolesTemp: any = {};
-    for (let i = 0; i < PERMISSION.length; i++) {
-      console.log('object');
-      rolesTemp[PERMISSION[i].name] = true;
-      // rolesTemp({ ...roles, [PERMISSION[i].name]: true });
-      // if (PERMISSION[i].name === 'Create Group') {
-      //   // ROLE_CREATE_GROUP = true;
-      //   ArrayRoles.push('create');
-      // }
-      // if (PERMISSION[i].name === 'View Group') {
-      //   // ROLE_VIEW_GROUP = true;
-      //   ArrayRoles.push('view');
-      // }
-      // if (PERMISSION[i].name === 'Update Group') {
-      //   // ROLE_UPDATE_GROUP = true;
-      //   ArrayRoles.push('update');
-      // }
-      // if (PERMISSION[i].name === 'Create permission') {
-      //   // ROLE_CREATE_PERMISSION = true;
-      //   ArrayRoles.push('create-permission');
-      // }
-    }
-    // console.log('role dashboard: ', ArrayRoles);
-    setRoles(rolesTemp);
-  };
+  // const checkPermission = () => {
+  //   // let ROLE_CREATE_GROUP = false;
+  //   // let ROLE_VIEW_GROUP = false;
+  //   // let ROLE_UPDATE_GROUP = false;
+  //   // let ROLE_CREATE_PERMISSION = false;
+  //   let rolesTemp: any = {};
+  //   for (let i = 0; i < PERMISSION.length; i++) {
+  //     console.log('object');
+  //     rolesTemp[PERMISSION[i].name] = true;
+  //     // rolesTemp({ ...roles, [PERMISSION[i].name]: true });
+  //     // if (PERMISSION[i].name === 'Create Group') {
+  //     //   // ROLE_CREATE_GROUP = true;
+  //     //   ArrayRoles.push('create');
+  //     // }
+  //     // if (PERMISSION[i].name === 'View Group') {
+  //     //   // ROLE_VIEW_GROUP = true;
+  //     //   ArrayRoles.push('view');
+  //     // }
+  //     // if (PERMISSION[i].name === 'Update Group') {
+  //     //   // ROLE_UPDATE_GROUP = true;
+  //     //   ArrayRoles.push('update');
+  //     // }
+  //     // if (PERMISSION[i].name === 'Create permission') {
+  //     //   // ROLE_CREATE_PERMISSION = true;
+  //     //   ArrayRoles.push('create-permission');
+  //     // }
+  //   }
+  //   // console.log('role dashboard: ', ArrayRoles);
+  //   setRoles(rolesTemp);
+  // };
 
   useEffect(() => {
-    checkPermission();
+    // checkPermission();
   }, []);
 
   return (
@@ -86,13 +89,37 @@ const Dashboard = (props: { data: any }) => {
   );
 };
 
-Dashboard.getInitialProps = async () => {
-  // Fetch data from external API
-  const token = getCookie('token');
-  const res = await AccountApi.roleAdmin(token as string | undefined);
-  console.log('res: ', res);
-  // Pass data to the page via props
-  return { ...res };
-};
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   const token = await getCookie('token', ctx);
+//   const res = await AccountApi.roleAdmin(token as string | undefined);
+//   // Pass data to the page via props
+//   return { ...res };
+// };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const token = await getCookie('token', ctx);
+
+  if (token) {
+    try {
+      const [role] = await Promise.all([AccountApi.roleAdmin(token)]);
+      return {
+        props: {
+          ...role,
+        },
+      };
+    } catch (e) {}
+
+    return {
+      props: {},
+    };
+  } else {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
+}
 
 export default Dashboard;

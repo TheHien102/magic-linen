@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as S from './Login.styled';
-import { TextField, Button } from '@mui/material';
+import { TextField } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { useRouter } from 'next/router';
 import { AccountApi } from '../../../services/api/account';
 import { getCookie, setCookie } from '../../../services/cookies';
 import { GetServerSidePropsContext } from 'next';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import Alert from '@mui/material/Alert';
 
 const validationSchema = yup.object({
   username: yup.string().required('User name is required'),
@@ -15,6 +17,8 @@ const validationSchema = yup.object({
 
 const Login = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -23,15 +27,22 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setLoading(true);
+      setError(false);
       try {
         const result = await AccountApi.loginAdmin(values);
         if (result.data && result.data.token) {
           setCookie('token', result.data.token);
-          console.log('data login: ', result.data);
+          setLoading(false);
           router.push('/admin/dashboard');
+        } else {
+          setError(true);
+          setLoading(false);
         }
       } catch (error) {
-        console.log(error);
+        setError(true);
+        setLoading(false);
+        console.log('error: ', error);
       }
     },
   });
@@ -65,9 +76,12 @@ const Login = () => {
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
             />
-            <Button variant='contained' type='submit'>
+            <LoadingButton loading={loading} variant='contained' type='submit'>
               Login
-            </Button>
+            </LoadingButton>
+            {error && (
+              <Alert severity='error'>Wrong Password or Username</Alert>
+            )}
           </S.Wrap>
         </S.Flex>
       </form>

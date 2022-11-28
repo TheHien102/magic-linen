@@ -39,6 +39,7 @@ import ModalVariant from '../../../components/Admin/Products/ModalVariant/ModalV
 import Variant from '../../../components/Admin/Products/Variant/Variant';
 import Size from '../../../components/Admin/Products/Size/Size';
 import Color from '../../../components/Admin/Products/Color/Color';
+import UpdateProduct from '../../../components/Admin/Products/UpdateProduct/UpdateProduct';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -63,87 +64,6 @@ const validationSchema = yup.object({
 });
 
 export default function AddProduct({ categoryList }: any) {
-  console.log('props: ', categoryList);
-  const router = useRouter();
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      mainImg: '',
-      discount: '',
-      description: '',
-      price: '',
-      productCategoryID: 0,
-      variants: [] as any,
-      assets: [] as any,
-    },
-    validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      //   router.push('/dashboard');
-      const token = getCookie('token');
-
-      console.log(' values: ', values);
-
-      try {
-        const res = await ProductApi.addProduct(token as string, values);
-        console.log('success: ', res);
-        if (res) {
-          router.push('/admin/product');
-        }
-      } catch (error) {
-        console.log('error: ', error);
-      }
-    },
-  });
-  const [age, setAge] = useState(0);
-
-  const handleChangeType = (e: {
-    target: { value: SetStateAction<number> };
-  }) => {
-    // let typeValue = event.target.value;
-    setAge(e.target.value);
-    let id = Number(e.target.value);
-    formik.values.productCategoryID = id;
-  };
-
-  //Show Image
-  const [arrayImage, setArrayImage] = useState([]);
-  const [mainImage, setMainImage] = useState(formik.values.mainImg);
-  const editorRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (mainImage.length != 0) {
-      fetch(mainImage[mainImage.length - 1])
-        .then((res) => res.blob())
-        .then((blob) => {
-          const file = new File([blob], 'dot.png', blob);
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onloadend = () => {
-            formik.values.mainImg = reader.result as any;
-          };
-        });
-    }
-
-    if (arrayImage.length != 0) {
-      fetch(arrayImage[arrayImage.length - 1])
-        .then((res) => res.blob())
-        .then((blob) => {
-          const file = new File([blob], 'dot.png', blob);
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onloadend = () => {
-            let data = {
-              type: 'image',
-              data: reader.result,
-            };
-            formik.values.assets.push(data);
-          };
-        });
-    }
-
-    console.log('variants: ', formik.values.variants);
-  }, [mainImage, arrayImage]);
-
   return (
     <div>
       <Head>
@@ -152,7 +72,7 @@ export default function AddProduct({ categoryList }: any) {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
-        <Grid>
+        {/* <Grid>
           <Paper elevation={10}>
             <form onSubmit={formik.handleSubmit}>
               <Grid
@@ -404,7 +324,8 @@ export default function AddProduct({ categoryList }: any) {
               )}
             </form>
           </Paper>
-        </Grid>
+        </Grid> */}
+        <UpdateProduct data={undefined} categoryList={categoryList} />
       </Layout>
     </div>
   );

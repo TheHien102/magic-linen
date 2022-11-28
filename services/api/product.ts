@@ -14,6 +14,17 @@ export const ProductApi = {
       },
     });
   },
+  updateProduct: async function (
+    token: string | undefined,
+    data: AddProductPrams
+  ) {
+    return await http.post(API_URL.updateProduct, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+  },
   categoryList: async function (token: string | undefined) {
     return await http.get(API_URL.categoryList, {
       headers: {

@@ -28,6 +28,7 @@ import { ProductApi } from '../../../services/api/product';
 import { useEffect, useState } from 'react';
 import { getCookie } from '../../../services/cookies';
 import { useRouter } from 'next/router';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface Data {
   name: string;
@@ -109,18 +110,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding='checkbox'>
-          <Checkbox
-            color='primary'
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
-        {/* {headCells.map((headCell) => ( */}
         <TableCell>Main Image</TableCell>
         <TableCell sortDirection={orderBy === 'name' ? order : false}>
           <TableSortLabel
@@ -234,44 +223,16 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         }),
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color='inherit'
-          variant='subtitle1'
-          component='div'
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant='h6'
-          id='tableTitle'
-          component='div'
-        >
-          List Product
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title='Delete'>
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title='Filter list'>
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      <Typography
+        sx={{ flex: '1 1 100%' }}
+        variant='h6'
+        id='tableTitle'
+        component='div'
+      >
+        List Product
+      </Typography>
     </Toolbar>
   );
-}
-
-interface IListDetailProduct {
-  rows: any;
 }
 
 export default function ListDetailProduct() {
@@ -283,14 +244,18 @@ export default function ListDetailProduct() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState<any>([]);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   //Calling API product
   const ListProduct = async () => {
+    setLoading(true);
     const token = await getCookie('token');
 
     const listProduct = await ProductApi.listProductPerPage(token as string);
-    console.log('listProduct: ', listProduct);
-    setRows(listProduct.data.data);
+    if (listProduct) {
+      setLoading(false);
+      setRows(listProduct.data.data);
+    }
   };
 
   useEffect(() => {
@@ -352,10 +317,6 @@ export default function ListDetailProduct() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -366,100 +327,102 @@ export default function ListDetailProduct() {
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby='tableTitle'
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.sort(getComparator(order, orderBy)).slice() */}
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: any, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+        <>
+          {rows.length > 0 ? (
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby='tableTitle'
+                size={dense ? 'small' : 'medium'}
+              >
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows.length}
+                />
+                <TableBody>
+                  {stableSort(rows, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row: any, index) => {
+                      const isItemSelected = isSelected(row.name);
+                      const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      // onClick={(event) => handleClick(event, row.name)}
-                      role='checkbox'
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={index}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding='checkbox'>
-                        <Checkbox
-                          color='primary'
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        id={labelId}
-                        scope='row'
-                        padding='none'
-                      >
-                        <img
-                          src={row.mainImg.toString()}
-                          style={{
-                            width: '80px',
-                            height: '80px',
-                            objectFit: 'cover',
-                            marginTop: '5px',
-                          }}
-                          // width={80}
-                          // height={80}
-                          alt='aa'
-                        />
-                      </TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.price}</TableCell>
-                      <TableCell>{row.categoryName}</TableCell>
-                      <TableCell>{row.discount}</TableCell>
-                      <TableCell>{row.status}</TableCell>
-                      <TableCell>{toUTCTime(row.createdDate)}</TableCell>
-                      <TableCell align={'right'}>
-                        <Button variant='contained'>
-                          <EditIcon onClick={() => handleEdit(row.id)} />
-                        </Button>
-                        <Button
-                          variant='contained'
-                          color={'error'}
-                          sx={{ ml: 1 }}
+                      return (
+                        <TableRow
+                          hover
+                          // onClick={(event) => handleClick(event, row.name)}
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={index}
+                          selected={isItemSelected}
                         >
-                          <DeleteIcon />
-                        </Button>
-                      </TableCell>
+                          <TableCell
+                            component='th'
+                            id={labelId}
+                            scope='row'
+                            padding='none'
+                          >
+                            <Box
+                              sx={{
+                                position: 'relative',
+                                width: 70,
+                                height: 85,
+                                ml: 2,
+                                my: 1,
+                              }}
+                            >
+                              <Image
+                                src={row.mainImg.toString()}
+                                width={70}
+                                height={85}
+                                layout='responsive'
+                                alt=''
+                              />
+                            </Box>
+                          </TableCell>
+                          <TableCell>{row.name}</TableCell>
+                          <TableCell>{row.price}</TableCell>
+                          <TableCell>{row.categoryName}</TableCell>
+                          <TableCell>{row.discount}</TableCell>
+                          <TableCell>{row.status}</TableCell>
+                          <TableCell>{toUTCTime(row.createdDate)}</TableCell>
+                          <TableCell align={'right'}>
+                            <Button variant='contained'>
+                              <EditIcon onClick={() => handleEdit(row.id)} />
+                            </Button>
+                            <Button
+                              variant='contained'
+                              color={'error'}
+                              sx={{ ml: 1 }}
+                            >
+                              <DeleteIcon />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <CircularProgress />
+            </Box>
+          )}
+        </>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component='div'

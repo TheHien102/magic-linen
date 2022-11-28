@@ -220,6 +220,7 @@ export default function CreateAdmin() {
                 <Grid item xs={12} md={6}>
                   <Typography sx={{ fontWeight: 'bold' }}>Avatar</Typography>
                   <UploadImage
+                    title='Add avatar'
                     setImagePath={setImagePath}
                     onFileChange={(file) => {
                       setFileImage(file);
