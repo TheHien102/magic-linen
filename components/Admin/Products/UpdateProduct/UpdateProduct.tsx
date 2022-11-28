@@ -33,15 +33,15 @@ import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import ItemCategory from './MapListCategory';
 import MapListCategory from './MapListCategory';
-import { it } from 'node:test';
 
 const validationSchema = yup.object({
+  id: yup.number(),
   name: yup.string().required('Name is required'),
   mainImg: yup.string().required('Main image is required'),
   discount: yup.string(),
   description: yup.string().required('Description is required'),
   price: yup.string().required('Price is required'),
-  categoryDescription: yup.string(),
+  productCategoryId: yup.number(),
   variants: yup.array<VariantParams>(
     yup.object({
       id: yup.number(),
@@ -66,6 +66,7 @@ interface IUpdateProduct {
 
 const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const DATA_DETAIL = data ? data : '';
+  console.log('DATA_DETAIL: ', DATA_DETAIL);
   // all Variants
   const [variants, setVariants] = useState<VariantParams[]>([]);
 
@@ -84,8 +85,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const editorRef = useRef<any>(null);
   const categoryRef = useRef<any>(null);
 
-  let initCategory = DATA_DETAIL.categoryDescription.split(',').pop();
-
   useEffect(() => {
     setVariants(data.variants);
     setArrayImage(DATA_DETAIL.assets);
@@ -95,13 +94,13 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     if (variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
-          setSizeArray(sizeArray => [...sizeArray, variants[i]]);
+          setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
         } else {
           if (variants[i].name === 'color') {
-            setColorArray(colorArray => [...colorArray, variants[i]]);
+            setColorArray((colorArray) => [...colorArray, variants[i]]);
           } else {
             let isPush = false;
-            OtherVariants.map(item => {
+            OtherVariants.map((item) => {
               if (item.name === variants[i].name) {
                 item.data.push(variants[i]);
                 isPush = true;
@@ -124,7 +123,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const [countVariant, setCountVariant] = useState(0);
 
   const handleDeleteVariant = (i: string) => {
-    setVariantsList(variantsList.filter(item => item.name !== i));
+    setVariantsList(variantsList.filter((item) => item.name !== i));
   };
 
   const handleAddOtherVariant = () => {
@@ -139,7 +138,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       name: '',
       data: [data],
     };
-    setVariantsList(variantsList => [...variantsList, newVariant]);
+    setVariantsList((variantsList) => [...variantsList, newVariant]);
   };
 
   const handleAddOtherVariantItem = (name: string) => {
@@ -150,7 +149,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       addPrice: 0,
     };
     setVariantsList(
-      variantsList.map(iterator => {
+      variantsList.map((iterator) => {
         if (iterator.name === name) {
           iterator.data.push(data);
           return iterator;
@@ -175,7 +174,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       addPrice: price,
     };
     setVariantsList(
-      variantsList.map(iterator => {
+      variantsList.map((iterator) => {
         if (iterator.name === variantName) {
           iterator.data = iterator.data.map((it, indexIt) =>
             indexIt === index ? newData : it
@@ -204,33 +203,38 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   };
 
   const router = useRouter();
-
   const formik = useFormik({
     initialValues: {
+      id: DATA_DETAIL.id,
       name: DATA_DETAIL.name,
       mainImg: DATA_DETAIL.mainImg,
       discount: DATA_DETAIL.discount,
       description: DATA_DETAIL.description,
       price: DATA_DETAIL.price,
-      categoryDescription: initCategory,
+      productCategoryId: DATA_DETAIL.productCategoryId,
       variants: DATA_DETAIL.variants,
       assets: DATA_DETAIL.assets,
     },
     validationSchema: validationSchema,
-    onSubmit: async values => {
-      const token = getCookie('token');
+    onSubmit: async (values) => {
+      const token = await getCookie('token');
+      let finalArray: VariantParams[] = [];
+      finalArray = sizeArray;
+      finalArray = finalArray.concat(colorArray);
+      variantsList.forEach((value) => {
+        value.data.forEach((_value) => finalArray.push(_value));
+      });
+
       formik.values.mainImg = mainImage;
       formik.values.assets = arrayImage;
-      formik.values.categoryDescription = categoryRef.current.value;
-      console.log('other variants list: ', variantsList);
-      // console.log(' values: ', values);
+      formik.values.productCategoryId = categoryRef.current.value;
+      formik.values.variants = finalArray;
 
       try {
-        // const res = await ProductApi.addProduct(token as string, values);
-        // console.log('success: ', res);
-        // if (res) {
-        // router.push('/admin/product');
-        // }
+        const res = await ProductApi.updateProduct(token as string, values);
+        if (res) {
+          router.push('/admin/product');
+        }
       } catch (error) {
         console.log('error: ', error);
       }
@@ -360,7 +364,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   <InputLabel htmlFor='categoryDescription'>Type</InputLabel>
                   <Select
                     native
-                    defaultValue={initCategory}
+                    defaultValue={DATA_DETAIL.productCategoryId}
                     label='Type'
                     name='categoryDescription'
                     id='categoryDescription'
@@ -421,7 +425,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   apiKey='tod4u05uf72as4w1rg42bpbdrryz3ds79mhj4y9ozgh75hxf'
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={DATA_DETAIL.description}
-                  onEditorChange={stringifiedHtmlValue => {
+                  onEditorChange={(stringifiedHtmlValue) => {
                     formik.setFieldValue('description', stringifiedHtmlValue);
                   }}
                   init={{

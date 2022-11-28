@@ -4,13 +4,14 @@ export type LoginAdminPrams = {
 };
 
 export type AddProductPrams = {
+  id: number;
   name: string;
   discount: string;
   description: string;
-  price: string;
-  productCategoryID: number;
-  variants: { name: string; property: string; addPrice: number }[];
-  assets: { type: string; data: string; isMain: number }[];
+  price: number;
+  productCategoryId: number;
+  variants: VariantParams[];
+  assets: AssetsParams[];
 };
 
 export type TokenResponse = {

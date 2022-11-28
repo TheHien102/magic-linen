@@ -61,7 +61,7 @@ const Variant = ({
         label={'New variant'}
         inputRef={valueNameRef}
         defaultValue={variantName}
-        onChange={e => handleOnChangeVariantName(index, e.target.value)}
+        onChange={(e) => handleOnChangeVariantName(index, e.target.value)}
         fullWidth
         size='small'
       />

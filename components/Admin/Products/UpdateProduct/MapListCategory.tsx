@@ -19,7 +19,7 @@ const MapListCategory = ({ data, fontsize, left, weight }: IMap) => {
               fontWeight: weight,
               left: left + 'px',
             }}
-            value={item.name}
+            value={item.id}
           >
             &nbsp; {item.name}
           </option>

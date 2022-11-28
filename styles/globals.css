@@ -22,9 +22,23 @@
     box-sizing: border-box;
   }
 
+  .inputShop {
+    text-align: center;
+
+  }
+
+  .inputShop:focus {
+    outline: none;
+  }
+  input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+}
+
   .css-1elwnq4-MuiPaper-root-MuiAccordion-root.Mui-expanded {
     margin:  0;
 }
+
 
 .css-1elwnq4-MuiPaper-root-MuiAccordion-root {
   box-shadow: none;
