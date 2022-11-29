@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Grid,
@@ -33,14 +34,16 @@ import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import ItemCategory from './MapListCategory';
 import MapListCategory from './MapListCategory';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const validationSchema = yup.object({
   id: yup.number(),
-  name: yup.string().required('Name is required'),
-  mainImg: yup.string().required('Main image is required'),
+  name: yup.string(),
+  mainImg: yup.string(),
   discount: yup.string(),
-  description: yup.string().required('Description is required'),
-  price: yup.string().required('Price is required'),
+  description: yup.string(),
+  price: yup.string(),
   productCategoryId: yup.number(),
   variants: yup.array<VariantParams>(
     yup.object({
@@ -60,16 +63,27 @@ const validationSchema = yup.object({
 });
 
 interface IUpdateProduct {
-  data: any;
+  data?: any;
   categoryList: CategoryParams[];
 }
 
 let countVariant = 0;
 let otherVariantId = 0;
 
+const fakeData = {
+  id: -1,
+  name: '',
+  discount: '',
+  description: '',
+  price: '',
+  productCategoryId: -1,
+  variants: [],
+  assets: [],
+};
+
 const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
-  const DATA_DETAIL = data ? data : '';
-  // console.log('DATA_DETAIL: ', DATA_DETAIL);
+  const DATA_DETAIL = data ? data : fakeData;
+  console.log('DATA_DETAIL: ', DATA_DETAIL);
   // all Variants
   const [variants, setVariants] = useState<VariantParams[]>([]);
 
@@ -84,17 +98,18 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const [variantsList, setVariantsList] = useState<IItemVariant[]>([]);
 
   const [arrayImage, setArrayImage] = useState<AssetsParams[]>([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const editorRef = useRef<any>(null);
   const categoryRef = useRef<any>(null);
 
   useEffect(() => {
-    setVariants(data.variants);
+    setVariants(DATA_DETAIL.variants);
     setArrayImage(DATA_DETAIL.assets);
   }, []);
 
   useEffect(() => {
-    if (variants.length > 0) {
+    if (variants && variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
           setSizeArray((sizeArray) => [...sizeArray, variants[i]]);
@@ -205,10 +220,25 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     );
   };
 
+  const onClickBtn = () => {
+    let finalArray: VariantParams[] = [];
+    finalArray = sizeArray;
+    finalArray = finalArray.concat(colorArray);
+    variantsList.forEach((value) => {
+      value.data.forEach((_value) => finalArray.push(_value));
+    });
+
+    formik.values.mainImg = mainImage;
+    formik.values.assets = arrayImage;
+    formik.values.productCategoryId = categoryRef.current.value;
+    formik.values.variants = finalArray;
+    console.log('formik values: ', formik.values);
+  };
+
   const handleDeleteVariantItem = (property: string) => {
     setVariantsList(
-      variantsList.map(v => {
-        v.data = v.data.filter(_v => _v.property !== property);
+      variantsList.map((v) => {
+        v.data = v.data.filter((_v) => _v.property !== property);
         return v;
       })
     );
@@ -228,24 +258,43 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       assets: DATA_DETAIL.assets,
     },
     validationSchema: validationSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
+      validationSchema.validate(values);
       const token = await getCookie('token');
       let finalArray: VariantParams[] = [];
       finalArray = sizeArray;
       finalArray = finalArray.concat(colorArray);
-      variantsList.forEach(value => {
-        value.data.forEach(_value => finalArray.push(_value));
+      variantsList.forEach((value) => {
+        value.data.forEach((_value) => finalArray.push(_value));
       });
 
       formik.values.mainImg = mainImage;
       formik.values.assets = arrayImage;
       formik.values.productCategoryId = categoryRef.current.value;
       formik.values.variants = finalArray;
+      // const res = await ProductApi.addProduct(token as string, values);
+      console.log('add pro not in if');
 
       try {
-        const res = await ProductApi.updateProduct(token as string, values);
-        if (res) {
-          router.push('/admin/product');
+        if (DATA_DETAIL.id === -1) {
+          const res = await ProductApi.addProduct(token as string, values);
+          setOpenSnackbar(true);
+          // console.log('add pro');
+          if (res) {
+            setTimeout(() => {
+              router.push('/admin/product');
+            }, 2000);
+          }
+        } else {
+          const res = await ProductApi.updateProduct(token as string, values);
+          setOpenSnackbar(true);
+
+          if (res) {
+            setTimeout(() => {
+              router.push('/admin/product');
+            }, 2000);
+          }
+          console.log('update pro');
         }
       } catch (error) {
         console.log('error: ', error);
@@ -257,6 +306,17 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   return (
     <Grid>
       <Paper elevation={10} sx={{ pb: '50px' }}>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={openSnackbar}
+          autoHideDuration={3000}
+        >
+          <Alert severity='success' sx={{ width: '100%' }}>
+            {DATA_DETAIL.id === -1
+              ? 'Create Product Success !'
+              : 'Update Product Success !'}
+          </Alert>
+        </Snackbar>
         <form onSubmit={formik.handleSubmit}>
           <Grid
             display={'flex'}
@@ -265,7 +325,9 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
             alignItems={'center'}
             sx={{ position: 'relative' }}
           >
-            <h2>Update product</h2>
+            <h2>
+              {DATA_DETAIL.id === -1 ? 'Create Product' : 'Update Product'}
+            </h2>
             <Button
               type='submit'
               color='primary'
@@ -276,8 +338,9 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                 top: '20px',
                 fontWeight: 'bold',
               }}
+              // onClick={() => onClickBtn()}
             >
-              Update Product
+              {DATA_DETAIL.id === -1 ? 'Create Product' : 'Update Product'}
             </Button>
           </Grid>
 
@@ -392,15 +455,13 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>
-                <>
-                  {sizeArray.length > 0 && (
-                    <Size
-                      sizeArray={sizeArray}
-                      setSizeArray={setSizeArray}
-                      formikData={formik.values.variants}
-                    />
-                  )}
-                </>
+                {sizeArray && (
+                  <Size
+                    sizeArray={sizeArray}
+                    setSizeArray={setSizeArray}
+                    formikData={formik.values.variants}
+                  />
+                )}
               </Grid>
               <Grid item xs={12} md={6}>
                 <Color
@@ -483,7 +544,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               </Grid>
             </Grid>
           </Box>
-          {arrayImage.length > 0 && (
+          {arrayImage && arrayImage.length > 0 && (
             <Box
               sx={{
                 border: '2px solid gray',
@@ -503,7 +564,8 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   p: 3,
                 }}
               >
-                {arrayImage.length > 0 &&
+                {arrayImage &&
+                  arrayImage.length > 0 &&
                   arrayImage.map((data, index) => (
                     <figure
                       key={index}

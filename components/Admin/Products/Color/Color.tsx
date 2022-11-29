@@ -22,7 +22,7 @@ const Color = ({ formikData, colorArray, setColorArray }: IColor) => {
   const handleOnChange = (data: VariantParams, price: number) => {
     let newColor = {
       id: data.id,
-      name: 'size',
+      name: 'color',
       property: data.property,
       addPrice: price,
     };

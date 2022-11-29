@@ -50,7 +50,7 @@ const Variant = ({
       sx={[
         {
           border: '2px solid hsla(48,8%,88%,.6)',
-          '&:first-child': { mt: 0 },
+          '&:first-of-type': { mt: 0 },
           p: 3,
           mt: 3,
           borderRadius: 2,

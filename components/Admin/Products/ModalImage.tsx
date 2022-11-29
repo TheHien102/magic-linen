@@ -15,7 +15,7 @@ import { AssetsParams } from '../../../services/types';
 interface IModalImage {
   title: string;
   arrayImage?: AssetsParams[];
-  setMainImage?: Dispatch<string>;
+  setMainImage?: Dispatch<SetStateAction<string>>;
   setArrayImage?: Dispatch<SetStateAction<AssetsParams[]>>;
 }
 
@@ -83,6 +83,7 @@ export default function ModalImage({
         // let data = { id: 0, type: 'image', link: croppedImage };
       }
       if (setMainImage) {
+        console.log('run in set main img');
         fetch(croppedImage)
           .then((res) => res.blob())
           .then((blob) => {

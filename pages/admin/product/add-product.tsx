@@ -325,7 +325,7 @@ export default function AddProduct({ categoryList }: any) {
             </form>
           </Paper>
         </Grid> */}
-        <UpdateProduct data={undefined} categoryList={categoryList} />
+        <UpdateProduct categoryList={categoryList} />
       </Layout>
     </div>
   );
