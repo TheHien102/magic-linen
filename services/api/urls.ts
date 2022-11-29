@@ -1,5 +1,5 @@
 const BASEURL =
-  process.env.NEXT_PUBLIC_API_ENDPOINT || 'https://linen-a-be.herokuapp.com/v1';
+  process.env.NEXT_PUBLIC_API_ENDPOINT || 'http://localhost:5000/v1';
 
 export const API_URL = {
   home: BASEURL,

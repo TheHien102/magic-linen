@@ -25,6 +25,7 @@ type IVariant = {
     price: number,
     property: string
   ) => void;
+  handleDeleteVariantItem: (property: string) => void;
 };
 
 const Variant = ({
@@ -35,6 +36,7 @@ const Variant = ({
   handleOnChangeVariantName,
   handleAddOtherVariantItem,
   handleChangeOtherVariantItem,
+  handleDeleteVariantItem,
 }: IVariant) => {
   const [items, setItems] = useState<VariantParams[]>([]);
   const valueNameRef = useRef<any>(null);
@@ -42,8 +44,6 @@ const Variant = ({
   useEffect(() => {
     setItems(variantItems);
   }, [variantItems]);
-
-  const handleDelete = (name: string) => {};
 
   return (
     <Box
@@ -78,12 +78,12 @@ const Variant = ({
       <>
         {items.map((item, index) => (
           <VariantItem
-            key={item.property}
+            key={item.id}
             index={index}
             variantName={variantName}
             data={item}
             handleOnChange={handleChangeOtherVariantItem}
-            handleDelete={handleDelete}
+            handleDelete={handleDeleteVariantItem}
           />
         ))}
       </>

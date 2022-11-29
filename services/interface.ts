@@ -8,6 +8,7 @@ export type IVariantItem = {
 };
 
 export type IItemVariant = {
+  id: number;
   name: string;
   data: VariantParams[];
 };

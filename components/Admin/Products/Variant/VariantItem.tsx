@@ -30,24 +30,22 @@ const VariantItem = ({
   return (
     <Grid container sx={{ marginTop: '5px' }} spacing={1}>
       <Grid item xs={12} md={6}>
-        <>
-          <TextField
-            label={'Property'}
-            inputRef={valueRefProperty}
-            defaultValue={data.property}
-            onChange={(e) =>
-              handleOnChange(
-                index,
-                variantName,
-                data,
-                valueRef.current.value,
-                valueRefProperty.current.value
-              )
-            }
-            fullWidth
-            size='small'
-          />
-        </>
+        <TextField
+          label={'Property'}
+          inputRef={valueRefProperty}
+          defaultValue={data.property}
+          onChange={e =>
+            handleOnChange(
+              index,
+              variantName,
+              data,
+              valueRef.current.value,
+              valueRefProperty.current.value
+            )
+          }
+          fullWidth
+          size='small'
+        />
       </Grid>
       <Grid item xs={12} md={4.5}>
         <TextField
@@ -72,7 +70,7 @@ const VariantItem = ({
           sx={{ mt: 0.3 }}
           variant='outlined'
           color='error'
-          onClick={() => handleDelete(data.id)}
+          onClick={() => handleDelete(data.property)}
         >
           <IndeterminateCheckBoxIcon color='error' />
         </Button>
