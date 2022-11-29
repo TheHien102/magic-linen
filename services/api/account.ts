@@ -1,5 +1,5 @@
 import http from '../http';
-import { LoginAdminPrams, TokenResponse } from '../types';
+import { LoginAdminPrams, RegisterPrams, TokenResponse } from '../types';
 import { API_URL } from './urls';
 
 export const AccountApi = {
@@ -25,5 +25,8 @@ export const AccountApi = {
         Authorization: `Bearer ${token}`,
       },
     });
+  },
+  register: async function (data: RegisterPrams) {
+    return await http.post(API_URL.register, data);
   },
 };
