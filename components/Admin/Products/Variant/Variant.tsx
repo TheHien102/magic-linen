@@ -49,7 +49,8 @@ const Variant = ({
     <Box
       sx={[
         {
-          border: '1px solid gray',
+          border: '2px solid hsla(48,8%,88%,.6)',
+          '&:first-child': { mt: 0 },
           p: 3,
           mt: 3,
           borderRadius: 2,

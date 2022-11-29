@@ -10,17 +10,17 @@ export const Center = styled.div`
 `;
 
 export const WrapImage = styled.figure`
-  ${tw`relative w-[150px]`}
+  ${tw`relative w-[130px] mb-1`}
 `;
 
 export const Navbar = styled.div`
-  ${tw`flex gap-10  justify-center border-0 border-b-[1px] py-2 border-gray mb-3 border-solid`}
+  ${tw`flex gap-10  justify-center border-0 border-b-[1px] pb-2 border-gray mb-3 border-solid`}
 `;
 
 export const Text = styled.a`
-  ${tw`uppercase  font-medium cursor-pointer pb-1 border-0 duration-300`}
+  ${tw`uppercase text-[15px] font-bold cursor-pointer border-0 border-b-[1px]  border-solid border-transparent duration-300`}
 
   &:hover {
-    ${tw`border-b-[1px] border-solid border-black`}
+    ${tw` border-black`}
   }
 `;

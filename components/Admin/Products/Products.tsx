@@ -17,7 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { toUTCTime } from '../../../utils/common';
@@ -390,15 +390,18 @@ export default function ListDetailProduct() {
                           <TableCell>{row.status}</TableCell>
                           <TableCell>{toUTCTime(row.createdDate)}</TableCell>
                           <TableCell align={'right'}>
-                            <Button variant='contained'>
-                              <EditIcon onClick={() => handleEdit(row.id)} />
+                            <Button
+                              variant='contained'
+                              onClick={() => handleEdit(row.id)}
+                            >
+                              <EditIcon />
                             </Button>
                             <Button
                               variant='contained'
                               color={'error'}
                               sx={{ ml: 1 }}
                             >
-                              <DeleteIcon />
+                              <DoDisturbOnIcon />
                             </Button>
                           </TableCell>
                         </TableRow>

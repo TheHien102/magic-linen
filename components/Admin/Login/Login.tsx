@@ -33,8 +33,8 @@ const Login = () => {
         const result = await AccountApi.loginAdmin(values);
         if (result.data && result.data.token) {
           setCookie('token', result.data.token);
-          setLoading(false);
           router.push('/admin/dashboard');
+          setLoading(false);
         } else {
           setError(true);
           setLoading(false);
