@@ -12,4 +12,5 @@ export const API_URL = {
   createAdmin: `${BASEURL}/account/create_admin`,
   listAdmin: `${BASEURL}/account/list`,
   categoryList: `${BASEURL}/category/getSorted`,
+  register: `${BASEURL}/account/register/`,
 };

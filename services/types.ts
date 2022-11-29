@@ -45,5 +45,13 @@ export type CategoryParams = {
   name: string;
   categoryList?: CategoryParams[];
 };
+export type RegisterPrams = {
+  username: string;
+  password: string;
+  fullName: string;
+  phone: string;
+  avatar?: string;
+  email: string;
+};
 
 export type AdminProductParams = {};
