@@ -9,6 +9,8 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';
 import { Box } from '@mui/material';
 import Link from 'next/link';
+import { iconData, urlMenuData } from '../../../utils/dataConfig';
+import FolderIcon from '@mui/icons-material/Folder';
 
 interface IItemList {
   data: any;
@@ -19,18 +21,39 @@ interface IItemList {
 
 interface IButtonMenu {
   icon: any;
-  title: string;
-  items?: any;
+  name: string;
+  list?: any;
   index: number;
   selected?: number;
   paddingLeft?: number;
   handleClick?: () => void;
 }
 
+const getIconByName = (name: string) => {
+  const index = Object.keys(iconData).findIndex((key) =>
+    name.split(' ').shift()?.includes(key)
+  );
+  if (index !== -1) {
+    return Object.values(iconData).at(index);
+  } else {
+    return <FolderIcon color='primary' />;
+  }
+};
+
+const getUrlByName = (name: string) => {
+  console.log('name: ', name);
+  const index = Object.keys(urlMenuData).findIndex((key) => name === key);
+  if (index !== -1) {
+    return Object.values(urlMenuData).at(index) as string;
+  } else {
+    return '404';
+  }
+};
+
 const ButtonMenu = ({
   icon,
-  title,
-  items,
+  name,
+  list,
   index,
   selected,
   handleClick,
@@ -38,12 +61,12 @@ const ButtonMenu = ({
 }: IButtonMenu) => {
   return (
     <ListItemButton onClick={handleClick} sx={{ pl: paddingLeft }}>
-      <ListItemIcon>{icon}</ListItemIcon>
+      <ListItemIcon>{getIconByName(name)}</ListItemIcon>
       <ListItemText
-        primary={title}
+        primary={name}
         primaryTypographyProps={{ fontSize: '14px' }}
       />
-      {items && (index === selected ? <ExpandLess /> : <ExpandMore />)}
+      {list && (index === selected ? <ExpandLess /> : <ExpandMore />)}
     </ListItemButton>
   );
 };
@@ -70,8 +93,8 @@ export default function ItemList({
           <a>
             <ButtonMenu
               icon={data.icon}
-              title={data.title}
-              items={data.items}
+              name={data.name}
+              list={data.list}
               index={indexMenu}
               selected={selectedMenu}
             />
@@ -81,25 +104,25 @@ export default function ItemList({
         <ButtonMenu
           key={indexMenu}
           icon={data.icon}
-          title={data.title}
-          items={data.items}
+          name={data.name}
+          list={data.list}
           index={indexMenu}
           selected={selectedMenu}
           handleClick={() => setSelectedMenu(indexMenu)}
         />
       )}
-      {data.items && (
+      {data.list && (
         <Collapse in={indexMenu === selectedMenu} timeout='auto' unmountOnExit>
           <List component='div' disablePadding>
-            {data.items.map((_data: any, index: number) => (
+            {data.list.map((_data: any, index: number) => (
               <Box key={index}>
-                {_data.url ? (
-                  <Link href={_data.url}>
+                {getUrlByName(_data.name) ? (
+                  <Link href={getUrlByName(_data.name)}>
                     <a>
                       <ButtonMenu
                         icon={_data.icon}
-                        title={_data.title}
-                        items={_data.items}
+                        name={_data.name}
+                        list={_data.list}
                         index={index}
                         selected={selectedIndex}
                         paddingLeft={4}
@@ -110,15 +133,15 @@ export default function ItemList({
                 ) : (
                   <ButtonMenu
                     icon={_data.icon}
-                    title={_data.title}
-                    items={_data.items}
+                    name={_data.name}
+                    list={_data.list}
                     index={index}
                     selected={selectedIndex}
                     paddingLeft={4}
                     handleClick={() => handleClick(index)}
                   />
                 )}
-                {_data.items && (
+                {_data.list && (
                   <Collapse
                     in={index === selectedIndex}
                     timeout='auto'
@@ -126,13 +149,13 @@ export default function ItemList({
                     key={index}
                   >
                     <List component='div' disablePadding>
-                      {_data.items.map((data: any, index: number) => (
+                      {_data.list.map((data: any, index: number) => (
                         <Box key={index}>
                           {data.url ? (
                             <Link href={data.url} key={index}>
                               <ButtonMenu
                                 icon={data.icon}
-                                title={data.title}
+                                name={data.name}
                                 index={index}
                                 paddingLeft={6}
                               />
@@ -141,7 +164,7 @@ export default function ItemList({
                             <ButtonMenu
                               key={index}
                               icon={data.icon}
-                              title={data.title}
+                              name={data.name}
                               index={index}
                               paddingLeft={6}
                             />

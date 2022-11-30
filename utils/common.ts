@@ -4,8 +4,12 @@ export const formatDate = (value: any) => {
   return moment(value).format('MM-DD-YYYY');
 };
 
+export const removeTime = (value: any) => {
+  return value.split(' ')[0];
+};
+
 export const formatDateVN = (value: any) => {
-  return moment(value).format('DD-MM-YYYY');
+  return moment(value).format('dd/MM/yyyy HH:mm:ss');
 };
 
 export const toUTCTime = (time: string | number | Date) => {

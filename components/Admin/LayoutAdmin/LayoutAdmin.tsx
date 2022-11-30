@@ -22,6 +22,8 @@ import Avatar from '@mui/material/Avatar';
 // import avatarLogo from '../../assets/imgs/logo.png';
 import NestedList from '../Dashboard/NestedList';
 import { LinearProgress } from '@mui/material';
+import { AccountApi } from '../../../services/api/account';
+import { useStorageContext } from '../../../contexts/StorageContext';
 // import IconBreadcrumbs from "../Customers/IconBreadcrumbs";
 
 const drawerWidth = 240;
@@ -97,13 +99,11 @@ const Drawer = styled(MuiDrawer, {
 
 interface ILayout {
   children: React.ReactElement;
-  roles?: any;
 }
 
-export default function Layout({ children, roles }: ILayout) {
+export default function Layout({ children }: ILayout) {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  console.log('roles', roles);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -119,6 +119,10 @@ export default function Layout({ children, roles }: ILayout) {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    // const res = await AccountApi.
   };
 
   return (
@@ -222,7 +226,7 @@ export default function Layout({ children, roles }: ILayout) {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <NestedList roles={undefined} />
+          <NestedList />
           <Divider />
         </Drawer>
 

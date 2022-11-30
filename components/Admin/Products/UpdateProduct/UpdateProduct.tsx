@@ -83,7 +83,6 @@ const fakeData = {
 
 const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   const DATA_DETAIL = data ? data : fakeData;
-  console.log('DATA_DETAIL: ', DATA_DETAIL);
   // all Variants
   const [variants, setVariants] = useState<VariantParams[]>([]);
 
@@ -220,21 +219,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     );
   };
 
-  const onClickBtn = () => {
-    let finalArray: VariantParams[] = [];
-    finalArray = sizeArray;
-    finalArray = finalArray.concat(colorArray);
-    variantsList.forEach((value) => {
-      value.data.forEach((_value) => finalArray.push(_value));
-    });
-
-    formik.values.mainImg = mainImage;
-    formik.values.assets = arrayImage;
-    formik.values.productCategoryId = categoryRef.current.value;
-    formik.values.variants = finalArray;
-    console.log('formik values: ', formik.values);
-  };
-
   const handleDeleteVariantItem = (property: string) => {
     setVariantsList(
       variantsList.map((v) => {
@@ -272,14 +256,11 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       formik.values.assets = arrayImage;
       formik.values.productCategoryId = categoryRef.current.value;
       formik.values.variants = finalArray;
-      // const res = await ProductApi.addProduct(token as string, values);
-      console.log('add pro not in if');
 
       try {
         if (DATA_DETAIL.id === -1) {
           const res = await ProductApi.addProduct(token as string, values);
           setOpenSnackbar(true);
-          // console.log('add pro');
           if (res) {
             setTimeout(() => {
               router.push('/admin/product');
@@ -294,7 +275,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               router.push('/admin/product');
             }, 2000);
           }
-          console.log('update pro');
         }
       } catch (error) {
         console.log('error: ', error);
@@ -338,7 +318,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                 top: '20px',
                 fontWeight: 'bold',
               }}
-              // onClick={() => onClickBtn()}
             >
               {DATA_DETAIL.id === -1 ? 'Create Product' : 'Update Product'}
             </Button>

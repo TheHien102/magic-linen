@@ -1,21 +1,6 @@
-import HomeIcon from '@mui/icons-material/Home';
-import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import DescriptionIcon from '@mui/icons-material/Description';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import FlagIcon from '@mui/icons-material/Flag';
-import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import LocalCafeIcon from '@mui/icons-material/LocalCafe';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import { pink } from '@mui/material/colors';
-import PieChartIcon from '@mui/icons-material/PieChart';
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import FolderIcon from '@mui/icons-material/Folder';
-import AppsIcon from '@mui/icons-material/Apps';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import company1 from '../assets/images/company1.jpg';
 import company2 from '../assets/images/company2.jpg';
@@ -24,15 +9,35 @@ import company4 from '../assets/images/company4.jpg';
 import company5 from '../assets/images/company5.jpg';
 import company6 from '../assets/images/company6.jpg';
 import { VariantParams } from '../services/types';
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import PreviewIcon from '@mui/icons-material/Preview';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import UpdateIcon from '@mui/icons-material/Update';
+import HttpsIcon from '@mui/icons-material/Https';
+
+export const iconData = {
+  Folder: <FolderIcon color='primary' />,
+  Permission: <HttpsIcon color='primary' />,
+  Group: <HealthAndSafetyIcon color='primary' />,
+  Create: <AddCircleIcon color='primary' />,
+  View: <PreviewIcon sx={{ color: '#cddc39' }} />,
+  Update: <UpdateIcon color='secondary' />,
+};
+
+export const urlMenuData = {
+  'Create Group': '/admin/create-group',
+  'Create Permission': '/admin/create-permission',
+};
 
 export const menuData = [
   {
-    icon: <HomeIcon />,
+    icon: <DashboardIcon color='primary' />,
     title: 'Dashboard',
     url: '/admin/dashboard',
   },
   {
-    icon: <FolderIcon />,
+    icon: <LocalMallIcon color='primary' />,
     title: 'Product',
     items: [
       {
@@ -48,18 +53,34 @@ export const menuData = [
     ],
   },
   {
-    icon: <AdminPanelSettingsIcon />,
+    icon: <AdminPanelSettingsIcon color='warning' />,
     title: 'Admin',
     items: [
       {
-        icon: <RadioButtonUncheckedIcon />,
+        icon: <AddCircleIcon color='primary' />,
         title: 'Create Admin',
         url: '/admin/list/create-admin',
       },
       {
-        icon: <RadioButtonUncheckedIcon />,
+        icon: <PreviewIcon sx={{ color: '#cddc39' }} />,
         title: 'View Admin',
         url: '/admin/list',
+      },
+    ],
+  },
+  {
+    icon: <HealthAndSafetyIcon sx={{ color: '#cddc39' }} />,
+    title: 'Group',
+    items: [
+      {
+        icon: <AddCircleIcon color='primary' />,
+        title: 'Create Group',
+        url: '/admin/list/create-group',
+      },
+      {
+        icon: <PreviewIcon sx={{ color: '#cddc39' }} />,
+        title: 'View Group',
+        url: '/admin/group',
       },
     ],
   },

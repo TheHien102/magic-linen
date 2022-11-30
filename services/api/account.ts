@@ -12,7 +12,6 @@ export const AccountApi = {
     return await http.get(`${API_URL.roleAdmin}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
       },
     });
   },

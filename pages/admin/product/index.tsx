@@ -22,9 +22,7 @@ const Product = (props: any) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
-        <Box>
-          <ListDetailProduct />
-        </Box>
+        <ListDetailProduct />
       </Layout>
     </>
   );

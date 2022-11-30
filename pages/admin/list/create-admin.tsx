@@ -28,6 +28,9 @@ import { ProductApi } from '../../../services/api/product';
 import { getCookie } from '../../../services/cookies';
 import UploadImage from '../../../components/Global/UploadImage/UploadImage';
 import { AccountApi } from '../../../services/api/account';
+import CloseIcon from '@mui/icons-material/Close';
+import ModalImage from '../../../components/Admin/Products/ModalImage';
+import Image from 'next/image';
 
 const validationSchema = yup.object({
   username: yup.string().required('Username is required'),
@@ -78,6 +81,8 @@ export default function CreateAdmin() {
     formik.values.kind = Number(event.target.value);
   };
 
+  const [mainImage, setMainImage] = useState('');
+
   return (
     <div>
       <Head>
@@ -86,160 +91,205 @@ export default function CreateAdmin() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
-        <Grid>
-          <Paper elevation={10}>
-            <form onSubmit={formik.handleSubmit}>
-              <Grid
-                display={'flex'}
-                flexDirection={'column'}
-                justifyContent={'center'}
-                alignItems={'center'}
-              >
-                <h2>Create Admin</h2>
-              </Grid>
-              <Grid container sx={{ marginTop: '5px' }} spacing={3.5}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    style={{ marginBottom: '20px' }}
-                    label='Username'
-                    fullWidth
-                    size='small'
-                    id='username'
-                    name='username'
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.username && Boolean(formik.errors.username)
-                    }
-                    helperText={
-                      formik.touched.username && formik.errors.username
-                    }
-                    FormHelperTextProps={{
-                      style: { position: 'absolute', bottom: '-25px' },
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '20px',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              border: '2px solid gray',
+              borderRadius: '5px',
+              width: 240,
+              height: 320,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingY: 3,
+              mt: 10,
+            }}
+          >
+            {mainImage ? (
+              <Box sx={{ p: 2.5, position: 'relative' }}>
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setMainImage('')}
+                >
+                  <CloseIcon />
+                </Box>
+                <Image
+                  src={mainImage}
+                  alt={'main image'}
+                  width={320}
+                  height={440}
+                />
+              </Box>
+            ) : (
+              <ModalImage title='Add Avatar' setMainImage={setMainImage} />
+            )}
+          </Box>
+          <Grid>
+            <Box>
+              <form onSubmit={formik.handleSubmit}>
+                <Grid
+                  display={'flex'}
+                  flexDirection={'column'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  sx={{ position: 'relative' }}
+                >
+                  <h2>Create Admin</h2>
+                  <Button
+                    sx={{
+                      position: 'absolute',
+                      right: 0,
+                      top: '20px',
+                      fontWeight: 'bold',
                     }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    style={{ marginBottom: '20px' }}
-                    fullWidth
-                    size='small'
-                    id='email'
-                    name='email'
-                    label='Email'
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    style={{ marginBottom: '20px' }}
-                    label='Password'
-                    fullWidth
-                    type='password'
-                    size='small'
-                    id='password'
-                    name='password'
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.password && Boolean(formik.errors.password)
-                    }
-                    helperText={
-                      formik.touched.password && formik.errors.password
-                    }
-                    FormHelperTextProps={{
-                      style: { position: 'absolute', bottom: '-25px' },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    style={{ marginBottom: '20px' }}
-                    label='Full Name'
-                    fullWidth
-                    size='small'
-                    id='fullName'
-                    name='fullName'
-                    value={formik.values.fullName}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.fullName && Boolean(formik.errors.fullName)
-                    }
-                    helperText={
-                      formik.touched.fullName && formik.errors.fullName
-                    }
-                    FormHelperTextProps={{
-                      style: { position: 'absolute', bottom: '-25px' },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    style={{ marginBottom: '20px' }}
-                    label='Phone'
-                    fullWidth
-                    size='small'
-                    id='phone'
-                    name='phone'
-                    value={formik.values.phone}
-                    onChange={formik.handleChange}
-                    error={formik.touched.phone && Boolean(formik.errors.phone)}
-                    helperText={formik.touched.phone && formik.errors.phone}
-                    FormHelperTextProps={{
-                      style: { position: 'absolute', bottom: '-25px' },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormControl
-                    fullWidth
-                    sx={{ marginBottom: '20px' }}
-                    size='small'
+                    type='submit'
+                    color='primary'
+                    variant='contained'
                   >
-                    <InputLabel id='kind'>Kind</InputLabel>
-                    <Select
-                      labelId='kind'
-                      id='kind'
-                      value={kind}
-                      label='Kind'
-                      placeholder='Kind'
-                      sx={{ color: 'black' }}
-                      onChange={handleChangeKind}
-                      error={formik.touched.kind && Boolean(formik.errors.kind)}
-                    >
-                      <MenuItem value={1}>Admin</MenuItem>
-                      <MenuItem value={2}>Customer</MenuItem>
-                      <MenuItem value={3}>Employee</MenuItem>
-                      <MenuItem value={4}>Collaborator</MenuItem>
-                    </Select>
-                  </FormControl>
+                    Create
+                  </Button>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography sx={{ fontWeight: 'bold' }}>Avatar</Typography>
-                  <UploadImage
-                    title='Add avatar'
-                    setImagePath={setImagePath}
-                    onFileChange={(file) => {
-                      setFileImage(file);
-                    }}
-                  />
+                <Grid
+                  container
+                  sx={{ marginTop: '5px', maxWidth: '800px' }}
+                  spacing={2.5}
+                >
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      label='Username'
+                      fullWidth
+                      size='small'
+                      id='username'
+                      name='username'
+                      value={formik.values.username}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.username &&
+                        Boolean(formik.errors.username)
+                      }
+                      helperText={
+                        formik.touched.username && formik.errors.username
+                      }
+                      FormHelperTextProps={{
+                        style: { position: 'absolute', bottom: '-25px' },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      size='small'
+                      id='email'
+                      name='email'
+                      label='Email'
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.email && Boolean(formik.errors.email)
+                      }
+                      helperText={formik.touched.email && formik.errors.email}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      label='Password'
+                      fullWidth
+                      type='password'
+                      size='small'
+                      id='password'
+                      name='password'
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.password &&
+                        Boolean(formik.errors.password)
+                      }
+                      helperText={
+                        formik.touched.password && formik.errors.password
+                      }
+                      FormHelperTextProps={{
+                        style: { position: 'absolute', bottom: '-25px' },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      label='Full Name'
+                      fullWidth
+                      size='small'
+                      id='fullName'
+                      name='fullName'
+                      value={formik.values.fullName}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.fullName &&
+                        Boolean(formik.errors.fullName)
+                      }
+                      helperText={
+                        formik.touched.fullName && formik.errors.fullName
+                      }
+                      FormHelperTextProps={{
+                        style: { position: 'absolute', bottom: '-25px' },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      label='Phone'
+                      fullWidth
+                      size='small'
+                      id='phone'
+                      name='phone'
+                      value={formik.values.phone}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.phone && Boolean(formik.errors.phone)
+                      }
+                      helperText={formik.touched.phone && formik.errors.phone}
+                      FormHelperTextProps={{
+                        style: { position: 'absolute', bottom: '-25px' },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth size='small'>
+                      <InputLabel id='kind'>Kind</InputLabel>
+                      <Select
+                        labelId='kind'
+                        id='kind'
+                        value={kind}
+                        label='Kind'
+                        placeholder='Kind'
+                        sx={{ color: 'black' }}
+                        onChange={handleChangeKind}
+                        error={
+                          formik.touched.kind && Boolean(formik.errors.kind)
+                        }
+                      >
+                        <MenuItem value={1}>Admin</MenuItem>
+                        <MenuItem value={2}>Customer</MenuItem>
+                        <MenuItem value={3}>Employee</MenuItem>
+                        <MenuItem value={4}>Collaborator</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
                 </Grid>
-              </Grid>
-
-              <Button
-                sx={{ marginTop: '20px' }}
-                type='submit'
-                color='primary'
-                variant='contained'
-              >
-                Create
-              </Button>
-            </form>
-          </Paper>
-        </Grid>
+              </form>
+            </Box>
+          </Grid>
+        </Box>
       </Layout>
     </div>
   );

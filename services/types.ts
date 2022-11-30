@@ -14,6 +14,27 @@ export type AddProductPrams = {
   assets: AssetsParams[];
 };
 
+export type PermissionPrams = {
+  action: string;
+  description: string;
+  id: number;
+  name: string;
+  nameGroup: string;
+  showMenu: boolean;
+  status: number;
+};
+
+export type MenuItemParams = {
+  action: string;
+  nameGroup: string;
+  name: string;
+};
+
+export type MenuParams = {
+  name: string;
+  list: MenuItemParams[];
+};
+
 export type TokenResponse = {
   access: string;
   refresh: string;

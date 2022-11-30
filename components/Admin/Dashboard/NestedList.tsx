@@ -1,23 +1,60 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ItemList from './ItemList';
-import { menuData } from '../../../utils/dataConfig';
-import { useState } from 'react';
+import { iconData, menuData } from '../../../utils/dataConfig';
+import { useEffect, useState } from 'react';
+import { useStorageContext } from '../../../contexts/StorageContext';
+import { MenuParams } from '../../../services/types';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
-interface INestedList {
-  roles: any;
-}
+interface INestedList {}
 
-export default function NestedList({ roles }: INestedList) {
-  const [selectedMenu, setSelectedMenu] = useState(0);
+export default function NestedList({}: INestedList) {
+  const [selectedMenu, setSelectedMenu] = useState(-1);
 
   const handleClickMenu = (index: number) => {
     if (selectedMenu === index) {
-      setSelectedMenu(0);
+      setSelectedMenu(-1);
     } else {
       setSelectedMenu(index);
     }
   };
+
+  const { permissions } = useStorageContext();
+  const [menuList, setMenuList] = useState<MenuParams[]>([]);
+  let menu: MenuParams[] = [];
+
+  if (permissions) {
+    console.log('permissions: ', permissions);
+  }
+
+  useEffect(() => {
+    if (permissions) {
+      for (let i = 0; i < permissions.length; i++) {
+        const index = menu.findIndex(
+          (I) => I.name === permissions[i].nameGroup
+        );
+        if (index !== -1) {
+          menu.map((data) => {
+            if (data.name === permissions[i].nameGroup) {
+              data.list.push(permissions[i]);
+              return data;
+            } else {
+              return data;
+            }
+          });
+        } else {
+          let newMenuParam = {
+            name: permissions[i].nameGroup,
+            list: [permissions[i]],
+          };
+          menu.push(newMenuParam);
+        }
+      }
+      setMenuList(menu);
+      console.log('menu: ', menu);
+    }
+  }, [permissions]);
 
   return (
     <List
@@ -25,7 +62,7 @@ export default function NestedList({ roles }: INestedList) {
       component='nav'
       aria-labelledby='nested-list-subheader'
     >
-      {menuData.map((data, index) => (
+      {menuList.map((data: any, index: number) => (
         <ItemList
           key={index}
           data={data}
@@ -33,6 +70,12 @@ export default function NestedList({ roles }: INestedList) {
           selectedMenu={selectedMenu}
           setSelectedMenu={handleClickMenu}
         />
+        // <p key={index}>
+        //   {data.name}
+        // {Object.values(iconData).at(
+        //   Object.keys(iconData).findIndex((key) => key === data.name)
+        // )}
+        // </p>
       ))}
     </List>
   );

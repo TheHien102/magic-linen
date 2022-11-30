@@ -26,15 +26,17 @@ import Avatar from '@mui/material/Avatar';
 // import avatarLogo from '../assets/imgs/logo.png';
 import NestedList from '../../../components/Admin/Dashboard/NestedList';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
+import { useStorageContext } from '../../../contexts/StorageContext';
+import { PermissionPrams } from '../../../services/types';
 
 interface IDashboard {
-  role: any;
+  permissions: any;
 }
 
-const Dashboard = (props: any) => {
+const Dashboard = ({ permissions }: IDashboard) => {
   // const PERMISSION = props.data.group.permissions;
-  console.log('role', props);
   const [roles, setRoles] = useState({});
+  const { setPermissions } = useStorageContext();
 
   // console.log('PERMISSION: ', PERMISSION);
 
@@ -71,6 +73,9 @@ const Dashboard = (props: any) => {
 
   useEffect(() => {
     // checkPermission();
+    if (setPermissions) {
+      setPermissions(permissions.data.group.permissions);
+    }
   }, []);
 
   return (
@@ -101,10 +106,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   if (token) {
     try {
-      const [role] = await Promise.all([AccountApi.roleAdmin(token)]);
+      const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
       return {
         props: {
-          ...role,
+          permissions: permissions,
         },
       };
     } catch (e) {}

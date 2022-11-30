@@ -20,7 +20,7 @@ import Switch from '@mui/material/Switch';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { toUTCTime } from '../../../utils/common';
+import { formatDate, removeTime, toUTCTime } from '../../../utils/common';
 import Image from 'next/image';
 import { Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -388,7 +388,7 @@ export default function ListDetailProduct() {
                           <TableCell>{row.categoryName}</TableCell>
                           <TableCell>{row.discount}</TableCell>
                           <TableCell>{row.status}</TableCell>
-                          <TableCell>{toUTCTime(row.createdDate)}</TableCell>
+                          <TableCell>{removeTime(row.createdDate)}</TableCell>
                           <TableCell align={'right'}>
                             <Button
                               variant='contained'
