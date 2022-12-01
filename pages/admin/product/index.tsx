@@ -20,24 +20,17 @@ const Product = () => {
   );
 };
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const token = await getCookie('token', ctx);
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   const token = await getCookie('token', ctx);
 
-  if (token) {
-    try {
-    } catch (e) {}
-
-    return {
-      props: {},
-    };
-  } else {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      },
-    };
-  }
-}
+//   if (!token) {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: '/',
+//       },
+//     };
+//   }
+// }
 
 export default Product;

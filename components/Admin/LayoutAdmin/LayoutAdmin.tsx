@@ -126,13 +126,13 @@ export default function Layout({ children }: ILayout) {
   const router = useRouter();
 
   const handleLogout = async () => {
-    const token = await getCookie('token');
-    const res = await AccountApi.logout(token as string);
-    await removeCookie('token');
-    if (res) {
-      console.log('logout');
-      // router.push('/admin');
-    }
+    // const token = await getCookie('token');
+    // const res = await AccountApi.logout(token as string);
+    // await removeCookie('token');
+    // if (res) {
+    //   console.log('logout');
+    //   // router.push('/admin');
+    // }
   };
 
   return (
@@ -241,7 +241,7 @@ export default function Layout({ children }: ILayout) {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <NestedList />
+          {/* <NestedList /> */}
           <Divider />
         </Drawer>
 

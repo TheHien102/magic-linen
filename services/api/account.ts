@@ -13,9 +13,7 @@ export const AccountApi = {
       },
     });
   },
-  roleAdmin: async function (
-    token: string | undefined
-  ): Promise<TokenResponse> {
+  roleAdmin: async function (token: string): Promise<TokenResponse> {
     return await http.get(`${API_URL.roleAdmin}`, {
       headers: {
         Authorization: `Bearer ${token}`,

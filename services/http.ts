@@ -1,9 +1,9 @@
 import Axios, { AxiosResponse } from 'axios';
+const baseURL = 'https://linen-a-be.herokuapp.com/v1/';
 
 const http = Axios.create({
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL,
+  withCredentials: true,
 });
 
 http.interceptors.response.use(

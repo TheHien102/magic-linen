@@ -33,16 +33,28 @@ interface IDashboard {
   permissions: any;
 }
 
-const Dashboard = ({ permissions }: IDashboard) => {
+const Dashboard = (props: any) => {
   // const PERMISSION = props.data.group.permissions;
   const [roles, setRoles] = useState({});
   const { setPermissions } = useStorageContext();
 
+  const handleGet = async () => {
+    const token = getCookie('token');
+    console.log('token: ', token);
+
+    if (token) {
+      const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
+      console.log('permissions client: ', permissions);
+    }
+  };
+
   useEffect(() => {
     // checkPermission();
-    if (setPermissions) {
-      // setPermissions(permissions.data.group.permissions);
-    }
+    // if (setPermissions) {
+    //   console.log('permission dashboard: ', props);
+    //   // setPermissions(permissions.data.group.permissions);
+    // }
+    handleGet();
   }, []);
 
   // console.log('PERMISSION: ', PERMISSION);
@@ -101,30 +113,31 @@ const Dashboard = ({ permissions }: IDashboard) => {
 //   return { ...res };
 // };
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const token = await getCookie('token', ctx);
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   const token = await getCookie('token', ctx);
 
-  if (token) {
-    try {
-      const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
-      return {
-        props: {
-          permissions: permissions,
-        },
-      };
-    } catch (e) {}
+//   if (token) {
+//     try {
+//       const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
+//       console.log('permission server: ', permissions);
+//       return {
+//         props: {
+//           permissions: permissions,
+//         },
+//       };
+//     } catch (e) {}
 
-    return {
-      props: {},
-    };
-  } else {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      },
-    };
-  }
-}
+//     return {
+//       props: {},
+//     };
+//   } else {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: '/',
+//       },
+//     };
+//   }
+// }
 
 export default Dashboard;

@@ -36,7 +36,6 @@ export const ProductApi = {
     return await http.get(`${API_URL.adminListProduct}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
       },
     });
   },

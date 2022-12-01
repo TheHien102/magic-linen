@@ -250,7 +250,7 @@ export default function ListDetailProduct() {
   const ListProduct = async () => {
     setLoading(true);
     const token = await getCookie('token');
-
+    console.log('token list: ', token);
     const listProduct = await ProductApi.listProductPerPage(token as string);
     if (listProduct) {
       setLoading(false);
