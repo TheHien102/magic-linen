@@ -7,9 +7,11 @@ export const Header = () => {
   return (
     <S.Header>
       <S.Center>
-        <S.WrapImage>
-          <Image src={logo} alt='logo' />
-        </S.WrapImage>
+        <Link href={'/'}>
+          <S.WrapImage>
+            <Image src={logo} alt='logo' />
+          </S.WrapImage>
+        </Link>
       </S.Center>
       <S.Navbar>
         <Link href={'/'}>

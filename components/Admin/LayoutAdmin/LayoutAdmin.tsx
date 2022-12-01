@@ -241,7 +241,7 @@ export default function Layout({ children }: ILayout) {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          {/* <NestedList /> */}
+          <NestedList />
           <Divider />
         </Drawer>
 

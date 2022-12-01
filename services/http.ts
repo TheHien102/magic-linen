@@ -1,8 +1,6 @@
 import Axios, { AxiosResponse } from 'axios';
-const baseURL = 'https://linen-a-be.herokuapp.com/v1/';
 
 const http = Axios.create({
-  baseURL,
   withCredentials: true,
 });
 

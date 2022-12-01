@@ -14,6 +14,14 @@ export type AddProductPrams = {
   assets: AssetsParams[];
 };
 
+export type PermissionRequest = {
+  action: string;
+  description: string;
+  name: string;
+  nameGroup: string;
+  showMenu: boolean;
+};
+
 export type PermissionPrams = {
   action: string;
   description: string;

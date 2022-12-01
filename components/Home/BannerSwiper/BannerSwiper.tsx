@@ -37,10 +37,10 @@ export default function BannerSwiper() {
       <Swiper
         pagination={pagination}
         effect={'fade'}
-        // autoplay={{
-        //   delay: 2500,
-        //   disableOnInteraction: false,
-        // }}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
         modules={[Pagination, Autoplay, EffectFade]}
         className='mySwiper'
       >

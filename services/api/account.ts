@@ -1,5 +1,11 @@
 import http from '../http';
-import { LoginAdminPrams, RegisterPrams, TokenResponse } from '../types';
+import {
+  LoginAdminPrams,
+  PermissionPrams,
+  PermissionRequest,
+  RegisterPrams,
+  TokenResponse,
+} from '../types';
 import { API_URL } from './urls';
 
 export const AccountApi = {
@@ -13,7 +19,7 @@ export const AccountApi = {
       },
     });
   },
-  roleAdmin: async function (token: string): Promise<TokenResponse> {
+  roleAdmin: async function (token: string) {
     return await http.get(`${API_URL.roleAdmin}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -32,5 +38,22 @@ export const AccountApi = {
   },
   register: async function (data: RegisterPrams) {
     return await http.post(API_URL.register, data);
+  },
+  createPermission: async function (
+    token: string,
+    data: PermissionRequest
+  ): Promise<any> {
+    return await http.post(`${API_URL.createPermissions}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  permissionsList: async function (token: string) {
+    return await http.get(`${API_URL.permissionsList}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   },
 };

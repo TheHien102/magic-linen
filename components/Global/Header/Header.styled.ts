@@ -10,7 +10,7 @@ export const Center = styled.div`
 `;
 
 export const WrapImage = styled.figure`
-  ${tw`relative w-[130px] mb-1`}
+  ${tw`relative w-[130px] mb-1 cursor-pointer`}
 `;
 
 export const Navbar = styled.div`

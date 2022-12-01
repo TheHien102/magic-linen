@@ -1,95 +1,12 @@
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import React, { useEffect } from 'react';
-import { AccountApi } from '../../../services/api/account';
+import { GetServerSidePropsContext } from 'next';
+import React from 'react';
 import { getCookie } from '../../../services/cookies';
-// import { getCookie } from 'typescript-cookie';
-import { useState } from 'react';
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Head from 'next/head';
-import styles from '../../../styles/Home.module.css';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
-// import avatarLogo from '../assets/imgs/logo.png';
-import NestedList from '../../../components/Admin/Dashboard/NestedList';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
-import { useStorageContext } from '../../../contexts/StorageContext';
-import { PermissionPrams } from '../../../services/types';
 
-interface IDashboard {
-  permissions: any;
-}
-
-const Dashboard = (props: any) => {
-  // const PERMISSION = props.data.group.permissions;
-  const [roles, setRoles] = useState({});
-  const { setPermissions } = useStorageContext();
-
-  const handleGet = async () => {
-    const token = getCookie('token');
-    console.log('token: ', token);
-
-    if (token) {
-      const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
-      console.log('permissions client: ', permissions);
-    }
-  };
-
-  useEffect(() => {
-    // checkPermission();
-    // if (setPermissions) {
-    //   console.log('permission dashboard: ', props);
-    //   // setPermissions(permissions.data.group.permissions);
-    // }
-    handleGet();
-  }, []);
-
-  // console.log('PERMISSION: ', PERMISSION);
-
-  // const checkPermission = () => {
-  //   // let ROLE_CREATE_GROUP = false;
-  //   // let ROLE_VIEW_GROUP = false;
-  //   // let ROLE_UPDATE_GROUP = false;
-  //   // let ROLE_CREATE_PERMISSION = false;
-  //   let rolesTemp: any = {};
-  //   for (let i = 0; i < PERMISSION.length; i++) {
-  //     console.log('object');
-  //     rolesTemp[PERMISSION[i].name] = true;
-  //     // rolesTemp({ ...roles, [PERMISSION[i].name]: true });
-  //     // if (PERMISSION[i].name === 'Create Group') {
-  //     //   // ROLE_CREATE_GROUP = true;
-  //     //   ArrayRoles.push('create');
-  //     // }
-  //     // if (PERMISSION[i].name === 'View Group') {
-  //     //   // ROLE_VIEW_GROUP = true;
-  //     //   ArrayRoles.push('view');
-  //     // }
-  //     // if (PERMISSION[i].name === 'Update Group') {
-  //     //   // ROLE_UPDATE_GROUP = true;
-  //     //   ArrayRoles.push('update');
-  //     // }
-  //     // if (PERMISSION[i].name === 'Create permission') {
-  //     //   // ROLE_CREATE_PERMISSION = true;
-  //     //   ArrayRoles.push('create-permission');
-  //     // }
-  //   }
-  //   // console.log('role dashboard: ', ArrayRoles);
-  //   setRoles(rolesTemp);
-  // };
-
+const Dashboard = () => {
   return (
     <>
       <Head>
@@ -106,38 +23,24 @@ const Dashboard = (props: any) => {
   );
 };
 
-// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-//   const token = await getCookie('token', ctx);
-//   const res = await AccountApi.roleAdmin(token as string | undefined);
-//   // Pass data to the page via props
-//   return { ...res };
-// };
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const token = await getCookie('token', ctx);
 
-// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-//   const token = await getCookie('token', ctx);
+  if (token) {
+    try {
+    } catch (e) {}
 
-//   if (token) {
-//     try {
-//       const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
-//       console.log('permission server: ', permissions);
-//       return {
-//         props: {
-//           permissions: permissions,
-//         },
-//       };
-//     } catch (e) {}
-
-//     return {
-//       props: {},
-//     };
-//   } else {
-//     return {
-//       redirect: {
-//         permanent: false,
-//         destination: '/',
-//       },
-//     };
-//   }
-// }
+    return {
+      props: {},
+    };
+  } else {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
+}
 
 export default Dashboard;

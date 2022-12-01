@@ -26,8 +26,8 @@ export const iconData = {
 };
 
 export const urlMenuData = {
-  'Create Group': '/admin/create-group',
-  'Create Permission': '/admin/create-permission',
+  'Create Group': '/admin/group/create-group',
+  'Create Permission': '/admin/permission/create-permission',
 };
 
 export const menuData = [

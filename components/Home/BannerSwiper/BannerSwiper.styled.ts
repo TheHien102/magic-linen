@@ -50,7 +50,7 @@ export const InnerBanner = styled.div`
 `;
 
 export const WrapContent = styled.div`
-  ${tw`flex px-10 justify-center items-center absolute right-0 top-0 h-[90%] mt-6 mr-6 bg-[hsla(0,0%,100%,.82)]`}
+  ${tw`flex px-14 justify-center items-center absolute right-0 top-0 h-[84%] mt-6 mr-6 bg-[hsla(0,0%,100%,.82)]`}
 `;
 
 export const Center = styled.div`
@@ -58,7 +58,7 @@ export const Center = styled.div`
 `;
 
 export const WrapBtn = styled.div`
-  ${tw`mt-20 mx-auto`}
+  ${tw`mt-16 mx-auto w-fit`}
 `;
 
 export const Title = styled.h1`
@@ -75,5 +75,5 @@ export const Title = styled.h1`
 `;
 
 export const SubTitle = styled.p`
-  ${tw`text-[18px] max-w-[330px] font-light leading-8 text-center tracking-widest`}
+  ${tw`text-[22px] max-w-[330px] font-light leading-8 text-center tracking-wide`}
 `;

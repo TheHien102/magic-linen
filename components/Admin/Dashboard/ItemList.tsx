@@ -41,7 +41,6 @@ const getIconByName = (name: string) => {
 };
 
 const getUrlByName = (name: string) => {
-  console.log('name: ', name);
   const index = Object.keys(urlMenuData).findIndex((key) => name === key);
   if (index !== -1) {
     return Object.values(urlMenuData).at(index) as string;

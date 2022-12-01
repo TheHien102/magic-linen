@@ -1,10 +1,12 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ItemList from './ItemList';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useStorageContext } from '../../../contexts/StorageContext';
 import { MenuParams } from '../../../services/types';
 import { useRouter } from 'next/router';
+import { getCookie } from '../../../services/cookies';
+import { AccountApi } from '../../../services/api/account';
 
 interface INestedList {}
 
@@ -20,14 +22,15 @@ export default function NestedList({}: INestedList) {
     }
   };
 
-  const { permissions } = useStorageContext();
-  const [menuList, setMenuList] = useState<MenuParams[]>([]);
-  let listMenuRef = useRef<any>(null);
+  const { permissions, setPermissions } = useStorageContext();
   let menu: MenuParams[] = [];
 
-  if (permissions) {
-    console.log('permissions: ', permissions);
-  }
+  const [menuList, setMenuList] = useState<MenuParams[]>([]);
+
+  useEffect(() => {
+    console.log('nested list run');
+    loadPermission();
+  }, []);
 
   useEffect(() => {
     if (permissions) {
@@ -52,11 +55,26 @@ export default function NestedList({}: INestedList) {
           menu.push(newMenuParam);
         }
       }
+      // if (setPermissions) {
       setMenuList(menu);
-      // listMenuRef.current.value = menuList;
-      // console.log('menu: ', menu);
     }
-  }, [permissions, router, setMenuList]);
+    console.log('object: ', permissions);
+    // listMenuRef.current.value = menuList;
+    // }
+  }, [permissions]);
+
+  const loadPermission = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
+
+      if (setPermissions) {
+        setPermissions(permissions.data.group.permissions);
+      }
+      return permissions.data.group.permissions;
+    }
+    return [];
+  };
 
   return (
     <List
@@ -64,15 +82,16 @@ export default function NestedList({}: INestedList) {
       component='nav'
       aria-labelledby='nested-list-subheader'
     >
-      {menuList.map((data: any, index: number) => (
-        <ItemList
-          key={index}
-          data={data}
-          indexMenu={index}
-          selectedMenu={selectedMenu}
-          setSelectedMenu={handleClickMenu}
-        />
-      ))}
+      {menuList &&
+        menuList.map((data: any, index: number) => (
+          <ItemList
+            key={index}
+            data={data}
+            indexMenu={index}
+            selectedMenu={selectedMenu}
+            setSelectedMenu={handleClickMenu}
+          />
+        ))}
     </List>
   );
 }
