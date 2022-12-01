@@ -24,6 +24,8 @@ import NestedList from '../Dashboard/NestedList';
 import { LinearProgress } from '@mui/material';
 import { AccountApi } from '../../../services/api/account';
 import { useStorageContext } from '../../../contexts/StorageContext';
+import { useRouter } from 'next/router';
+import { getCookie, removeCookie } from '../../../services/cookies';
 // import IconBreadcrumbs from "../Customers/IconBreadcrumbs";
 
 const drawerWidth = 240;
@@ -121,8 +123,16 @@ export default function Layout({ children }: ILayout) {
     setAnchorEl(null);
   };
 
+  const router = useRouter();
+
   const handleLogout = async () => {
-    // const res = await AccountApi.
+    const token = await getCookie('token');
+    const res = await AccountApi.logout(token as string);
+    await removeCookie('token');
+    if (res) {
+      console.log('logout');
+      // router.push('/admin');
+    }
   };
 
   return (
@@ -206,7 +216,12 @@ export default function Layout({ children }: ILayout) {
                         }}
                       >
                         <Button variant='outlined'>Profile</Button>
-                        <Button variant='outlined'>Logout</Button>
+                        <Button
+                          variant='outlined'
+                          onClick={() => handleLogout()}
+                        >
+                          Logout
+                        </Button>
                       </Box>
                     </MenuItem>
                   </Menu>

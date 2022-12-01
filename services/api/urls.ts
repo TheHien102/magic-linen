@@ -5,6 +5,7 @@ export const API_URL = {
   home: BASEURL,
   adminLogin: `${BASEURL}/account/login/`,
   roleAdmin: `${BASEURL}/account/profile`,
+  logout: `${BASEURL}/account/logout`,
   addProduct: `${BASEURL}/product/create`,
   updateProduct: `${BASEURL}/product/update`,
   adminListProduct: `${BASEURL}/product/list_product_for_admin`,

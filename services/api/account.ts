@@ -6,6 +6,13 @@ export const AccountApi = {
   loginAdmin: async function (data: LoginAdminPrams) {
     return await http.post(API_URL.adminLogin, data);
   },
+  logout: async function (token: string) {
+    return await http.get(`${API_URL.logout}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
   roleAdmin: async function (
     token: string | undefined
   ): Promise<TokenResponse> {

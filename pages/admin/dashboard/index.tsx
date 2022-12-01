@@ -38,6 +38,13 @@ const Dashboard = ({ permissions }: IDashboard) => {
   const [roles, setRoles] = useState({});
   const { setPermissions } = useStorageContext();
 
+  useEffect(() => {
+    // checkPermission();
+    if (setPermissions) {
+      // setPermissions(permissions.data.group.permissions);
+    }
+  }, []);
+
   // console.log('PERMISSION: ', PERMISSION);
 
   // const checkPermission = () => {
@@ -70,13 +77,6 @@ const Dashboard = ({ permissions }: IDashboard) => {
   //   // console.log('role dashboard: ', ArrayRoles);
   //   setRoles(rolesTemp);
   // };
-
-  useEffect(() => {
-    // checkPermission();
-    if (setPermissions) {
-      setPermissions(permissions.data.group.permissions);
-    }
-  }, []);
 
   return (
     <>

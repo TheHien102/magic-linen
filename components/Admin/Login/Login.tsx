@@ -31,6 +31,7 @@ const Login = () => {
       setError(false);
       try {
         const result = await AccountApi.loginAdmin(values);
+
         if (result.data && result.data.token) {
           setCookie('token', result.data.token);
           router.push('/admin/dashboard');

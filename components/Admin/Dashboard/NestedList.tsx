@@ -1,16 +1,16 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ItemList from './ItemList';
-import { iconData, menuData } from '../../../utils/dataConfig';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStorageContext } from '../../../contexts/StorageContext';
 import { MenuParams } from '../../../services/types';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import { useRouter } from 'next/router';
 
 interface INestedList {}
 
 export default function NestedList({}: INestedList) {
   const [selectedMenu, setSelectedMenu] = useState(-1);
+  const router = useRouter();
 
   const handleClickMenu = (index: number) => {
     if (selectedMenu === index) {
@@ -22,6 +22,7 @@ export default function NestedList({}: INestedList) {
 
   const { permissions } = useStorageContext();
   const [menuList, setMenuList] = useState<MenuParams[]>([]);
+  let listMenuRef = useRef<any>(null);
   let menu: MenuParams[] = [];
 
   if (permissions) {
@@ -52,9 +53,10 @@ export default function NestedList({}: INestedList) {
         }
       }
       setMenuList(menu);
-      console.log('menu: ', menu);
+      // listMenuRef.current.value = menuList;
+      // console.log('menu: ', menu);
     }
-  }, [permissions]);
+  }, [permissions, router, setMenuList]);
 
   return (
     <List
@@ -70,12 +72,6 @@ export default function NestedList({}: INestedList) {
           selectedMenu={selectedMenu}
           setSelectedMenu={handleClickMenu}
         />
-        // <p key={index}>
-        //   {data.name}
-        // {Object.values(iconData).at(
-        //   Object.keys(iconData).findIndex((key) => key === data.name)
-        // )}
-        // </p>
       ))}
     </List>
   );
