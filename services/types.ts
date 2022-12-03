@@ -22,6 +22,29 @@ export type PermissionRequest = {
   showMenu: boolean;
 };
 
+export type GroupUpdateRequest = {
+  id: number;
+  name: string;
+  description: string;
+  permissions: PermissionPrams[];
+};
+
+export type GroupCreateRequest = {
+  kind: number;
+  name: string;
+  description: string;
+  permissions: PermissionPrams[];
+};
+
+export type GroupParams = {
+  id: number;
+  status: number;
+  name: string;
+  description: string;
+  kind: number;
+  permissions: PermissionPrams[];
+};
+
 export type PermissionPrams = {
   action: string;
   description: string;
@@ -30,6 +53,11 @@ export type PermissionPrams = {
   nameGroup: string;
   showMenu: boolean;
   status: number;
+};
+
+export type FilterPermissions = {
+  name: string;
+  list: PermissionPrams[];
 };
 
 export type MenuItemParams = {

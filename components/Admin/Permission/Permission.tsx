@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { AccountApi } from '../../../services/api/account';
 import { getCookie } from '../../../services/cookies';
@@ -37,6 +37,36 @@ interface IItemGroup {
 }
 
 const Permission = ({ permissionsList }: IPermission) => {
+  let newPermissionList = permissionsList;
+  const [nPermissionList, setNPermissionList] = useState([]);
+
+  const newArray = [
+    'Variant',
+    'Account',
+    'Asset',
+    'Cart',
+    'Cart_Item',
+    'Category',
+    'Group',
+    'Item',
+    'News',
+    'Permission',
+    'Product',
+    'Review',
+  ];
+  useEffect(() => {
+    newArray.map((table) => {
+      if (
+        permissionsList.findIndex((permission: any) =>
+          permission.name.includes(table)
+        ) === -1
+      ) {
+        let newData = { name: table, list: [] };
+        newPermissionList.push(newData);
+      }
+    });
+    setNPermissionList(newPermissionList);
+  }, []);
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -45,13 +75,6 @@ const Permission = ({ permissionsList }: IPermission) => {
       showMenu: true,
       description: '',
       nameGroup: '',
-      //   {
-      //     "name": "string",
-      //     "action": "string",
-      //     "showMenu": true,
-      //     "description": "string",
-      //     "nameGroup": "string"
-      //   }
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -162,8 +185,8 @@ const Permission = ({ permissionsList }: IPermission) => {
                   formik.touched.nameGroup && Boolean(formik.errors.nameGroup)
                 }
               >
-                {permissionsList &&
-                  permissionsList.map(
+                {nPermissionList &&
+                  nPermissionList.map(
                     (data: any, index: number) =>
                       data.list.length < 3 && (
                         <MenuItem key={index} value={data.name}>

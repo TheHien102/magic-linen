@@ -26,10 +26,7 @@ export const AccountApi = {
       },
     });
   },
-  createAdmin: async function (
-    token: string | undefined,
-    data: any
-  ): Promise<any> {
+  createAdmin: async function (token: string, data: any): Promise<any> {
     return await http.post(`${API_URL.createAdmin}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,

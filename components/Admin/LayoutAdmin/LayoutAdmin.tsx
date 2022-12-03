@@ -21,7 +21,7 @@ import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 // import avatarLogo from '../../assets/imgs/logo.png';
 import NestedList from '../Dashboard/NestedList';
-import { LinearProgress } from '@mui/material';
+import { Alert, LinearProgress, Snackbar } from '@mui/material';
 import { AccountApi } from '../../../services/api/account';
 import { useStorageContext } from '../../../contexts/StorageContext';
 import { useRouter } from 'next/router';
@@ -124,20 +124,33 @@ export default function Layout({ children }: ILayout) {
   };
 
   const router = useRouter();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleLogout = async () => {
-    // const token = await getCookie('token');
-    // const res = await AccountApi.logout(token as string);
-    // await removeCookie('token');
-    // if (res) {
-    //   console.log('logout');
-    //   // router.push('/admin');
-    // }
+    const token = await getCookie('token');
+    const res = await AccountApi.logout(token as string);
+    await removeCookie('token');
+
+    if (res) {
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        router.push('/admin');
+      }, 1000);
+    }
   };
 
   return (
     <div className={styles.container}>
       <Box sx={{ display: 'flex' }}>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={openSnackbar}
+          autoHideDuration={3000}
+        >
+          <Alert severity='success' sx={{ width: '100%' }}>
+            Logout Complete !
+          </Alert>
+        </Snackbar>
         <CssBaseline />
         <AppBar position='fixed' open={open}>
           <Toolbar>

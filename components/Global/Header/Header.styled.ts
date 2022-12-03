@@ -6,7 +6,7 @@ export const Header = styled.div`
 `;
 
 export const Center = styled.div`
-  ${tw`flex justify-center border-0 border-b-[1px] border-gray mb-3 border-solid`}
+  ${tw`flex justify-between items-center border-0 border-b-[1px] border-[#efeeed] mb-3 border-solid`}
 `;
 
 export const WrapImage = styled.figure`
@@ -14,13 +14,21 @@ export const WrapImage = styled.figure`
 `;
 
 export const Navbar = styled.div`
-  ${tw`flex gap-10  justify-center border-0 border-b-[1px] pb-2 border-gray mb-3 border-solid`}
+  ${tw`flex gap-10  justify-center border-0 border-b-[1px] pb-2 border-[#efeeed] mb-3 border-solid`}
 `;
 
 export const Text = styled.a`
-  ${tw`uppercase text-[15px] font-bold cursor-pointer border-0 border-b-[1px]  border-solid border-transparent duration-300`}
+  ${tw`uppercase text-[15px]  cursor-pointer border-0 border-b-[1px]  border-solid border-transparent duration-300`}
 
   &:hover {
     ${tw` border-black`}
   }
+`;
+
+export const WrapBtnLogin = styled.div`
+  ${tw``}
+`;
+
+export const BtnLogin = styled.a`
+  ${tw`uppercase cursor-pointer hover:underline text-[12px] tracking-wide`}
 `;

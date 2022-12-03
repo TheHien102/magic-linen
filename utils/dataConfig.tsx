@@ -25,9 +25,14 @@ export const iconData = {
   Update: <UpdateIcon color='secondary' />,
 };
 
+export const groupSuffix = {
+  title: ' Management',
+};
+
 export const urlMenuData = {
   'Create Group': '/admin/group/create-group',
   'Create Permission': '/admin/permission/create-permission',
+  'View Permission': '/admin/permission/view-permission',
 };
 
 export const menuData = [

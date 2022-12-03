@@ -1,5 +1,6 @@
 import { LockOutlined } from '@mui/icons-material';
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -9,12 +10,12 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-// import styles from '../../../styles/Home.module.css';
+import router, { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
@@ -44,8 +45,7 @@ const validationSchema = yup.object({
 });
 
 export default function CreateAdmin() {
-  const [fileImage, setFileImage] = useState<File>();
-  const [imagePath, setImagePath] = useState('');
+  // const [imagePath, setImagePath] = useState('');
   const [kind, setKind] = useState('');
   const formik = useFormik({
     initialValues: {
@@ -60,19 +60,19 @@ export default function CreateAdmin() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      //   router.push('/dashboard');
-      const token = getCookie('token');
+      const token = await getCookie('token');
       try {
-        // ProductApi.addProduct(token as string, values).then((res) => {
-        formik.values.avatarPath = imagePath;
-        const result = await AccountApi.createAdmin(token, values);
-        console.log('result: ', result);
-        console.log('values: ', values);
-        console.log('image path: ', imagePath);
+        if (token) {
+          formik.values.avatarPath = mainImage;
+          const result = await AccountApi.createAdmin(token, values);
+          if (result) {
+            setOpenSnackbar(true);
+            router.push('/admin/list');
+          }
+        }
       } catch (error) {
         console.log('error: ', error);
       }
-      //   console.log(' values: ', values);
     },
   });
 
@@ -82,6 +82,7 @@ export default function CreateAdmin() {
   };
 
   const [mainImage, setMainImage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   return (
     <div>
@@ -99,6 +100,15 @@ export default function CreateAdmin() {
             justifyContent: 'center',
           }}
         >
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open={openSnackbar}
+            autoHideDuration={3000}
+          >
+            <Alert severity='success' sx={{ width: '100%' }}>
+              Create New Admin Success !
+            </Alert>
+          </Snackbar>
           <Box
             sx={{
               border: '2px solid gray',

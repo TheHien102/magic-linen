@@ -28,7 +28,6 @@ export default function NestedList({}: INestedList) {
   const [menuList, setMenuList] = useState<MenuParams[]>([]);
 
   useEffect(() => {
-    console.log('nested list run');
     loadPermission();
   }, []);
 
@@ -58,9 +57,6 @@ export default function NestedList({}: INestedList) {
       // if (setPermissions) {
       setMenuList(menu);
     }
-    console.log('object: ', permissions);
-    // listMenuRef.current.value = menuList;
-    // }
   }, [permissions]);
 
   const loadPermission = async () => {

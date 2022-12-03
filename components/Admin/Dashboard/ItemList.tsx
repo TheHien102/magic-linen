@@ -76,6 +76,7 @@ export default function ItemList({
   selectedMenu,
   setSelectedMenu,
 }: IItemList) {
+  console.log('data menu: ', data);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const handleClick = (index: number) => {
     if (selectedIndex === index) {
@@ -113,11 +114,25 @@ export default function ItemList({
       {data.list && (
         <Collapse in={indexMenu === selectedMenu} timeout='auto' unmountOnExit>
           <List component='div' disablePadding>
-            {data.list.map((_data: any, index: number) => (
-              <Box key={index}>
-                {getUrlByName(_data.name) ? (
-                  <Link href={getUrlByName(_data.name)}>
-                    <a>
+            {data.list.map(
+              (_data: any, index: number) =>
+                _data.showMenu && (
+                  <Box key={index}>
+                    {getUrlByName(_data.name) ? (
+                      <Link href={getUrlByName(_data.name)}>
+                        <a>
+                          <ButtonMenu
+                            icon={_data.icon}
+                            name={_data.name}
+                            list={_data.list}
+                            index={index}
+                            selected={selectedIndex}
+                            paddingLeft={4}
+                            handleClick={() => handleClick(index)}
+                          />
+                        </a>
+                      </Link>
+                    ) : (
                       <ButtonMenu
                         icon={_data.icon}
                         name={_data.name}
@@ -127,54 +142,44 @@ export default function ItemList({
                         paddingLeft={4}
                         handleClick={() => handleClick(index)}
                       />
-                    </a>
-                  </Link>
-                ) : (
-                  <ButtonMenu
-                    icon={_data.icon}
-                    name={_data.name}
-                    list={_data.list}
-                    index={index}
-                    selected={selectedIndex}
-                    paddingLeft={4}
-                    handleClick={() => handleClick(index)}
-                  />
-                )}
-                {_data.list && (
-                  <Collapse
-                    in={index === selectedIndex}
-                    timeout='auto'
-                    unmountOnExit
-                    key={index}
-                  >
-                    <List component='div' disablePadding>
-                      {_data.list.map((data: any, index: number) => (
-                        <Box key={index}>
-                          {data.url ? (
-                            <Link href={data.url} key={index}>
-                              <ButtonMenu
-                                icon={data.icon}
-                                name={data.name}
-                                index={index}
-                                paddingLeft={6}
-                              />
-                            </Link>
-                          ) : (
-                            <ButtonMenu
-                              key={index}
-                              icon={data.icon}
-                              name={data.name}
-                              index={index}
-                              paddingLeft={6}
-                            />
-                          )}
-                        </Box>
-                      ))}
-                    </List>
-                  </Collapse>
-                )}
-              </Box>
-            ))}
+                    )}
+                    {/* Third level of menu */}
+                    {/* {_data.list && (
+                      <Collapse
+                        in={index === selectedIndex}
+                        timeout='auto'
+                        unmountOnExit
+                        key={index}
+                      >
+                        <List component='div' disablePadding>
+                          {_data.list.map((data: any, index: number) => (
+                            <Box key={index}>
+                              {data.url && !data.showMenu ? (
+                                <Link href={data.url} key={index}>
+                                  <ButtonMenu
+                                    icon={data.icon}
+                                    name={data.name}
+                                    index={index}
+                                    paddingLeft={6}
+                                  />
+                                </Link>
+                              ) : (
+                                <ButtonMenu
+                                  key={index}
+                                  icon={data.icon}
+                                  name={data.name}
+                                  index={index}
+                                  paddingLeft={6}
+                                />
+                              )}
+                            </Box>
+                          ))}
+                        </List>
+                      </Collapse>
+                    )} */}
+                  </Box>
+                )
+            )}
           </List>
         </Collapse>
       )}

@@ -7,15 +7,11 @@ export const PagesApi = {
   //   return await http.get(API_URL.home);
   // },
 
-  listAdmin: async function (token: string, id: number) {
-    return await http.get(
-      `${API_URL.listAdmin}?kind=1&groupId=5&status=1&page=0&size=10`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+  listAdmin: async function (token: string) {
+    return await http.get(`${API_URL.listAdmin}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   },
 };
