@@ -34,6 +34,7 @@ import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import MapListCategory from './MapListCategory';
 import Snackbar from '@mui/material/Snackbar';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const validationSchema = yup.object({
   id: yup.number(),
@@ -226,6 +227,11 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     );
   };
 
+  const handleDeleteSubImage = (id: number) => {
+    const index = setArrayImage(arrayImage.filter((it) => it.id !== id));
+    console.log('index: ', index);
+  };
+
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -237,7 +243,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       price: DATA_DETAIL.price,
       productCategoryId: DATA_DETAIL.productCategoryId,
       variants: DATA_DETAIL.variants,
-      assets: DATA_DETAIL.assets,
+      assets: DATA_DETAIL.assets ? DATA_DETAIL.assets : [],
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -251,12 +257,18 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       });
 
       formik.values.mainImg = mainImage;
-      formik.values.assets = arrayImage;
+      if (arrayImage) {
+        formik.values.assets = arrayImage;
+      } else {
+        formik.values.assets = [];
+      }
       formik.values.productCategoryId = categoryRef.current.value;
       formik.values.variants = finalArray;
 
       try {
         if (DATA_DETAIL.id === -1) {
+          formik.values.id--;
+
           const res = await ProductApi.addProduct(token as string, values);
           setOpenSnackbar(true);
           if (res) {
@@ -265,7 +277,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
             }, 2000);
           }
         } else {
-          formik.values.id--;
+          console.log('values formik', values);
           const res = await ProductApi.updateProduct(token as string, values);
           setOpenSnackbar(true);
           console.log('res update: ', res);
@@ -544,9 +556,9 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
               >
                 {arrayImage &&
                   arrayImage.length > 0 &&
-                  arrayImage.map((data, index) => (
+                  arrayImage.map((data) => (
                     <figure
-                      key={index}
+                      key={data.id}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -554,6 +566,19 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                         position: 'relative',
                       }}
                     >
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          zIndex: 10,
+                        }}
+                      >
+                        <CancelIcon
+                          sx={{ bgcolor: 'white', cursor: 'pointer' }}
+                          onClick={() => handleDeleteSubImage(data.id)}
+                        />
+                      </Box>
                       <Image
                         src={data.link}
                         alt='chosen'

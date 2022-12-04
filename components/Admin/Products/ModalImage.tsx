@@ -31,6 +31,7 @@ export default function ModalImage({
 
   const [fileImage, setFileImage] = useState<File>();
   const [imagePath, setImagePath] = useState('');
+  const [idNegative, setIdNegative] = useState(-1);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -57,8 +58,10 @@ export default function ModalImage({
 
       setCroppedImage(croppedImage);
       if (setArrayImage) {
+        console.log('set array miage');
+        setIdNegative(idNegative - 1);
         let data = {
-          id: 0,
+          id: idNegative,
           type: 'image',
           link: '' as any,
         };
@@ -74,8 +77,11 @@ export default function ModalImage({
               // formik.setFieldValue('assets', arrayImage);
               console.log('assets: ', data);
               if (arrayImage) {
-                setArrayImage([...arrayImage, data]);
+                setArrayImage((arrayImage) => [...arrayImage, data]);
                 console.log('set ok: ');
+              } else {
+                setArrayImage([data]);
+                console.log('set ok else: ');
               }
             };
           });
