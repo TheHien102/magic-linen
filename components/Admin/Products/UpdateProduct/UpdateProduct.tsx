@@ -263,16 +263,16 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
           setOpenSnackbar(true);
           if (res) {
             setTimeout(() => {
-              router.push('/admin/product');
+              router.push('/admin/product/view-product');
             }, 2000);
           }
         } else {
           const res = await ProductApi.updateProduct(token as string, values);
           setOpenSnackbar(true);
-
+          console.log('res update: ', res);
           if (res) {
             setTimeout(() => {
-              router.push('/admin/product');
+              router.push('/admin/product/view-product');
             }, 2000);
           }
         }

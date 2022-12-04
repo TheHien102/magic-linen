@@ -5,7 +5,7 @@ import * as S from './Login.styled';
 import Breadcrumb from '../Global/Breadcumb/Breadcumb';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import HeaderTitle from '../Global/HeaderTitle/HeaderTitle';
-import { useFormik } from 'formik';
+import { Field, useFormik } from 'formik';
 import { AccountApi } from '../../services/api/account';
 import * as yup from 'yup';
 import { getCookie, setCookie } from '../../services/cookies';
@@ -74,6 +74,23 @@ const LoginUser = (props: Props) => {
           <form onSubmit={formik.handleSubmit}>
             <S.Title>Existing customer</S.Title>
             <G.LabelInput>E-MAIL ADDRESS</G.LabelInput>
+            {/* <Field
+              name='lastName'
+              placeholder='Doe'
+              // as={
+              // <G.Input
+              //   widthFull
+              //   placeholder='E-Mail Address'
+              //   id='username'
+              //   name='username'
+              //   value={formik.values.username}
+              //   onChange={formik.handleChange}
+              // />
+              // }
+              // error={}
+              // error={formik.touched.username && Boolean(formik.errors.username)}
+            /> */}
+            {formik.touched.username && Boolean(formik.errors.username) && p.}
             <G.Input
               widthFull
               placeholder='E-Mail Address'
@@ -81,7 +98,7 @@ const LoginUser = (props: Props) => {
               name='username'
               value={formik.values.username}
               onChange={formik.handleChange}
-            ></G.Input>
+            />
             <S.WrapInput>
               <G.LabelInput>PASSWORD</G.LabelInput>
               <G.Input

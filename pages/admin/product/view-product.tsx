@@ -23,7 +23,11 @@ const Product = () => {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = await getCookie('token', ctx);
 
-  if (!token) {
+  if (token) {
+    return {
+      props: {},
+    };
+  } else {
     return {
       redirect: {
         permanent: false,
