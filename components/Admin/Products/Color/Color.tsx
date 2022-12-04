@@ -5,7 +5,7 @@ import ColorLensIcon from '@mui/icons-material/ColorLens';
 import ColorItem from './ColorItem';
 import { VariantParams } from '../../../../services/types';
 
-let nextId = 0;
+let nextId = -1;
 
 interface IColor {
   formikData: any;
@@ -45,7 +45,7 @@ const Color = ({ formikData, colorArray, setColorArray }: IColor) => {
         // with a new array
         ...colorArray, // that contains all the old items
         {
-          id: nextId++,
+          id: nextId--,
           name: 'color',
           property: color.hex,
           addPrice: 0,

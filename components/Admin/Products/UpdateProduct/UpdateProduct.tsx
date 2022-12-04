@@ -32,10 +32,8 @@ import {
 } from '../../../../services/types';
 import { IItemVariant } from '../../../../services/interface';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import ItemCategory from './MapListCategory';
 import MapListCategory from './MapListCategory';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 
 const validationSchema = yup.object({
   id: yup.number(),
@@ -267,6 +265,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
             }, 2000);
           }
         } else {
+          formik.values.id--;
           const res = await ProductApi.updateProduct(token as string, values);
           setOpenSnackbar(true);
           console.log('res update: ', res);
