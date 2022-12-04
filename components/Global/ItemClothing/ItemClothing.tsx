@@ -2,22 +2,42 @@ import Image from 'next/image';
 import React from 'react';
 import * as S from './ItemClothing.styled';
 import clothing1 from '../../../assets/images/clothing1.jpg';
+import { ProductParams } from '../../../services/types';
+import { Box } from '@mui/material';
+import Link from 'next/link';
 
-type Props = {};
+interface IItemClothing {
+  data: ProductParams;
+}
 
-const ItemClothing = (props: Props) => {
+const ItemClothing = ({ data }: IItemClothing) => {
   return (
     <S.ItemClothing>
       <S.WrapImage>
-        <Image src={clothing1} alt='' width={260} height={400} />
+        <Link href={`/product/${data.id}`}>
+          <Image src={data.mainImg} alt='' width={260} height={400} />
+        </Link>
       </S.WrapImage>
-      <S.Text>Color-block linen dress ADRIA in white-gray</S.Text>
+      <Link href={`/product/${data.id}`}>
+        <S.Text>{data.name}</S.Text>
+      </Link>
       <S.WrapColor>
-        <S.Color></S.Color>
-        <S.ColorBlue></S.ColorBlue>
+        {data.variants &&
+          data.variants.map((data) => (
+            <Box
+              key={data.id}
+              sx={{
+                width: 20,
+                height: 20,
+                border: '2px solid gray',
+                borderRadius: '100%',
+                bgcolor: data.property,
+              }}
+            ></Box>
+          ))}
       </S.WrapColor>
       <S.WrapPrice>
-        <S.TextPrice>$89.00</S.TextPrice>
+        <S.TextPrice>{'$' + data.price}</S.TextPrice>
       </S.WrapPrice>
     </S.ItemClothing>
   );

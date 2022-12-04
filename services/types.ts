@@ -6,12 +6,37 @@ export type LoginAdminPrams = {
 export type AddProductPrams = {
   id: number;
   name: string;
-  discount: string;
+  discount: number;
   description: string;
   price: number;
   productCategoryId: number;
   variants: VariantParams[];
   assets: AssetsParams[];
+};
+
+export type ReivewParams = {
+  createdBy: string;
+  createdDate: string;
+  modifiedBy: string;
+  modifiedDate: string;
+  status: number;
+  id: number;
+  rate: number;
+  comment: string;
+};
+
+export type ProductDetailPrams = {
+  id: number;
+  name: string;
+  mainImg: string;
+  discount: number;
+  description: string;
+  categoryDescription: string;
+  price: number;
+  productCategoryId: number;
+  variants: VariantParams[];
+  assets: AssetsParams[];
+  reviews: ReivewParams[];
 };
 
 export type PermissionRequest = {
@@ -34,6 +59,17 @@ export type GroupCreateRequest = {
   name: string;
   description: string;
   permissions: PermissionPrams[];
+};
+
+export type ProductParams = {
+  id: number;
+  name: string;
+  mainImg: string;
+  discount: number;
+  description: string;
+  price: number;
+  productCategoryId: number;
+  variants: VariantParams[];
 };
 
 export type GroupParams = {

@@ -1,7 +1,12 @@
 import moment from 'moment';
 import { getCookie } from 'typescript-cookie';
 import { AccountApi } from '../services/api/account';
-import { FilterPermissions, PermissionPrams } from '../services/types';
+import { IItemVariant } from '../services/interface';
+import {
+  FilterPermissions,
+  PermissionPrams,
+  VariantParams,
+} from '../services/types';
 
 export const formatDate = (value: any) => {
   return moment(value).format('MM-DD-YYYY');
@@ -72,4 +77,53 @@ export const getAllPermission = async () => {
       return filterListTemp;
     }
   }
+};
+
+export const filterVariants = (variants: VariantParams[]) => {
+  let fakeId = -1;
+  let sizeArray = [];
+  let colorArray = [];
+  let OtherVariants = [];
+
+  let returnArray: IItemVariant[] = [];
+
+  for (let i = 0; i < variants.length; i++) {
+    if (variants[i].name === 'size') {
+      sizeArray.push(variants[i]);
+    } else {
+      if (variants[i].name === 'color') {
+        colorArray.push(variants[i]);
+      } else {
+        let isPush = false;
+        OtherVariants.map((item) => {
+          if (item.name === variants[i].name) {
+            item.data.push(variants[i]);
+            isPush = true;
+          }
+        });
+        if (!isPush) {
+          const newData: IItemVariant = {
+            id: fakeId--,
+            name: variants[i].name,
+            data: [variants[i]],
+          };
+          OtherVariants.push(newData);
+        }
+      }
+    }
+  }
+  let newDataColor: IItemVariant = {
+    id: fakeId--,
+    name: 'color',
+    data: colorArray,
+  };
+
+  let newDataSize: IItemVariant = {
+    id: fakeId--,
+    name: 'size',
+    data: sizeArray,
+  };
+
+  returnArray = returnArray.concat(newDataSize, newDataColor, OtherVariants);
+  return returnArray;
 };

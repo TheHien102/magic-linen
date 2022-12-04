@@ -11,13 +11,22 @@ import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 
 type Props = {};
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const validationSchema = yup.object({
   username: yup.string().required('User name is required'),
-  email: yup.string().required('Email is required'),
-  password: yup.string().required('Password is required'),
+  email: yup.string().required('Email is required').email(),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password is too short - should be 8 chars minimum.')
+    .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.'),
   fullName: yup.string().required('Full name is required'),
-  phone: yup.string().required('Phone is required'),
+  phone: yup
+    .string()
+    .required('Phone is required')
+    .matches(phoneRegExp, 'Phone number is not valid'),
 });
 
 const RegisterUser = (props: Props) => {
@@ -73,6 +82,9 @@ const RegisterUser = (props: Props) => {
                 value={formik.values.username}
                 onChange={formik.handleChange}
               ></G.Input>
+              {formik.touched.username && Boolean(formik.errors.username) && (
+                <G.ErrorText>{formik.errors.username}</G.ErrorText>
+              )}
             </S.Flex>
             <S.MarginTop>
               <S.Flex>
@@ -86,6 +98,9 @@ const RegisterUser = (props: Props) => {
                   value={formik.values.password}
                   onChange={formik.handleChange}
                 ></G.Input>
+                {formik.touched.password && Boolean(formik.errors.password) && (
+                  <G.ErrorText>{formik.errors.password}</G.ErrorText>
+                )}
               </S.Flex>
             </S.MarginTop>
           </S.Col1>
@@ -100,6 +115,9 @@ const RegisterUser = (props: Props) => {
                 value={formik.values.email}
                 onChange={formik.handleChange}
               ></G.Input>
+              {formik.touched.email && Boolean(formik.errors.email) && (
+                <G.ErrorText>{formik.errors.email}</G.ErrorText>
+              )}
             </S.Flex>
             <S.MarginTop>
               <S.Flex>
@@ -112,6 +130,9 @@ const RegisterUser = (props: Props) => {
                   value={formik.values.fullName}
                   onChange={formik.handleChange}
                 ></G.Input>
+                {formik.touched.fullName && Boolean(formik.errors.fullName) && (
+                  <G.ErrorText>{formik.errors.fullName}</G.ErrorText>
+                )}
               </S.Flex>
             </S.MarginTop>
             <S.MarginTop>
@@ -125,6 +146,9 @@ const RegisterUser = (props: Props) => {
                   value={formik.values.phone}
                   onChange={formik.handleChange}
                 ></G.Input>
+                {formik.touched.phone && Boolean(formik.errors.phone) && (
+                  <G.ErrorText>{formik.errors.phone}</G.ErrorText>
+                )}
               </S.Flex>
             </S.MarginTop>
             <S.WrapBtn>

@@ -14,7 +14,7 @@ import Alert from '@mui/material/Alert';
 type Props = {};
 
 const validationSchema = yup.object({
-  username: yup.string().required('User name is required'),
+  username: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
 });
 
@@ -90,7 +90,7 @@ const LoginUser = (props: Props) => {
               // error={}
               // error={formik.touched.username && Boolean(formik.errors.username)}
             /> */}
-            {formik.touched.username && Boolean(formik.errors.username) && p.}
+
             <G.Input
               widthFull
               placeholder='E-Mail Address'
@@ -99,6 +99,9 @@ const LoginUser = (props: Props) => {
               value={formik.values.username}
               onChange={formik.handleChange}
             />
+            {formik.touched.username && Boolean(formik.errors.username) && (
+              <G.ErrorText>{formik.errors.username}</G.ErrorText>
+            )}
             <S.WrapInput>
               <G.LabelInput>PASSWORD</G.LabelInput>
               <G.Input
@@ -110,6 +113,9 @@ const LoginUser = (props: Props) => {
                 value={formik.values.password}
                 onChange={formik.handleChange}
               ></G.Input>
+              {formik.touched.password && Boolean(formik.errors.password) && (
+                <G.ErrorText>{formik.errors.password}</G.ErrorText>
+              )}
             </S.WrapInput>
             <BtnShopNow
               revertColor

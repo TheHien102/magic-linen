@@ -20,3 +20,7 @@ export const Input = styled.input<{ widthFull?: boolean }>`
 
   ${({ widthFull }) => widthFull && tw`w-full`}
 `;
+
+export const ErrorText = styled.p`
+  ${tw`text-[16px] text-[red]`}
+`;

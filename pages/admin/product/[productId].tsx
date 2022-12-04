@@ -35,7 +35,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       const { productId } = ctx.query;
 
       const [res, categoryList] = await Promise.all([
-        ProductApi.getProductById(productId as string, token),
+        ProductApi.getProductById(productId as string),
         ProductApi.categoryList(token),
       ]);
       return {

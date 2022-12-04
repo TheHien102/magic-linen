@@ -16,8 +16,11 @@ export const API_URL = {
   register: `${BASEURL}/account/register/`,
   permissionsList: `${BASEURL}/permission/list`,
   createPermissions: `${BASEURL}/permission/create`,
+
   listGroupById: `${BASEURL}/group/get/`,
   listAllGroup: `${BASEURL}/group/list`,
   updateGroupById: `${BASEURL}/group/update/`,
   createGroup: `${BASEURL}/group/create/`,
+
+  userListProduct: `${BASEURL}/product/list_product_for_user`,
 };

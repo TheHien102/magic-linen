@@ -14,13 +14,17 @@ import { FreeMode, Navigation, Thumbs } from 'swiper';
 import { Box } from '@mui/material';
 import Image from 'next/image';
 
-export default function ProductSwiper() {
+interface IProductSwiper {
+  data: string[];
+}
+
+export default function ProductSwiper({ data }: IProductSwiper) {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
   return (
     <S.ProductSwiper>
       <Swiper
-        loop={true}
+        // loop={true}
         onSwiper={setThumbsSwiper}
         direction={'vertical'}
         spaceBetween={10}
@@ -31,56 +35,21 @@ export default function ProductSwiper() {
         modules={[FreeMode, Navigation, Thumbs]}
         className='mySwiper'
       >
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={12}
-            height={15}
-            layout='responsive'
-            objectFit='cover'
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={12}
-            height={15}
-            layout='responsive'
-            objectFit='contain'
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={12}
-            height={15}
-            layout='responsive'
-            objectFit='contain'
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={12}
-            height={15}
-            layout='responsive'
-            objectFit='contain'
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={12}
-            height={15}
-            layout='responsive'
-            objectFit='contain'
-          />
-        </SwiperSlide>
+        {data.map((_data, index) => (
+          <SwiperSlide key={index}>
+            <Box sx={{ position: 'relative', cursor: 'pointer' }}>
+              <Image
+                src={_data}
+                alt=''
+                width={12}
+                height={16.3}
+                layout='responsive'
+                // objectFit='cover'
+                // layout='fill'
+              />
+            </Box>
+          </SwiperSlide>
+        ))}
       </Swiper>
       <Swiper
         loop={true}
@@ -88,46 +57,18 @@ export default function ProductSwiper() {
         modules={[FreeMode, Navigation, Thumbs]}
         className='mySwiper2'
       >
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={8}
-            height={12}
-            layout='responsive'
-            objectFit='cover'
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={8}
-            height={12}
-            layout='responsive'
-            objectFit='cover'
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={8}
-            height={12}
-            layout='responsive'
-            objectFit='cover'
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <Image
-            src='https://res.cloudinary.com/vhg2901/image/upload/v1669383825/edsr08eyqbq3ymqe6a1r.jpg'
-            alt=''
-            width={8}
-            height={12}
-            layout='responsive'
-            objectFit='cover'
-          />
-        </SwiperSlide>
+        {data.map((_data, index) => (
+          <SwiperSlide key={index}>
+            <Image
+              src={_data}
+              alt=''
+              width={8}
+              height={12}
+              layout='responsive'
+              objectFit='cover'
+            />
+          </SwiperSlide>
+        ))}
       </Swiper>
     </S.ProductSwiper>
   );

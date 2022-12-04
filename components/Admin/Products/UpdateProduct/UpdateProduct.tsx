@@ -40,9 +40,9 @@ const validationSchema = yup.object({
   id: yup.number(),
   name: yup.string(),
   mainImg: yup.string(),
-  discount: yup.string(),
+  discount: yup.number(),
   description: yup.string(),
-  price: yup.string(),
+  price: yup.number(),
   productCategoryId: yup.number(),
   variants: yup.array<VariantParams>(
     yup.object({
@@ -72,9 +72,9 @@ let otherVariantId = 0;
 const fakeData = {
   id: -1,
   name: '',
-  discount: '',
+  discount: 0,
   description: '',
-  price: '',
+  price: 0,
   productCategoryId: -1,
   variants: [],
   assets: [],
@@ -91,8 +91,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   // color variants only
   const [colorArray, setColorArray] = useState<VariantParams[]>([]);
 
-  // other variants
-  let OtherVariants: IItemVariant[] = []; // because in state can't catch for loop
   const [variantsList, setVariantsList] = useState<IItemVariant[]>([]);
 
   const [arrayImage, setArrayImage] = useState<AssetsParams[]>([]);
@@ -107,6 +105,8 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
   }, []);
 
   useEffect(() => {
+    // other variants
+    let OtherVariants: IItemVariant[] = []; // because in state can't catch for loop
     if (variants && variants.length > 0) {
       for (let i = 0; i < variants.length; i++) {
         if (variants[i].name === 'size') {
@@ -268,7 +268,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       try {
         if (DATA_DETAIL.id === -1) {
           formik.values.id--;
-
           const res = await ProductApi.addProduct(token as string, values);
           setOpenSnackbar(true);
           if (res) {
@@ -396,6 +395,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                 <TextField
                   label='Price'
                   fullWidth
+                  type={'number'}
                   id='price'
                   size='small'
                   name='price'

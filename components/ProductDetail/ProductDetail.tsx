@@ -12,10 +12,15 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
+import { ProductDetailPrams } from '../../services/types';
+import { filterVariants } from '../../utils/common';
 
-type Props = {};
+interface IProductDetail {
+  data: ProductDetailPrams;
+}
 
-const ProductDetail = (props: Props) => {
+const ProductDetail = ({ data }: IProductDetail) => {
+  console.log('data detail: ', data);
   const [quantity, setQuantity] = useState(0);
 
   const handleQuantityUp = () => {
@@ -28,10 +33,15 @@ const ProductDetail = (props: Props) => {
     }
   };
 
+  const variantList = filterVariants(data.variants);
+  const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
+
+  console.log('dataImages: ', dataImages);
+
   return (
     <Box sx={{ display: 'flex', marginX: '120px', gap: '35px' }}>
       <Box sx={{ width: '60%' }}>
-        <ProductSwiper />
+        <ProductSwiper data={dataImages} />
         <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -50,7 +60,7 @@ const ProductDetail = (props: Props) => {
           component={'h1'}
           sx={{ fontWeight: 'semibold', fontSize: '24px' }}
         >
-          LINEN BEACH SHIRT TAOS
+          {data.name}
         </Typography>
         <StarsReview />
         <Box sx={{ display: 'flex', alignItems: 'flex-end', mt: 2 }}>
@@ -64,7 +74,7 @@ const ProductDetail = (props: Props) => {
               lineHeight: '1.3',
             }}
           >
-            $89.00
+            ${data.price}
           </Typography>
           <Typography
             sx={{
@@ -76,7 +86,7 @@ const ProductDetail = (props: Props) => {
               lineHeight: '1',
             }}
           >
-            $71.20
+            ${data.price * ((100 - data.discount) / 100)}
           </Typography>
         </Box>
         <Typography
@@ -88,83 +98,62 @@ const ProductDetail = (props: Props) => {
             fontSize: '14px',
           }}
         >
-          You save $17.80 (20%)
+          You save ${data.price * (data.discount / 100)} ({data.discount}%)
         </Typography>
-        <Typography
-          sx={{
-            fontFamily: 'Josefin Sans',
-            mt: 1,
-            fontWeight: 'bold',
-            fontSize: '14 px',
-          }}
-        >
-          SIZE
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-          <Box
-            sx={{
-              width: '65px',
-              border: '1px solid #ebeae7',
-              textAlign: 'center',
-              py: 1.5,
-            }}
-          >
-            XS
-          </Box>
-          <Box
-            sx={{
-              width: '65px',
-              border: '1px solid #ebeae7',
-              textAlign: 'center',
-              py: 1.5,
-            }}
-          >
-            S
-          </Box>
-          <Box
-            sx={{
-              width: '65px',
-              border: '1px solid #ebeae7',
-              textAlign: 'center',
-              py: 1.5,
-            }}
-          >
-            M
-          </Box>
-          <Box
-            sx={{
-              width: '65px',
-              border: '1px solid #ebeae7',
-              textAlign: 'center',
-              py: 1.5,
-            }}
-          >
-            L
-          </Box>
-          <Box
-            sx={{
-              width: '65px',
-              border: '1px solid #ebeae7',
-              textAlign: 'center',
-              py: 1.5,
-            }}
-          >
-            XL
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 1, my: 4 }}>
-          <Box
-            sx={{
-              backgroundColor: 'blue',
-              borderRadius: '100%',
-              width: 33,
-              height: 33,
-              border: '3px solid black',
-            }}
-          />
-        </Box>
+        {variantList &&
+          variantList.map((data) => (
+            <>
+              <Typography
+                sx={{
+                  fontFamily: 'Josefin Sans',
+                  mt: 1,
+                  fontWeight: 'bold',
+                  fontSize: '14 px',
+                  textTransform: 'capitalize',
+                }}
+                key={data.id}
+              >
+                {data.name}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                {data.data.map((_data) =>
+                  _data.name !== 'color' ? (
+                    <Box
+                      key={_data.id}
+                      sx={{
+                        width: '65px',
+                        border: '1px solid #ebeae7',
+                        textAlign: 'center',
+                        py: 1.5,
+                      }}
+                    >
+                      {_data.property}
+                    </Box>
+                  ) : (
+                    <Box
+                      key={_data.id}
+                      sx={{
+                        backgroundColor: _data.property,
+                        borderRadius: '100%',
+                        width: 33,
+                        height: 33,
+                        border: '3px solid black',
+                      }}
+                    ></Box>
+                  )
+                )}
+              </Box>
+            </>
+          ))}
+
         <Box
-          sx={{ display: 'flex', alignItems: 'center', height: '45px', mb: 3 }}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '45px',
+            mb: 3,
+            mt: 2,
+          }}
         >
           <Box
             sx={{
@@ -185,10 +174,11 @@ const ProductDetail = (props: Props) => {
               fontWeight: 'bold',
               fontSize: '18px',
               border: '1px solid #979797',
-              height: '34.5px',
+              height: '34.3px',
               width: '35px',
             }}
             value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
           />
           <Box
             sx={{
@@ -203,7 +193,9 @@ const ProductDetail = (props: Props) => {
             <AddIcon />
           </Box>
         </Box>
-        <BtnShopNow title='ADD TO CART' revertColor widthFull />
+        <Box sx={{ mt: 2 }}>
+          <BtnShopNow title='ADD TO CART' revertColor widthFull />
+        </Box>
 
         <Typography
           sx={{

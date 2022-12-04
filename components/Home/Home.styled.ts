@@ -12,3 +12,7 @@ export const Center = styled.div`
 export const BtnShopNow = styled.div`
   ${tw`border-solid border-black border-[1px] cursor-pointer w-fit px-10 py-3 uppercase`}
 `;
+
+export const ListClothing = styled.div`
+  ${tw`flex gap-3`}
+`;

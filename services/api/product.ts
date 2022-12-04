@@ -39,10 +39,18 @@ export const ProductApi = {
       },
     });
   },
-  getProductById: async function (id: string, token: string) {
-    return await http.get(`${API_URL.getProductById}/${id}`, {
+  getProductById: async function (id: string) {
+    return await http.get(`${API_URL.getProductById}/${id}`);
+  },
+  listProductUser: async function (token: string, size: number) {
+    return await http.get(API_URL.userListProduct, {
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+      params: {
+        page: 0,
+        size: size,
+        sort: [],
       },
     });
   },

@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 
 export const ItemClothing = styled.div`
-  ${tw`max-w-[270px]`}
+  ${tw`max-w-[270px] flex flex-col justify-between`}
 `;
 
 export const WrapImage = styled.figure`
-  ${tw`relative m-0`}
+  ${tw`relative m-0 cursor-pointer`}
 `;
 
 export const Company = styled.div`
@@ -14,7 +14,7 @@ export const Company = styled.div`
 `;
 
 export const Text = styled.a`
-  ${tw`hover:underline cursor-pointer text-[14px] text-gray`}
+  ${tw`hover:underline cursor-pointer text-[14px] text-gray mt-1`}
 `;
 
 export const WrapColor = styled.div`
@@ -29,9 +29,11 @@ export const TextPrice = styled.p`
   ${tw` text-[14px] text-gray`}
 `;
 
-export const Color = styled.div`
-  ${tw`w-5 h-5 border-solid border-gray border-2 rounded-full bg-red-600`}
-`;
+// export const Color = styled.div<{ color: string }>`
+//   ${tw`w-5 h-5 border-solid border-gray border-2 rounded-full`}
+
+//   ${({ color }) => (color ? tw`bg-[${color}] ` : '')}
+// `;
 
 export const ColorBlue = styled.div`
   ${tw`w-5 h-5 border-solid border-gray border-2 rounded-full bg-blue-600`}
