@@ -25,6 +25,13 @@ export type ReivewParams = {
   comment: string;
 };
 
+export type CartItemParams = {
+  productId: number;
+  variants: VariantParams[];
+  quantity: number;
+  totalPrice: number;
+};
+
 export type ProductDetailPrams = {
   id: number;
   name: string;

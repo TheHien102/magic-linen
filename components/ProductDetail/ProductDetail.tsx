@@ -2,7 +2,10 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Backdrop,
   Box,
+  Fade,
+  Modal,
   Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
@@ -12,8 +15,16 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
-import { ProductDetailPrams } from '../../services/types';
+import {
+  CartItemParams,
+  ProductDetailPrams,
+  VariantParams,
+} from '../../services/types';
 import { filterVariants } from '../../utils/common';
+import { group } from 'console';
+import style from 'styled-jsx/style';
+import Image from 'next/image';
+import sizeGuide from '../../assets/images/size-guide.jpg';
 
 interface IProductDetail {
   data: ProductDetailPrams;
@@ -21,15 +32,64 @@ interface IProductDetail {
 
 const ProductDetail = ({ data }: IProductDetail) => {
   console.log('data detail: ', data);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   const handleQuantityUp = () => {
     setQuantity(quantity + 1);
   };
 
   const handleQuantityDown = () => {
-    if (quantity > 0) {
+    if (quantity > 1) {
       setQuantity(quantity - 1);
+    }
+  };
+
+  const [itemCart, setItemCart] = useState<CartItemParams>({
+    productId: data.id,
+    variants: [],
+    quantity: quantity,
+    totalPrice: 0,
+  });
+
+  const handleProperty = (data: VariantParams) => {
+    setItemCart((itemCart) => {
+      itemCart.variants.push(data);
+      return itemCart;
+    });
+    if (itemCart.variants.length === 2) {
+      if (checkIfExist(data)) {
+        setItemCart((itemCart) => {
+          itemCart.variants = itemCart.variants.filter(
+            (variant) => variant.id !== data.id
+          );
+          console.log('itemCart: ', itemCart.variants);
+          return itemCart;
+        });
+      }
+    }
+
+    // localStorage.setItem(
+    //   process.env.LOCAL_SAVE_PREFIX + 'groupName',
+    //   JSON.stringify({
+    //     groupName: groupName,
+    //     property: property,
+    //   })
+    // );
+    checkIfExist(data);
+  };
+
+  const checkIfExist = (data: VariantParams) => {
+    const index = itemCart.variants.findIndex(
+      (variant) => variant.id === data.id
+    );
+    console.log('index true of false: ', index);
+    if (index !== -1) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -42,18 +102,22 @@ const ProductDetail = ({ data }: IProductDetail) => {
     <Box sx={{ display: 'flex', marginX: '120px', gap: '35px' }}>
       <Box sx={{ width: '60%' }}>
         <ProductSwiper data={dataImages} />
-        <Accordion defaultExpanded>
+        {/* <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
             id='panel1a-header'
           >
-            <Typography>DESCRIPTION</Typography>
+            <Typography sx={{ fontFamily: 'Josefin Sans', fontWeight: 'bold' }}>
+              DESCRIPTION
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography>Cotent here</Typography>
+            <Typography
+              dangerouslySetInnerHTML={{ __html: data.description }}
+            ></Typography>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
       </Box>
       <Box sx={{ w: '30%' }}>
         <Typography
@@ -64,45 +128,130 @@ const ProductDetail = ({ data }: IProductDetail) => {
         </Typography>
         <StarsReview />
         <Box sx={{ display: 'flex', alignItems: 'flex-end', mt: 2 }}>
+          {data.discount === 0 ? (
+            <Typography
+              sx={{
+                fontFamily: 'Josefin Sans',
+                ml: 1,
+                fontWeight: 'bold',
+                fontSize: '24px',
+                lineHeight: '1',
+              }}
+            >
+              {data.price}
+            </Typography>
+          ) : (
+            <>
+              <Typography
+                sx={{
+                  textDecoration: 'line-through',
+                  fontFamily: 'Josefin Sans',
+                  fontWeight: 'bold',
+                  color: 'gray',
+                  fontSize: '14px',
+                  lineHeight: '1.3',
+                }}
+              >
+                ${data.price}
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: 'Josefin Sans',
+                  ml: 1,
+                  fontWeight: 'bold',
+                  color: '#9e1a1a',
+                  fontSize: '24px',
+                  lineHeight: '1',
+                }}
+              >
+                ${data.price * ((100 - data.discount) / 100)}
+              </Typography>
+            </>
+          )}
+        </Box>
+        {data.discount !== 0 && (
           <Typography
             sx={{
-              textDecoration: 'line-through',
               fontFamily: 'Josefin Sans',
+              mt: 1,
               fontWeight: 'bold',
               color: 'gray',
               fontSize: '14px',
-              lineHeight: '1.3',
             }}
           >
-            ${data.price}
+            You save ${data.price * (data.discount / 100)} ({data.discount}%)
           </Typography>
-          <Typography
-            sx={{
-              fontFamily: 'Josefin Sans',
-              ml: 1,
-              fontWeight: 'bold',
-              color: '#9e1a1a',
-              fontSize: '24px',
-              lineHeight: '1',
-            }}
-          >
-            ${data.price * ((100 - data.discount) / 100)}
-          </Typography>
-        </Box>
+        )}
         <Typography
+          onClick={handleOpenModal}
           sx={{
             fontFamily: 'Josefin Sans',
-            mt: 1,
-            fontWeight: 'bold',
-            color: 'gray',
-            fontSize: '14px',
+            width: 'fit-content',
+            marginLeft: 'auto',
+            textDecoration: 'underline',
+            fontSize: '12px',
+            cursor: 'pointer',
           }}
         >
-          You save ${data.price * (data.discount / 100)} ({data.discount}%)
+          Size guide
         </Typography>
+        <Modal
+          aria-labelledby='transition-modal-title'
+          aria-describedby='transition-modal-description'
+          open={openModal}
+          onClose={handleCloseModal}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 800,
+                maxHeight: '90vh',
+                bgcolor: 'background.paper',
+                boxShadow: 14,
+                p: 4,
+                overflowY: 'scroll',
+              }}
+            >
+              <Typography
+                id='transition-modal-title'
+                variant='h6'
+                component='h2'
+                sx={{
+                  textAlign: 'center',
+                  fontFamily: 'Josefin Sans',
+                  fontSize: '36px',
+                }}
+              >
+                Clothing size guide
+              </Typography>
+              <Box
+                sx={{
+                  position: 'relative',
+                }}
+              >
+                <Image
+                  src={sizeGuide}
+                  alt='size-guide'
+                  width={'500px'}
+                  height={'2000px'}
+                  layout='responsive'
+                />
+              </Box>
+            </Box>
+          </Fade>
+        </Modal>
         {variantList &&
           variantList.map((data) => (
-            <>
+            <Box key={data.id}>
               <Typography
                 sx={{
                   fontFamily: 'Josefin Sans',
@@ -120,12 +269,17 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   _data.name !== 'color' ? (
                     <Box
                       key={_data.id}
-                      sx={{
-                        width: '65px',
-                        border: '1px solid #ebeae7',
-                        textAlign: 'center',
-                        py: 1.5,
-                      }}
+                      sx={[
+                        {
+                          width: '65px',
+                          border: '1px solid #ebeae7',
+                          textAlign: 'center',
+                          py: 1.5,
+                          cursor: 'pointer',
+                        },
+                        checkIfExist(_data) && { border: '2px solid black' },
+                      ]}
+                      onClick={() => handleProperty(_data)}
                     >
                       {_data.property}
                     </Box>
@@ -143,7 +297,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   )
                 )}
               </Box>
-            </>
+            </Box>
           ))}
 
         <Box

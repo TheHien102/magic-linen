@@ -7,8 +7,8 @@ export const ProductSwiper = styled.div`
   .mySwiper {
     ${tw`h-[640px] w-[20%]`}
 
-    .swiper-slide-active {
-      border: 1px solid black;
+    .swiper-slide-thumb-active {
+      border: 1.5px solid black;
     }
 
     .swiper-button-prev,

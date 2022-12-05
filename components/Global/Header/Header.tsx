@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo from '../../../assets/images/logo.svg';
 import { useRouter } from 'next/router';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import { Badge } from '@mui/material';
 
 export const Header = () => {
   const router = useRouter();
@@ -21,6 +23,13 @@ export const Header = () => {
           <Link href={'/login'}>
             <S.BtnLogin>sign in</S.BtnLogin>
           </Link>
+          <Badge
+            badgeContent={4}
+            color='primary'
+            sx={{ ml: 2, cursor: 'pointer' }}
+          >
+            <ShoppingBasketIcon sx={{ color: '#000' }} />
+          </Badge>
         </S.WrapBtnLogin>
       </S.Center>
       <S.Navbar>
