@@ -134,6 +134,14 @@ export type VariantParams = {
   addPrice: number;
 };
 
+export type VariantCheckParams = {
+  id: number;
+  name: string;
+  property: string;
+  addPrice: number;
+  checked: boolean;
+};
+
 export type AssetsParams = {
   id: number;
   type: string;

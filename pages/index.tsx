@@ -26,23 +26,10 @@ export default function Home({ listProduct }: IHome) {
   );
 }
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const token = await getCookie('token', ctx);
+export async function getServerSideProps() {
+  const [listProduct] = await Promise.all([ProductApi.listProductUser(4)]);
 
-  if (token) {
-    const [listProduct] = await Promise.all([
-      ProductApi.listProductUser(token, 4),
-    ]);
-
-    return {
-      props: { listProduct: listProduct.data.data },
-    };
-  } else {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      },
-    };
-  }
+  return {
+    props: { listProduct: listProduct.data.data },
+  };
 }

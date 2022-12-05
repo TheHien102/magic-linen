@@ -38,20 +38,32 @@ const Color = ({ formikData, colorArray, setColorArray }: IColor) => {
     setColorArray(colorArray.filter((item) => item.property !== i));
   };
 
+  const isExist = () => {
+    const index = colorArray.findIndex((it) => it.property === color.hex);
+    if (index !== -1) {
+      return true;
+    } else return false;
+  };
+
   const handleOK = () => {
-    setColorArray(
-      // Replace the state
-      [
-        // with a new array
-        ...colorArray, // that contains all the old items
-        {
-          id: nextId--,
-          name: 'color',
-          property: color.hex,
-          addPrice: 0,
-        },
-      ]
-    );
+    if (!isExist()) {
+      setColorArray(
+        // Replace the state
+        [
+          // with a new array
+          ...colorArray, // that contains all the old items
+          {
+            id: nextId--,
+            name: 'color',
+            property: color.hex,
+            addPrice: 0,
+          },
+        ]
+      );
+    } else {
+      alert('Same color');
+    }
+
     handleCloseModalColor();
   };
 

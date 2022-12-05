@@ -41,6 +41,9 @@ export const urlMenuData = {
   'Update Product': '/admin/product/update-product',
 };
 
+export const LOCAL_SAVE_PREFIX = 'linenA2022_Product_';
+export const LOCAL_SAVE_LIMITER = 'limitter';
+
 export const menuData = [
   {
     icon: <DashboardIcon color='primary' />,

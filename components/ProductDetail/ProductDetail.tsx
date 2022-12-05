@@ -18,6 +18,7 @@ import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import {
   CartItemParams,
   ProductDetailPrams,
+  VariantCheckParams,
   VariantParams,
 } from '../../services/types';
 import { filterVariants } from '../../utils/common';
@@ -25,6 +26,10 @@ import { group } from 'console';
 import style from 'styled-jsx/style';
 import Image from 'next/image';
 import sizeGuide from '../../assets/images/size-guide.jpg';
+import { IItemCheckVariant, IItemVariant } from '../../services/interface';
+import { LOCAL_SAVE_LIMITER, LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
+import { Router } from '@mui/icons-material';
+import { useRouter } from 'next/router';
 
 interface IProductDetail {
   data: ProductDetailPrams;
@@ -32,9 +37,12 @@ interface IProductDetail {
 
 const ProductDetail = ({ data }: IProductDetail) => {
   const [quantity, setQuantity] = useState(1);
+  // const [addPrice, setAddPrice] = useState(0);
+  const [price, setPrice] = useState(data.price);
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+  const router = useRouter();
 
   const handleQuantityUp = () => {
     setQuantity(quantity + 1);
@@ -46,51 +54,62 @@ const ProductDetail = ({ data }: IProductDetail) => {
     }
   };
 
-  const [itemCart, setItemCart] = useState<CartItemParams>({
-    productId: data.id,
-    variants: [],
-    quantity: quantity,
-    totalPrice: 0,
-  });
+  const handleProperty = (data: VariantCheckParams) => {
+    setVariantList(
+      variantList.map((it) => {
+        if (it.name === data.name) {
+          it.data.map((_it) => {
+            if (_it.id === data.id) {
+              _it.checked = !_it.checked;
 
-  let variantsOfItemCart: VariantParams[] = [];
-
-  const handleProperty = (data: VariantParams) => {
-    if (checkIfExist(data)) {
-      variantsOfItemCart = variantsOfItemCart.filter(v => v.id !== data.id);
-    } else {
-      variantsOfItemCart = variantsOfItemCart.filter(v => v.name !== data.name);
-      variantsOfItemCart.push(data);
-    }
-
-    // localStorage.setItem(
-    //   process.env.LOCAL_SAVE_PREFIX + 'groupName',
-    //   JSON.stringify({
-    //     groupName: groupName,
-    //     property: property,
-    //   })
-    // );
-    setItemCart(itemCart => {
-      itemCart.variants = variantsOfItemCart;
-      return itemCart;
-    });
-  };
-
-  const checkIfExist = (data: VariantParams) => {
-    const index = itemCart.variants.findIndex(
-      variant => variant.id === data.id
+              if (_it.checked) {
+                setPrice(price + _it.addPrice);
+              } else {
+                setPrice(price - _it.addPrice);
+              }
+            } else {
+              if (_it.checked) {
+                setPrice(price - _it.addPrice);
+              }
+              _it.checked = false;
+            }
+            return _it;
+          });
+        }
+        return it;
+      })
     );
-    if (index !== -1) {
-      console.log('true');
-      return true;
-    } else {
-      console.log('not true');
-      return false;
-    }
   };
 
-  const variantList = filterVariants(data.variants);
-  const dataImages = data.assets.map(it => it.link).concat(data.mainImg);
+  const handleAddToCart = () => {
+    let newCartParam: CartItemParams = {
+      productId: data.id,
+      variants: [],
+      quantity: quantity,
+      totalPrice: quantity * price * ((100 - data.discount) / 100),
+    };
+    variantList.map((it) => {
+      newCartParam.variants = newCartParam.variants.concat(
+        it.data.filter((_it) => _it.checked === true)
+      );
+    });
+
+    if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
+      let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
+      storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newCartParam);
+      localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
+    } else {
+      localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newCartParam));
+    }
+    router.push('/cart');
+  };
+
+  const variantListTemp = filterVariants(data.variants);
+  const [variantList, setVariantList] = useState<IItemCheckVariant[]>([]);
+  useEffect(() => {
+    setVariantList(variantListTemp);
+  }, []);
+  const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
 
   console.log('dataImages: ', dataImages);
 
@@ -134,7 +153,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 lineHeight: '1',
               }}
             >
-              {data.price}
+              {price * quantity}
             </Typography>
           ) : (
             <>
@@ -148,7 +167,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1.3',
                 }}
               >
-                ${data.price}
+                ${price * quantity}
               </Typography>
               <Typography
                 sx={{
@@ -160,7 +179,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1',
                 }}
               >
-                ${data.price * ((100 - data.discount) / 100)}
+                ${price * quantity * ((100 - data.discount) / 100)}
               </Typography>
             </>
           )}
@@ -175,7 +194,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
               fontSize: '14px',
             }}
           >
-            You save ${data.price * (data.discount / 100)} ({data.discount}%)
+            You save ${price * (data.discount / 100)} ({data.discount}%)
           </Typography>
         )}
         <Typography
@@ -246,7 +265,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
           </Fade>
         </Modal>
         {variantList &&
-          variantList.map(data => (
+          variantList.map((data) => (
             <Box key={data.id}>
               <Typography
                 sx={{
@@ -261,10 +280,10 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 {data.name}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-                {data.data.map(_data =>
+                {data.data.map((_data) =>
                   _data.name !== 'color' ? (
                     <Box
-                      key={_data.id}
+                      key={_data.property}
                       sx={[
                         {
                           width: '65px',
@@ -272,7 +291,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                           py: 1.5,
                           cursor: 'pointer',
                         },
-                        checkIfExist(_data)
+                        _data.checked
                           ? { border: '2px solid black' }
                           : { border: '1px solid #ebeae7' },
                       ]}
@@ -283,13 +302,19 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   ) : (
                     <Box
                       key={_data.id}
-                      sx={{
-                        backgroundColor: _data.property,
-                        borderRadius: '100%',
-                        width: 33,
-                        height: 33,
-                        border: '3px solid black',
-                      }}
+                      sx={[
+                        {
+                          backgroundColor: _data.property,
+                          borderRadius: '100%',
+                          width: 33,
+                          height: 33,
+                          cursor: 'pointer',
+                        },
+                        _data.checked
+                          ? { border: '3px solid black' }
+                          : { border: '1px solid #ebeae7' },
+                      ]}
+                      onClick={() => handleProperty(_data)}
                     ></Box>
                   )
                 )}
@@ -329,7 +354,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
               width: '35px',
             }}
             value={quantity}
-            onChange={e => setQuantity(Number(e.target.value))}
+            onChange={(e) => setQuantity(Number(e.target.value))}
           />
           <Box
             sx={{
@@ -345,7 +370,12 @@ const ProductDetail = ({ data }: IProductDetail) => {
           </Box>
         </Box>
         <Box sx={{ mt: 2 }}>
-          <BtnShopNow title='ADD TO CART' revertColor widthFull />
+          <BtnShopNow
+            title='ADD TO CART'
+            revertColor
+            widthFull
+            onClick={handleAddToCart}
+          />
         </Box>
 
         <Typography

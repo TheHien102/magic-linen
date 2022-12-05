@@ -27,6 +27,7 @@ export const Header = () => {
             badgeContent={4}
             color='primary'
             sx={{ ml: 2, cursor: 'pointer' }}
+            onClick={() => router.push('/cart')}
           >
             <ShoppingBasketIcon sx={{ color: '#000' }} />
           </Badge>

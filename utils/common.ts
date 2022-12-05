@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { getCookie } from 'typescript-cookie';
 import { AccountApi } from '../services/api/account';
-import { IItemVariant } from '../services/interface';
+import { IItemCheckVariant, IItemVariant } from '../services/interface';
 import {
   FilterPermissions,
   PermissionPrams,
@@ -85,44 +85,58 @@ export const filterVariants = (variants: VariantParams[]) => {
   let colorArray = [];
   let OtherVariants = [];
 
-  let returnArray: IItemVariant[] = [];
+  let returnArray: IItemCheckVariant[] = [];
 
   for (let i = 0; i < variants.length; i++) {
-    if (variants[i].name === 'size') {
-      sizeArray.push(variants[i]);
+    let currentVariant = {
+      id: variants[i].id,
+      name: variants[i].name,
+      property: variants[i].property,
+      addPrice: variants[i].addPrice,
+      checked: false,
+    };
+    if (currentVariant.name === 'size') {
+      sizeArray.push(currentVariant);
     } else {
-      if (variants[i].name === 'color') {
-        colorArray.push(variants[i]);
+      if (currentVariant.name === 'color') {
+        colorArray.push(currentVariant);
       } else {
         let isPush = false;
         OtherVariants.map((item) => {
-          if (item.name === variants[i].name) {
-            item.data.push(variants[i]);
+          if (item.name === currentVariant.name) {
+            item.data.push(currentVariant);
             isPush = true;
           }
         });
         if (!isPush) {
-          const newData: IItemVariant = {
+          const newData: IItemCheckVariant = {
             id: fakeId--,
-            name: variants[i].name,
-            data: [variants[i]],
+            name: currentVariant.name,
+            data: [currentVariant],
           };
           OtherVariants.push(newData);
         }
       }
     }
   }
-  let newDataColor: IItemVariant = {
+  let newDataColor: IItemCheckVariant = {
     id: fakeId--,
     name: 'color',
     data: colorArray,
   };
 
-  let newDataSize: IItemVariant = {
+  let newDataSize: IItemCheckVariant = {
     id: fakeId--,
     name: 'size',
     data: sizeArray,
   };
+
+  // OtherVariants.map((item) => {
+  //   if (item.data.length === 1) {
+  //     item.data[0].checked = true;
+  //   }
+  //   return item;
+  // });
 
   returnArray = returnArray.concat(newDataSize, newDataColor, OtherVariants);
   return returnArray;

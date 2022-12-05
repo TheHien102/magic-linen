@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useState } from 'react';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
+import { LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
 
 function createData(
   name: string,
@@ -34,7 +35,7 @@ const rows = [
 
 export default function CartUser() {
   const [quantity, setQuantity] = useState(0);
-
+  // localStorage.getItem(LOCAL_SAVE_PREFIX + 64, JSON.parse(newCartParam));
   const handleQuantityUp = () => {
     setQuantity(quantity + 1);
   };
