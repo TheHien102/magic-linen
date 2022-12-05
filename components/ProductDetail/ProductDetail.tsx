@@ -8,7 +8,7 @@ import {
   Modal,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StarsReview from '../Global/StarsReview/StarsReview';
 import ProductSwiper from './ProductSwiper/ProductSwiper';
 import AddIcon from '@mui/icons-material/Add';
@@ -31,7 +31,6 @@ interface IProductDetail {
 }
 
 const ProductDetail = ({ data }: IProductDetail) => {
-  console.log('data detail: ', data);
   const [quantity, setQuantity] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
@@ -54,21 +53,14 @@ const ProductDetail = ({ data }: IProductDetail) => {
     totalPrice: 0,
   });
 
+  let variantsOfItemCart: VariantParams[] = [];
+
   const handleProperty = (data: VariantParams) => {
-    setItemCart((itemCart) => {
-      itemCart.variants.push(data);
-      return itemCart;
-    });
-    if (itemCart.variants.length === 2) {
-      if (checkIfExist(data)) {
-        setItemCart((itemCart) => {
-          itemCart.variants = itemCart.variants.filter(
-            (variant) => variant.id !== data.id
-          );
-          console.log('itemCart: ', itemCart.variants);
-          return itemCart;
-        });
-      }
+    if (checkIfExist(data)) {
+      variantsOfItemCart = variantsOfItemCart.filter(v => v.id !== data.id);
+    } else {
+      variantsOfItemCart = variantsOfItemCart.filter(v => v.name !== data.name);
+      variantsOfItemCart.push(data);
     }
 
     // localStorage.setItem(
@@ -78,23 +70,27 @@ const ProductDetail = ({ data }: IProductDetail) => {
     //     property: property,
     //   })
     // );
-    checkIfExist(data);
+    setItemCart(itemCart => {
+      itemCart.variants = variantsOfItemCart;
+      return itemCart;
+    });
   };
 
   const checkIfExist = (data: VariantParams) => {
     const index = itemCart.variants.findIndex(
-      (variant) => variant.id === data.id
+      variant => variant.id === data.id
     );
-    console.log('index true of false: ', index);
     if (index !== -1) {
+      console.log('true');
       return true;
     } else {
+      console.log('not true');
       return false;
     }
   };
 
   const variantList = filterVariants(data.variants);
-  const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
+  const dataImages = data.assets.map(it => it.link).concat(data.mainImg);
 
   console.log('dataImages: ', dataImages);
 
@@ -250,7 +246,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
           </Fade>
         </Modal>
         {variantList &&
-          variantList.map((data) => (
+          variantList.map(data => (
             <Box key={data.id}>
               <Typography
                 sx={{
@@ -265,19 +261,20 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 {data.name}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-                {data.data.map((_data) =>
+                {data.data.map(_data =>
                   _data.name !== 'color' ? (
                     <Box
                       key={_data.id}
                       sx={[
                         {
                           width: '65px',
-                          border: '1px solid #ebeae7',
                           textAlign: 'center',
                           py: 1.5,
                           cursor: 'pointer',
                         },
-                        checkIfExist(_data) && { border: '2px solid black' },
+                        checkIfExist(_data)
+                          ? { border: '2px solid black' }
+                          : { border: '1px solid #ebeae7' },
                       ]}
                       onClick={() => handleProperty(_data)}
                     >
@@ -332,7 +329,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
               width: '35px',
             }}
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={e => setQuantity(Number(e.target.value))}
           />
           <Box
             sx={{
