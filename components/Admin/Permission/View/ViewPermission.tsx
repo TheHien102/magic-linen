@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
+  FormControlLabel,
+  FormGroup,
   Grid,
   Paper,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -24,6 +27,7 @@ const ViewPermissions = () => {
   // const filterList: FilterPermissions[] = filterPermissions(permissions);
   // console.log('filterList: ', filterList);
   const [filterList, setFilterList] = useState<FilterPermissions[]>([]);
+  const [edit, setEdit] = useState(false);
 
   const getAllPermission = async () => {
     const token = await getCookie('token');
@@ -95,37 +99,61 @@ const ViewPermissions = () => {
                           }}
                         >
                           {data.list.map((_data, index) => (
-                            <Typography
-                              key={index}
-                              sx={[
-                                {
-                                  textTransform: 'capitalize',
-                                  bgcolor: '#4caf50',
-                                  color: 'white',
-                                  borderRadius: '15px',
-                                  whiteSpace: 'nowrap',
-                                  textAlign: 'center',
-                                  //   fontWeight: 'bold',
-                                  mb: 1,
-                                  px: 2,
-                                  py: 0.5,
-                                },
-                                _data.name.search('View')
-                                  ? _data.name.search('Create') === 0
-                                    ? { bgcolor: '#1976d2' }
-                                    : { bgcolor: '#cddc39', color: 'black' }
-                                  : { bgcolor: '#4caf50' },
-                              ]}
-                            >
-                              {_data.name.split(' ')[0]}
-                            </Typography>
+                            <>
+                              <Typography
+                                key={index}
+                                sx={[
+                                  {
+                                    textTransform: 'capitalize',
+                                    bgcolor: '#4caf50',
+                                    color: 'white',
+                                    borderRadius: '15px',
+                                    whiteSpace: 'nowrap',
+                                    textAlign: 'center',
+                                    //   fontWeight: 'bold',
+                                    mb: 1,
+                                    px: 2,
+                                    py: 0.5,
+                                  },
+                                  _data.name.search('View')
+                                    ? _data.name.search('Create') === 0
+                                      ? { bgcolor: '#1976d2' }
+                                      : { bgcolor: '#cddc39', color: 'black' }
+                                    : { bgcolor: '#4caf50' },
+                                ]}
+                              >
+                                {_data.name.split(' ')[0]}
+                              </Typography>
+                              {edit && (
+                                <FormGroup>
+                                  <FormControlLabel
+                                    control={<Switch defaultChecked />}
+                                    label='Show Menu'
+                                    // value={showMenu}
+                                    // onChange={() => setShowMenu(!showMenu)}
+                                  />
+                                </FormGroup>
+                              )}
+                            </>
                           ))}
                         </Box>
                       </TableCell>
                       <TableCell align='right'>
-                        <Button variant='contained'>
-                          <EditIcon />
-                        </Button>
+                        {edit ? (
+                          <Button
+                            variant='outlined'
+                            onClick={() => setEdit(false)}
+                          >
+                            Save
+                          </Button>
+                        ) : (
+                          <Button
+                            variant='outlined'
+                            onClick={() => setEdit(true)}
+                          >
+                            <EditIcon />
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -38,6 +38,7 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
   const [menuItem, setMenuItem] = useState('');
   const [groupList, setGroupList] = useState<GroupParams[]>([]);
   const [nameGroup, setNameGroup] = useState(-1);
+  const [groupName, setGroupName] = useState('');
   const [listChecked, setListChecked] = useState<FilterPermissions[]>([]);
   const [filterList, setFilterList] = useState<FilterPermissions[]>([]);
 
@@ -89,8 +90,8 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
 
     let dataCreate = {
       kind: Number(groupKind),
-      name: menuItem,
-      description: menuItem,
+      name: groupName,
+      description: groupName,
       permissions: newList,
     };
 
@@ -99,6 +100,7 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
       if (update) {
         const result = await GroupApi.updateGroupById(token, data);
       } else {
+        console.log('dataCreate: ', dataCreate);
         const result = await GroupApi.createGroup(token, dataCreate);
         if (result) {
           console.log('result create: ', result);
@@ -129,6 +131,10 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
   const handleChangeNameGroup = (e: any) => {
     setNameGroup(e.target.value);
     getListById(e.target.value);
+  };
+
+  const handleChangeGroupName = (e: any) => {
+    setGroupName(e.target.value);
   };
 
   const handleGetMenuItemValue = (e: any) => {
@@ -220,34 +226,37 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
       >
         <Grid item xs={12} md={6}>
           <FormControl fullWidth size='small'>
-            <InputLabel id='nameGroup'>Group Name</InputLabel>
             {update ? (
-              <Select
-                labelId='nameGroup'
-                id='nameGroup'
-                label='Name'
-                value={nameGroup}
-                sx={{ color: 'black' }}
-                onChange={handleChangeNameGroup}
-              >
-                {groupList &&
-                  groupList.map((data) => (
-                    <MenuItem
-                      key={data.id}
-                      value={data.id}
-                      onClick={handleGetMenuItemValue}
-                      sx={{ textTransform: 'capitalize' }}
-                    >
-                      {data.name}
-                    </MenuItem>
-                  ))}
-              </Select>
+              <>
+                <InputLabel id='nameGroup'>Group Name</InputLabel>
+                <Select
+                  // labelId='nameGroup'
+                  id='nameGroup'
+                  label='Name'
+                  value={nameGroup}
+                  sx={{ color: 'black' }}
+                  onChange={handleChangeNameGroup}
+                >
+                  {groupList &&
+                    groupList.map((data) => (
+                      <MenuItem
+                        key={data.id}
+                        value={data.id}
+                        onClick={handleGetMenuItemValue}
+                        sx={{ textTransform: 'capitalize' }}
+                      >
+                        {data.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </>
             ) : (
               <>
                 <TextField
                   id='nameGroup'
                   label='Group Name'
-                  // placeholder='Name'
+                  value={groupName}
+                  onChange={handleChangeGroupName}
                   size='small'
                   variant='outlined'
                 />

@@ -41,18 +41,14 @@ const Permission = ({ permissionsList }: IPermission) => {
   const [nPermissionList, setNPermissionList] = useState([]);
 
   const newArray = [
-    'Variant',
     'Account',
-    'Asset',
     'Cart',
-    'Cart_Item',
     'Category',
     'Group',
-    'Item',
     'News',
+    'Order',
     'Permission',
     'Product',
-    'Review',
   ];
   useEffect(() => {
     newArray.map((table) => {
@@ -115,6 +111,7 @@ const Permission = ({ permissionsList }: IPermission) => {
     let itemGroup = permissionsList.find(
       (it: any) => it.name === event.target.value
     );
+    console.log('itemGroup: ', itemGroup);
     setItemGroup(itemGroup);
     formik.values.nameGroup = event.target.value;
   };
@@ -178,7 +175,7 @@ const Permission = ({ permissionsList }: IPermission) => {
                 labelId='nameGroup'
                 id='nameGroup'
                 value={kind}
-                label='Name'
+                label='Group Name'
                 sx={{ color: 'black' }}
                 onChange={handleChangeKind}
                 error={
