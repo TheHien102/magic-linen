@@ -28,7 +28,6 @@ import Image from 'next/image';
 import sizeGuide from '../../assets/images/size-guide.jpg';
 import { IItemCheckVariant, IItemVariant } from '../../services/interface';
 import { LOCAL_SAVE_LIMITER, LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
-import { Router } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 
 interface IProductDetail {
@@ -36,6 +35,7 @@ interface IProductDetail {
 }
 
 const ProductDetail = ({ data }: IProductDetail) => {
+  console.log('data detail: ', data);
   const [quantity, setQuantity] = useState(1);
   // const [addPrice, setAddPrice] = useState(0);
   const [price, setPrice] = useState(data.price);
@@ -84,6 +84,9 @@ const ProductDetail = ({ data }: IProductDetail) => {
   const handleAddToCart = () => {
     let newCartParam: CartItemParams = {
       productId: data.id,
+      name: data.name,
+      price: data.price,
+      mainImg: data.mainImg,
       variants: [],
       quantity: quantity,
       totalPrice: quantity * price * ((100 - data.discount) / 100),

@@ -30,6 +30,9 @@ export type CartItemParams = {
   variants: VariantParams[];
   quantity: number;
   totalPrice: number;
+  name: string;
+  price: number;
+  mainImg: string;
 };
 
 export type ProductDetailPrams = {
