@@ -1,5 +1,5 @@
 import { TableRow, TableCell, Box, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { CartItemParams } from '../../services/types';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,20 +9,27 @@ import RemoveIcon from '@mui/icons-material/Remove';
 interface IRowCart {
   data: CartItemParams;
   handleRemoveItem: (id: number) => void;
+  setTotalPrice: Dispatch<SetStateAction<number>>;
 }
 
-const RowCart = ({ data, handleRemoveItem }: IRowCart) => {
+const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
   console.log('row data: ', data);
   // data = data[0];
   const [quantity, setQuantity] = useState(data.quantity);
+  const [price, setPrice] = useState(data.totalPrice);
   // localStorage.getItem(LOCAL_SAVE_PREFIX + 64, JSON.parse(newCartParam));
   const handleQuantityUp = () => {
     setQuantity(quantity + 1);
+    setPrice(data.totalPrice * (quantity + 1));
+    setTotalPrice(data.totalPrice + price);
   };
 
   const handleQuantityDown = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
+      setPrice(data.totalPrice * (quantity - 1));
+
+      setTotalPrice(data.totalPrice * (quantity - 1));
     }
   };
 
@@ -153,7 +160,7 @@ const RowCart = ({ data, handleRemoveItem }: IRowCart) => {
             fontSize: '16px',
           }}
         >
-          ${data.totalPrice + quantity * data.price}
+          ${price}
         </Typography>
       </TableCell>
       <TableCell align='right'>

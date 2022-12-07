@@ -17,6 +17,15 @@ import RowCart from './RowCart';
 
 export default function CartUser() {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
+  const [toltalPrice, setTotalPrice] = useState(0);
+
+  const handleTotalPrice = () => {
+    let tempTotalPrice = 0;
+    for (let i = 0; i < cartProduct.length; i++) {
+      tempTotalPrice += cartProduct[i].totalPrice;
+    }
+    setTotalPrice(tempTotalPrice);
+  };
 
   const getLocalValue = async () => {
     let temp = localStorage
@@ -27,11 +36,18 @@ export default function CartUser() {
 
     if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
       setCartProduct(temp);
+      console.log('temp value: ', temp);
+      let tempTotalPrice = 0;
+      for (let i = 0; i < temp.length; i++) {
+        tempTotalPrice += temp[i].totalPrice;
+      }
+      setTotalPrice(tempTotalPrice);
     }
   };
 
   useEffect(() => {
     getLocalValue();
+    // handleTotalPrice();
   }, []);
 
   const handleRemoveItem = (id: number) => {
@@ -61,16 +77,6 @@ export default function CartUser() {
   };
 
   const handleCheckout = () => {
-    // if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
-    //   let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
-    //   storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(cartProduct);
-    //   localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
-    // } else {
-    //   localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(cartProduct));
-    // }
-
-    // console.log('JSON.stringify(cartProduct): ', JSON.stringify(cartProduct));
-    // console.log('JSON(cartProduct): ', cartProduct);
     setNewJson();
   };
 
@@ -128,6 +134,7 @@ export default function CartUser() {
                       key={data.productId}
                       data={data}
                       handleRemoveItem={handleRemoveItem}
+                      setTotalPrice={setTotalPrice}
                     />
                   ))}
               </TableBody>
@@ -227,7 +234,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                $71.20
+                ${toltalPrice}
               </Typography>
             </Box>
           </Box>
