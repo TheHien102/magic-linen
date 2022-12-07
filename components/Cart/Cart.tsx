@@ -32,11 +32,12 @@ export default function CartUser() {
       .getItem(LOCAL_SAVE_PREFIX)
       ?.toString()
       .split(LOCAL_SAVE_LIMITER)
-      .map((data) => JSON.parse(data.replace('\\', '')));
+      .map(data => JSON.parse(data.replace('\\', '')));
 
     if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
+      console.log('temp', temp);
+
       setCartProduct(temp);
-      console.log('temp value: ', temp);
       let tempTotalPrice = 0;
       for (let i = 0; i < temp.length; i++) {
         tempTotalPrice += temp[i].totalPrice;
@@ -54,7 +55,7 @@ export default function CartUser() {
     if (cartProduct.length === 1) {
       localStorage.removeItem(LOCAL_SAVE_PREFIX);
     }
-    setCartProduct(cartProduct.filter((it) => it.productId !== id));
+    setCartProduct(cartProduct.filter(it => it.productId !== id));
   };
 
   const handleContinueShopping = () => {
@@ -129,7 +130,7 @@ export default function CartUser() {
               </TableHead>
               <TableBody>
                 {cartProduct &&
-                  cartProduct.map((data) => (
+                  cartProduct.map(data => (
                     <RowCart
                       key={data.productId}
                       data={data}

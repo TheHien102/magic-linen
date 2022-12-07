@@ -20,16 +20,15 @@ const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
   // localStorage.getItem(LOCAL_SAVE_PREFIX + 64, JSON.parse(newCartParam));
   const handleQuantityUp = () => {
     setQuantity(quantity + 1);
-    setPrice(data.totalPrice * (quantity + 1));
-    setTotalPrice(data.totalPrice + price);
+    setPrice(data.price * (quantity + 1));
+    setTotalPrice(data.price + price);
   };
 
   const handleQuantityDown = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
-      setPrice(data.totalPrice * (quantity - 1));
-
-      setTotalPrice(data.totalPrice * (quantity - 1));
+      setPrice(data.price * (quantity - 1));
+      setTotalPrice(data.price * (quantity - 1));
     }
   };
 
@@ -67,7 +66,7 @@ const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
               {data.name}
             </Typography>
             {data.variants &&
-              data.variants.map((_data) =>
+              data.variants.map(_data =>
                 _data.name === 'color' ? (
                   <Box
                     key={_data.id}
@@ -142,7 +141,7 @@ const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
               color: 'gray',
             }}
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={e => setQuantity(Number(e.target.value))}
           />
           <AddIcon
             sx={{

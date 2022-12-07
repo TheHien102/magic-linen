@@ -56,9 +56,9 @@ const ProductDetail = ({ data }: IProductDetail) => {
 
   const handleProperty = (data: VariantCheckParams) => {
     setVariantList(
-      variantList.map((it) => {
+      variantList.map(it => {
         if (it.name === data.name) {
-          it.data.map((_it) => {
+          it.data.map(_it => {
             if (_it.id === data.id) {
               _it.checked = !_it.checked;
 
@@ -82,18 +82,19 @@ const ProductDetail = ({ data }: IProductDetail) => {
   };
 
   const handleAddToCart = () => {
+    let oneProductPrice = price * ((100 - data.discount) / 100);
     let newCartParam: CartItemParams = {
       productId: data.id,
       name: data.name,
-      price: data.price,
+      price: oneProductPrice,
       mainImg: data.mainImg,
       variants: [],
       quantity: quantity,
       totalPrice: quantity * price * ((100 - data.discount) / 100),
     };
-    variantList.map((it) => {
+    variantList.map(it => {
       newCartParam.variants = newCartParam.variants.concat(
-        it.data.filter((_it) => _it.checked === true)
+        it.data.filter(_it => _it.checked === true)
       );
     });
 
@@ -112,7 +113,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
   useEffect(() => {
     setVariantList(variantListTemp);
   }, []);
-  const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
+  const dataImages = data.assets.map(it => it.link).concat(data.mainImg);
 
   console.log('dataImages: ', dataImages);
 
@@ -156,7 +157,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 lineHeight: '1',
               }}
             >
-              {price * quantity}
+              {price}
             </Typography>
           ) : (
             <>
@@ -170,7 +171,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1.3',
                 }}
               >
-                ${price * quantity}
+                ${price}
               </Typography>
               <Typography
                 sx={{
@@ -182,7 +183,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1',
                 }}
               >
-                ${price * quantity * ((100 - data.discount) / 100)}
+                ${price * ((100 - data.discount) / 100)}
               </Typography>
             </>
           )}
@@ -268,7 +269,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
           </Fade>
         </Modal>
         {variantList &&
-          variantList.map((data) => (
+          variantList.map(data => (
             <Box key={data.id}>
               <Typography
                 sx={{
@@ -283,7 +284,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 {data.name}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-                {data.data.map((_data) =>
+                {data.data.map(_data =>
                   _data.name !== 'color' ? (
                     <Box
                       key={_data.property}
@@ -357,7 +358,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
               width: '35px',
             }}
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={e => setQuantity(Number(e.target.value))}
           />
           <Box
             sx={{
