@@ -17,7 +17,7 @@ import RowCart from './RowCart';
 
 export default function CartUser() {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
-  const [toltalPrice, setTotalPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const handleTotalPrice = () => {
     let tempTotalPrice = 0;
@@ -28,11 +28,11 @@ export default function CartUser() {
   };
 
   const getLocalValue = async () => {
-    let temp = localStorage
+    let temp: any = localStorage
       .getItem(LOCAL_SAVE_PREFIX)
       ?.toString()
       .split(LOCAL_SAVE_LIMITER)
-      .map(data => JSON.parse(data.replace('\\', '')));
+      .map((data) => JSON.parse(data.replace('\\', '')));
 
     if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
       console.log('temp', temp);
@@ -55,7 +55,7 @@ export default function CartUser() {
     if (cartProduct.length === 1) {
       localStorage.removeItem(LOCAL_SAVE_PREFIX);
     }
-    setCartProduct(cartProduct.filter(it => it.productId !== id));
+    setCartProduct(cartProduct.filter((it) => it.productId !== id));
   };
 
   const handleContinueShopping = () => {
@@ -130,11 +130,12 @@ export default function CartUser() {
               </TableHead>
               <TableBody>
                 {cartProduct &&
-                  cartProduct.map(data => (
+                  cartProduct.map((data) => (
                     <RowCart
                       key={data.productId}
                       data={data}
                       handleRemoveItem={handleRemoveItem}
+                      totalPrice={totalPrice}
                       setTotalPrice={setTotalPrice}
                     />
                   ))}
@@ -235,7 +236,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                ${toltalPrice}
+                ${totalPrice}
               </Typography>
             </Box>
           </Box>

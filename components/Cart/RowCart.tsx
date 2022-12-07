@@ -9,26 +9,26 @@ import RemoveIcon from '@mui/icons-material/Remove';
 interface IRowCart {
   data: CartItemParams;
   handleRemoveItem: (id: number) => void;
+  totalPrice: number;
   setTotalPrice: Dispatch<SetStateAction<number>>;
 }
 
-const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
-  console.log('row data: ', data);
-  // data = data[0];
+const RowCart = ({
+  data,
+  handleRemoveItem,
+  totalPrice,
+  setTotalPrice,
+}: IRowCart) => {
   const [quantity, setQuantity] = useState(data.quantity);
-  const [price, setPrice] = useState(data.totalPrice);
-  // localStorage.getItem(LOCAL_SAVE_PREFIX + 64, JSON.parse(newCartParam));
   const handleQuantityUp = () => {
     setQuantity(quantity + 1);
-    setPrice(data.price * (quantity + 1));
-    setTotalPrice(data.price + price);
+    setTotalPrice(totalPrice + data.price);
   };
 
   const handleQuantityDown = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
-      setPrice(data.price * (quantity - 1));
-      setTotalPrice(data.price * (quantity - 1));
+      setTotalPrice(totalPrice - data.price);
     }
   };
 
@@ -66,7 +66,7 @@ const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
               {data.name}
             </Typography>
             {data.variants &&
-              data.variants.map(_data =>
+              data.variants.map((_data) =>
                 _data.name === 'color' ? (
                   <Box
                     key={_data.id}
@@ -141,7 +141,7 @@ const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
               color: 'gray',
             }}
             value={quantity}
-            onChange={e => setQuantity(Number(e.target.value))}
+            onChange={(e) => setQuantity(Number(e.target.value))}
           />
           <AddIcon
             sx={{
@@ -159,7 +159,7 @@ const RowCart = ({ data, handleRemoveItem, setTotalPrice }: IRowCart) => {
             fontSize: '16px',
           }}
         >
-          ${price}
+          ${data.price * quantity}
         </Typography>
       </TableCell>
       <TableCell align='right'>

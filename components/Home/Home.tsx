@@ -3,7 +3,6 @@ import SectionTitle from '../Global/SectionTitle/SectionTitle';
 import * as G from '../../styles/global.styled';
 import * as S from './Home.styled';
 import ListCompany from './ListCompany/ListCompany';
-import ListClothing from './ListClothing/ListClothing';
 import BannerSwiper from './BannerSwiper/BannerSwiper';
 import ItemClothing from '../Global/ItemClothing/ItemClothing';
 import { ProductParams } from '../../services/types';

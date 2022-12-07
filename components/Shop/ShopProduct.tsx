@@ -21,19 +21,19 @@ const ShopProduct = (props: Props) => {
         <Grid item sm={9}>
           <Grid container spacing={3}>
             <Grid item sm={3}>
-              <ItemClothing />
+              {/* <ItemClothing /> */}
             </Grid>
             <Grid item sm={3}>
-              <ItemClothing />
+              {/* <ItemClothing /> */}
             </Grid>
             <Grid item sm={3}>
-              <ItemClothing />
+              {/* <ItemClothing /> */}
             </Grid>
             <Grid item sm={3}>
-              <ItemClothing />
+              {/* <ItemClothing /> */}
             </Grid>
             <Grid item sm={3}>
-              <ItemClothing />
+              {/* <ItemClothing /> */}
             </Grid>
           </Grid>
           <S.Center>
