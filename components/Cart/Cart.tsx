@@ -48,7 +48,6 @@ export default function CartUser() {
 
   useEffect(() => {
     getLocalValue();
-    // handleTotalPrice();
   }, []);
 
   const handleRemoveItem = (id: number) => {

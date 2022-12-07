@@ -3,10 +3,11 @@ import * as S from './HeaderTitle.styled';
 
 interface IHeaderTitle {
   title: string;
+  fontSize?: string;
 }
 
-const HeaderTitle = ({ title }: IHeaderTitle) => {
-  return <S.HeaderTitle>{title}</S.HeaderTitle>;
+const HeaderTitle = ({ title, fontSize }: IHeaderTitle) => {
+  return <S.HeaderTitle fontSize={fontSize}>{title}</S.HeaderTitle>;
 };
 
 export default HeaderTitle;

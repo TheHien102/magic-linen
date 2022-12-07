@@ -18,7 +18,7 @@ import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { AccountApi } from '../../../services/api/account';
 import { getCookie } from '../../../services/cookies';
-import { PermissionPrams } from '../../../services/types';
+import { FilterPermissions, PermissionPrams } from '../../../services/types';
 const validationSchema = yup.object({
   name: yup.string().required('Username is required'),
   action: yup.string().required('Password is required'),
@@ -28,7 +28,7 @@ const validationSchema = yup.object({
 });
 
 interface IPermission {
-  permissionsList: any;
+  permissionsList: FilterPermissions[];
 }
 
 interface IItemGroup {
@@ -36,24 +36,30 @@ interface IItemGroup {
   list: PermissionPrams[];
 }
 
-const Permission = ({ permissionsList }: IPermission) => {
-  let newPermissionList = permissionsList;
-  const [nPermissionList, setNPermissionList] = useState([]);
+let listItemGroup = [{ name: 'Update' }, { name: 'Create' }, { name: 'View' }];
+const tableArray = [
+  'Account',
+  'Cart',
+  'Category',
+  'Group',
+  'News',
+  'Order',
+  'Permission',
+  'Product',
+  'Province',
+];
+let newPermissionList: FilterPermissions[];
 
-  const newArray = [
-    'Account',
-    'Cart',
-    'Category',
-    'Group',
-    'News',
-    'Order',
-    'Permission',
-    'Product',
-  ];
+const Permission = ({ permissionsList }: IPermission) => {
+  const [nPermissionList, setNPermissionList] = useState<FilterPermissions[]>(
+    []
+  );
+
   useEffect(() => {
-    newArray.map((table) => {
+    newPermissionList = permissionsList;
+    tableArray.map((table) => {
       if (
-        permissionsList.findIndex((permission: any) =>
+        permissionsList.findIndex((permission) =>
           permission.name.includes(table)
         ) === -1
       ) {
@@ -61,8 +67,10 @@ const Permission = ({ permissionsList }: IPermission) => {
         newPermissionList.push(newData);
       }
     });
+    console.log('newPermissionList: ', newPermissionList);
     setNPermissionList(newPermissionList);
   }, []);
+
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -96,29 +104,20 @@ const Permission = ({ permissionsList }: IPermission) => {
 
   const [showMenu, setShowMenu] = useState(true);
   const [kind, setKind] = useState('');
-  const [permissionsListItem, setPermissionsListItem] = useState([]);
   const [itemGroup, setItemGroup] = useState<IItemGroup>();
   const [itemGroupSelect, setItemGroupSelect] = useState('');
 
-  let listItemGroup = [
-    { name: 'Update' },
-    { name: 'Create' },
-    { name: 'View' },
-  ];
-
   const handleChangeKind = (event: SelectChangeEvent) => {
     setKind(event.target.value);
-    let itemGroup = permissionsList.find(
-      (it: any) => it.name === event.target.value
-    );
-    console.log('itemGroup: ', itemGroup);
-    setItemGroup(itemGroup);
+    const item = newPermissionList.find((it) => it.name === event.target.value);
+    console.log('itemGroup: ', item);
+    setItemGroup(item);
     formik.values.nameGroup = event.target.value;
   };
 
-  const checkPermission = (action: string) => {
+  const checkPermission = (name: string) => {
     //If finded then not show to list
-    const index = itemGroup?.list.findIndex((it) => it.name.includes(action));
+    const index = itemGroup?.list.findIndex((it) => it.name.includes(name));
     if (index === -1) {
       return true;
     } else return false;
@@ -208,9 +207,9 @@ const Permission = ({ permissionsList }: IPermission) => {
               >
                 {listItemGroup.length > 0 &&
                   listItemGroup.map(
-                    (data: any, index: number) =>
+                    (data) =>
                       checkPermission(data.name) && (
-                        <MenuItem key={index} value={data.name}>
+                        <MenuItem key={data.name} value={data.name}>
                           {data.name + ' ' + itemGroup?.name}
                         </MenuItem>
                       )

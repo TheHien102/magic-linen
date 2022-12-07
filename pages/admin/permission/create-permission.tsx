@@ -5,23 +5,19 @@ import { GetServerSidePropsContext } from 'next';
 import Permission from '../../../components/Admin/Permission/Permission';
 import { AccountApi } from '../../../services/api/account';
 import { useEffect, useState } from 'react';
-import { PermissionPrams } from '../../../services/types';
-
-interface ICreatePermission {
-  permissionsList: any;
-}
+import { FilterPermissions } from '../../../services/types';
 
 export default function CreatePermission() {
-  const [permissionsList, setPermissionsList] = useState<PermissionPrams[]>([]);
-  let menu: any = [];
+  const [permissionsList, setPermissionsList] = useState<FilterPermissions[]>(
+    []
+  );
+  let menu: FilterPermissions[] = [];
 
   const handleGet = async () => {
     const token = await getCookie('token');
-    console.log('token res per: ', typeof token);
 
     if (token) {
       const [res] = await Promise.all([AccountApi.permissionsList(token)]);
-      console.log('res per: ', res);
       const tempArray = res.data.data;
       if (tempArray) {
         for (let i = 0; i < tempArray.length; i++) {
@@ -29,7 +25,7 @@ export default function CreatePermission() {
             (I: { name: string }) => I.name === tempArray[i].nameGroup
           );
           if (index !== -1) {
-            menu.map((data: { name: string; list: PermissionPrams[] }) => {
+            menu.map((data) => {
               if (data.name === tempArray[i].nameGroup) {
                 data.list.push(tempArray[i]);
                 return data;
@@ -46,11 +42,8 @@ export default function CreatePermission() {
           }
         }
         setPermissionsList(menu);
-        console.log('menu', menu);
       }
     }
-
-    console.log('permissionsList: ', permissionsList);
   };
 
   useEffect(() => {

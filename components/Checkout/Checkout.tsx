@@ -1,15 +1,89 @@
 import { Box, Typography } from '@mui/material';
-import Image from 'next/image';
-import React from 'react';
-import clothing1 from '../../assets/images/clothing1.jpg';
+import React, { useEffect, useState } from 'react';
+import { ProvinceApi } from '../../services/api/province';
+import { CartItemParams } from '../../services/types';
+import * as G from '../../styles/global.styled';
+import { LOCAL_SAVE_PREFIX, LOCAL_SAVE_LIMITER } from '../../utils/dataConfig';
+import ItemCart from './ItemCart';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import { getCookie } from '../../services/cookies';
+
+const validationSchema = yup.object({
+  id: yup.number(),
+  name: yup.string(),
+});
 
 type Props = {};
 
 const CheckoutCart = (props: Props) => {
+  const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const getLocalValue = async () => {
+    let temp: any = localStorage
+      .getItem(LOCAL_SAVE_PREFIX)
+      ?.toString()
+      .split(LOCAL_SAVE_LIMITER)
+      .map((data) => JSON.parse(data.replace('\\', '')));
+
+    if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
+      console.log('temp', temp);
+
+      setCartProduct(temp);
+      let tempTotalPrice = 0;
+      for (let i = 0; i < temp.length; i++) {
+        tempTotalPrice += temp[i].totalPrice;
+      }
+      setTotalPrice(tempTotalPrice);
+    }
+  };
+
+  const getAllListProvince = async () => {
+    const result = await ProvinceApi.listProvince();
+    if (result) {
+      console.log('result: ', result);
+    }
+  };
+
+  useEffect(() => {
+    getLocalValue();
+    getAllListProvince();
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      id: -1,
+      name: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      const token = await getCookie('token');
+
+      try {
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    },
+  });
+
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Box sx={{ width: '60%' }}></Box>
-      <Box sx={{ width: '35%', backgroundColor: '#f8f8f8', p: 2.7 }}>
+    <Box sx={{ display: 'flex', gap: 5, mt: 5 }}>
+      <Box sx={{ width: '60%' }}>
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+            fontFamily: 'Josefin Sans',
+            mb: 1.5,
+            borderBottom: '1px solid hsla(48,8%,88%,.6)',
+          }}
+        >
+          BILLING
+        </Typography>
+        <G.LabelInput>E-MAIL</G.LabelInput>
+        <G.Input widthFull></G.Input>
+      </Box>
+      <Box sx={{ width: '40%', backgroundColor: '#f8f8f8', p: 2.7 }}>
         <Typography
           sx={{ fontWeight: 'bold', fontFamily: 'Josefin Sans', mb: 1.5 }}
         >
@@ -22,40 +96,12 @@ const CheckoutCart = (props: Props) => {
             py: 3,
           }}
         >
-          <Box sx={{ display: 'flex' }}>
-            <Box sx={{ position: 'relative', width: '90px', height: '115px' }}>
-              <Image
-                src={clothing1}
-                alt=''
-                width={'100%'}
-                height={'100%'}
-                layout='responsive'
-                objectFit='contain'
-                objectPosition={'left'}
-              />
-            </Box>
-            <Box>
-              <Typography sx={{ fontFamily: 'Josefin Sans' }}>
-                Color-block linen dress ADRIA in white-gray
-              </Typography>
-              <Typography
-                sx={{
-                  fontFamily: 'Josefin Sans',
-                  color: 'gray',
-                  fontWeight: 'light',
-                }}
-              >
-                Size : XS
-              </Typography>
-              <Typography
-                sx={{ fontFamily: 'Josefin Sans', fontWeight: 'light' }}
-              >
-                1 x $86.00
-              </Typography>
-            </Box>
-          </Box>
+          {cartProduct &&
+            cartProduct.map((data) => (
+              <ItemCart key={data.productId} data={data} />
+            ))}
         </Box>
-        <Box sx={{ marginLeft: 'auto', width: 'fit-content', mt: 4 }}>
+        <Box sx={{ width: '100%', mt: 4 }}>
           <Box
             sx={{
               display: 'flex',
@@ -78,7 +124,7 @@ const CheckoutCart = (props: Props) => {
                 fontWeight: '400',
                 fontFamily: 'Josefin Sans',
                 fontSize: '16px',
-                ml: 25,
+                ml: 15,
                 textAlign: 'right',
               }}
             >
@@ -149,7 +195,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              $71.20
+              ${totalPrice}
             </Typography>
           </Box>
         </Box>

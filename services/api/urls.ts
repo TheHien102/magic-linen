@@ -23,4 +23,6 @@ export const API_URL = {
   createGroup: `${BASEURL}/group/create/`,
 
   userListProduct: `${BASEURL}/product/list_product_for_user`,
+
+  provinceList: `${BASEURL}/province/list`,
 };
