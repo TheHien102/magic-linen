@@ -23,9 +23,6 @@ import { getCookie } from 'typescript-cookie';
 import { AccountApi } from '../../../../services/api/account';
 
 const ViewPermissions = () => {
-  // const { permissions } = useStorageContext();
-  // const filterList: FilterPermissions[] = filterPermissions(permissions);
-  // console.log('filterList: ', filterList);
   const [filterList, setFilterList] = useState<FilterPermissions[]>([]);
   const [edit, setEdit] = useState(false);
 
@@ -78,7 +75,7 @@ const ViewPermissions = () => {
               </TableHead>
               <TableBody>
                 {filterList &&
-                  filterList.map((data) => (
+                  filterList.map(data => (
                     <TableRow
                       key={data.name}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

@@ -17,15 +17,17 @@ export default function CreatePermission() {
     const token = await getCookie('token');
 
     if (token) {
-      AccountApi.permissionsList(token).then((res) => {
+      AccountApi.permissionsList(token).then(res => {
         const tempArray = res.data.data;
+
+        console.log('tempArray', tempArray);
 
         for (let i = 0; i < tempArray.length; i++) {
           const index = menu.findIndex(
             (I: { name: string }) => I.name === tempArray[i].nameGroup
           );
           if (index !== -1) {
-            menu.map((data) => {
+            menu.map(data => {
               if (data.name === tempArray[i].nameGroup) {
                 data.list.push(tempArray[i]);
                 return data;
@@ -74,10 +76,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       console.log('server');
       //   console.log('token server: ', token);
       AccountApi.logout(token)
-        .then((res) => {
+        .then(res => {
           console.log(res);
         })
-        .catch((e) => {
+        .catch(e => {
           console.log('*' + token + '*');
         });
       return {

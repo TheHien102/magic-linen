@@ -102,7 +102,7 @@ export const filterVariants = (variants: VariantParams[]) => {
         colorArray.push(currentVariant);
       } else {
         let isPush = false;
-        OtherVariants.map((item) => {
+        OtherVariants.map(item => {
           if (item.name === currentVariant.name) {
             item.data.push(currentVariant);
             isPush = true;
