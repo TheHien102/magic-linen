@@ -14,6 +14,7 @@ export const API_URL = {
   listAdmin: `${BASEURL}/account/list`,
   categoryList: `${BASEURL}/category/getSorted`,
   register: `${BASEURL}/account/register/`,
+  updateProfileUser: `${BASEURL}/account/update_profile_user/`,
   permissionsList: `${BASEURL}/permission/list`,
   createPermissions: `${BASEURL}/permission/create`,
 

@@ -10,6 +10,9 @@ import { AccountApi } from '../../services/api/account';
 import * as yup from 'yup';
 import { getCookie, setCookie } from '../../services/cookies';
 import Alert from '@mui/material/Alert';
+import { useStorageContext } from '../../contexts/StorageContext';
+import Link from 'next/link';
+import { Box, Typography } from '@mui/material';
 
 type Props = {};
 
@@ -22,6 +25,7 @@ const LoginUser = (props: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { userInfo, setUserInfo } = useStorageContext();
 
   const formik = useFormik({
     initialValues: {
@@ -38,6 +42,11 @@ const LoginUser = (props: Props) => {
         if (result.data && result.data.token) {
           setCookie('token', result.data.token);
           setLoading(false);
+          setUserInfo &&
+            setUserInfo({
+              fullName: result.data.fullName,
+              avatarPath: result.data.avatarPath,
+            });
           router.push('/');
         } else {
           setError(true);
@@ -129,6 +138,23 @@ const LoginUser = (props: Props) => {
               </Alert>
             )}
           </form>
+
+          <S.ResetText>
+            Forgot your password?
+            <Link href='/reset-password'>
+              <Typography
+                sx={{
+                  ml: '10px',
+                  display: 'inline-block',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                }}
+              >
+                Reset it
+              </Typography>
+            </Link>
+          </S.ResetText>
         </S.ColRight>
       </S.Flex>
     </S.Login>

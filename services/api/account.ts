@@ -5,6 +5,7 @@ import {
   PermissionRequest,
   RegisterPrams,
   TokenResponse,
+  UpdateProfileUserPrams,
 } from '../types';
 import { API_URL } from './urls';
 
@@ -48,6 +49,16 @@ export const AccountApi = {
   },
   permissionsList: async function (token: string) {
     return await http.get(`${API_URL.permissionsList}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  updateProfileUser: async function (
+    data: UpdateProfileUserPrams,
+    token: string
+  ) {
+    return await http.put(API_URL.updateProfileUser, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -29,6 +29,10 @@ export const Content = styled.p`
   ${tw`text-[14px] mb-14`}
 `;
 
+export const ResetText = styled.p`
+  ${tw`text-[14px] mb-14 font-normal`}
+`;
+
 export const WrapInput = styled.div`
   ${tw`mt-5 mb-10`}
 `;

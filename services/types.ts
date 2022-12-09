@@ -156,6 +156,7 @@ export type CategoryParams = {
   name: string;
   categoryList?: CategoryParams[];
 };
+
 export type RegisterPrams = {
   username: string;
   password: string;
@@ -163,6 +164,21 @@ export type RegisterPrams = {
   phone: string;
   avatar?: string;
   email: string;
+};
+
+export type UpdateProfileUserPrams = {
+  username?: string;
+  password?: string;
+  oldPassword?: string;
+  fullName?: string;
+  avatar?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type UserStorage = {
+  fullName: string;
+  avatarPath: string;
 };
 
 export type AdminProductParams = {};

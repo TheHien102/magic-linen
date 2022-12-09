@@ -5,9 +5,12 @@ import logo from '../../../assets/images/logo.svg';
 import { useRouter } from 'next/router';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import { Badge } from '@mui/material';
+import { useStorageContext } from '../../../contexts/StorageContext';
+import { getCookie } from '../../../services/cookies';
 
 export const Header = () => {
   const router = useRouter();
+  const { userInfo, setUserInfo } = useStorageContext();
   return (
     <S.Header>
       <S.Center>
@@ -20,9 +23,15 @@ export const Header = () => {
           </S.WrapImage>
         </Link>
         <S.WrapBtnLogin>
-          <Link href={'/login'}>
-            <S.BtnLogin>sign in</S.BtnLogin>
-          </Link>
+          {!userInfo ? (
+            <Link href={'/login'}>
+              <S.BtnLogin>sign in</S.BtnLogin>
+            </Link>
+          ) : (
+            <Link href={'/profile'}>
+              <S.BtnLogin>{userInfo?.fullName}</S.BtnLogin>
+            </Link>
+          )}
           <Badge
             badgeContent={4}
             color='primary'
