@@ -35,6 +35,14 @@ export type CartItemParams = {
   mainImg: string;
 };
 
+export type AddToCartParams = {
+  productId: number;
+  variants: VariantParams[];
+  quantity: number;
+  price: number;
+  discount: number;
+};
+
 export type ProductDetailPrams = {
   id: number;
   name: string;

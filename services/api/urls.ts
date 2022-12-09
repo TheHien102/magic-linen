@@ -30,4 +30,6 @@ export const API_URL = {
   provinceList: `${BASEURL}/province/list`,
   provinceCreateAll: `${BASEURL}/province/addAll`,
   provinceGetChild: `${BASEURL}/province/getChild`,
+
+  addToCart: `${BASEURL}/cart/add_to_cart`,
 };

@@ -82,27 +82,10 @@ const LoginUser = (props: Props) => {
         <S.ColRight>
           <form onSubmit={formik.handleSubmit}>
             <S.Title>Existing customer</S.Title>
-            <G.LabelInput>E-MAIL ADDRESS</G.LabelInput>
-            {/* <Field
-              name='lastName'
-              placeholder='Doe'
-              // as={
-              // <G.Input
-              //   widthFull
-              //   placeholder='E-Mail Address'
-              //   id='username'
-              //   name='username'
-              //   value={formik.values.username}
-              //   onChange={formik.handleChange}
-              // />
-              // }
-              // error={}
-              // error={formik.touched.username && Boolean(formik.errors.username)}
-            /> */}
-
+            <G.LabelInput>USERNAME</G.LabelInput>
             <G.Input
               widthFull
-              placeholder='E-Mail Address'
+              placeholder='UserName'
               id='username'
               name='username'
               value={formik.values.username}

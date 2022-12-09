@@ -16,6 +16,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import {
+  AddToCartParams,
   CartItemParams,
   ProductDetailPrams,
   VariantCheckParams,
@@ -29,6 +30,8 @@ import sizeGuide from '../../assets/images/size-guide.jpg';
 import { IItemCheckVariant, IItemVariant } from '../../services/interface';
 import { LOCAL_SAVE_LIMITER, LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
 import { useRouter } from 'next/router';
+import { getCookie } from '../../services/cookies';
+import { CartApi } from '../../services/api/cart';
 
 interface IProductDetail {
   data: ProductDetailPrams;
@@ -56,9 +59,9 @@ const ProductDetail = ({ data }: IProductDetail) => {
 
   const handleProperty = (data: VariantCheckParams) => {
     setVariantList(
-      variantList.map(it => {
+      variantList.map((it) => {
         if (it.name === data.name) {
-          it.data.map(_it => {
+          it.data.map((_it) => {
             if (_it.id === data.id) {
               _it.checked = !_it.checked;
 
@@ -81,31 +84,52 @@ const ProductDetail = ({ data }: IProductDetail) => {
     );
   };
 
-  const handleAddToCart = () => {
-    let oneProductPrice = price * ((100 - data.discount) / 100);
-    let newCartParam: CartItemParams = {
-      productId: data.id,
-      name: data.name,
-      price: oneProductPrice,
-      mainImg: data.mainImg,
-      variants: [],
-      quantity: quantity,
-      totalPrice: quantity * price * ((100 - data.discount) / 100),
-    };
-    variantList.map(it => {
-      newCartParam.variants = newCartParam.variants.concat(
-        it.data.filter(_it => _it.checked === true)
-      );
-    });
-
-    if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
-      let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
-      storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newCartParam);
-      localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
+  const handleAddToCart = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      console.log('token: ', token);
+      let newAddToCartParam: AddToCartParams = {
+        productId: data.id,
+        variants: [],
+        quantity: quantity,
+        price: quantity * price * ((100 - data.discount) / 100),
+        discount: data.discount,
+      };
+      variantList.map((it) => {
+        newAddToCartParam.variants = newAddToCartParam.variants.concat(
+          it.data.filter((_it) => _it.checked === true)
+        );
+      });
+      console.log('newAddToCartParam: ', newAddToCartParam);
+      CartApi.addToCart(token, newAddToCartParam).then((res) => {
+        console.log('res: ', res);
+      });
     } else {
-      localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newCartParam));
+      let oneProductPrice = price * ((100 - data.discount) / 100);
+      let newCartParam: CartItemParams = {
+        productId: data.id,
+        name: data.name,
+        price: oneProductPrice,
+        mainImg: data.mainImg,
+        variants: [],
+        quantity: quantity,
+        totalPrice: quantity * price * ((100 - data.discount) / 100),
+      };
+      variantList.map((it) => {
+        newCartParam.variants = newCartParam.variants.concat(
+          it.data.filter((_it) => _it.checked === true)
+        );
+      });
+
+      if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
+        let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
+        storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newCartParam);
+        localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
+      } else {
+        localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newCartParam));
+      }
+      router.push('/cart');
     }
-    router.push('/cart');
   };
 
   const variantListTemp = filterVariants(data.variants);
@@ -113,7 +137,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
   useEffect(() => {
     setVariantList(variantListTemp);
   }, []);
-  const dataImages = data.assets.map(it => it.link).concat(data.mainImg);
+  const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
 
   console.log('dataImages: ', dataImages);
 
@@ -121,7 +145,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
     <Box sx={{ display: 'flex', marginX: '120px', gap: '35px' }}>
       <Box sx={{ width: '60%' }}>
         <ProductSwiper data={dataImages} />
-        {/* <Accordion defaultExpanded>
+        <Accordion defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
@@ -136,7 +160,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
               dangerouslySetInnerHTML={{ __html: data.description }}
             ></Typography>
           </AccordionDetails>
-        </Accordion> */}
+        </Accordion>
       </Box>
       <Box sx={{ w: '30%' }}>
         <Typography
@@ -269,7 +293,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
           </Fade>
         </Modal>
         {variantList &&
-          variantList.map(data => (
+          variantList.map((data) => (
             <Box key={data.id}>
               <Typography
                 sx={{
@@ -284,7 +308,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 {data.name}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-                {data.data.map(_data =>
+                {data.data.map((_data) =>
                   _data.name !== 'color' ? (
                     <Box
                       key={_data.property}
@@ -358,7 +382,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
               width: '35px',
             }}
             value={quantity}
-            onChange={e => setQuantity(Number(e.target.value))}
+            onChange={(e) => setQuantity(Number(e.target.value))}
           />
           <Box
             sx={{
