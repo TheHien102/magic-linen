@@ -38,14 +38,19 @@ export const urlMenuData = {
   'Create Group': '/admin/group/create-group',
   'View Group': '/admin/group/view-group',
   'Update Group': '/admin/group/update-group',
+
   'Create Permission': '/admin/permission/create-permission',
   'View Permission': '/admin/permission/view-permission',
   'Update Permission': '/admin/permission/update-permission',
+  'View All Permission': '/admin/permission/list-permission',
+
   'Create Product': '/admin/product/create-product',
   'View Product': '/admin/product/view-product',
   'Update Product': '/admin/product/update-product',
+
   'Create Account': '/admin/account/create-account',
   'View Account': '/admin/account/view-account',
+
   'Create Province': '/admin/province/create-province',
   'View Province': '/admin/province/view-province',
   'Update Province': '/admin/province/update-province',

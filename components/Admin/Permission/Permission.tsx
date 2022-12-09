@@ -36,7 +36,13 @@ interface IItemGroup {
   list: PermissionPrams[];
 }
 
-let listItemGroup = [{ name: 'Update' }, { name: 'Create' }, { name: 'View' }];
+let listItemGroup = [
+  { name: 'Update' },
+  { name: 'Create' },
+  { name: 'View' },
+  { name: 'View All' },
+];
+
 const tableArray = [
   'Account',
   'Cart',
@@ -118,7 +124,9 @@ const Permission = ({ permissionsList }: IPermission) => {
 
   const checkPermission = (name: string) => {
     //If finded then not show to list
-    const index = itemGroup?.list.findIndex((it) => it.name.includes(name));
+    const index = itemGroup?.list.findIndex((it) => {
+      it.name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
+    });
     if (index === -1) {
       return true;
     } else return false;
@@ -128,12 +136,15 @@ const Permission = ({ permissionsList }: IPermission) => {
     formik.values.name = event.target.value + ' ' + formik.values.nameGroup;
     formik.values.description =
       event.target.value + ' ' + formik.values.nameGroup;
-    let last =
-      event.target.value.split(' ')[0] === 'View'
-        ? 'Get'
-        : event.target.value.split(' ')[0];
+
+    let last = event.target.value.split(' ').includes('All')
+      ? 'List'
+      : event.target.value.split(' ')[0] === 'View'
+      ? 'Get'
+      : event.target.value.split(' ')[0];
     let formatString = '/v1/' + formik.values.nameGroup + '/' + last;
     formik.values.action = formatString.toLowerCase();
+    console.log('last: ', last);
 
     setItemGroupSelect(event.target.value);
   };
@@ -185,7 +196,8 @@ const Permission = ({ permissionsList }: IPermission) => {
                 {nPermissionList &&
                   nPermissionList.map(
                     (data: any, index: number) =>
-                      data.list.length < 3 && (
+                      // small than 4 because has 4 permission 'Create, Update, View, View All'
+                      data.list.length < 4 && (
                         <MenuItem key={index} value={data.name}>
                           {data.name}
                         </MenuItem>

@@ -2,13 +2,9 @@ import Head from 'next/head';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
 import { getCookie } from '../../../services/cookies';
 import { GetServerSidePropsContext } from 'next';
-import Permission from '../../../components/Admin/Permission/Permission';
-import { AccountApi } from '../../../services/api/account';
-import { useEffect, useState } from 'react';
-import { PermissionPrams } from '../../../services/types';
 import CreateGroupAdmin from '../../../components/Admin/Group/CreateGroup';
 
-export default function UpdateGroup() {
+export default function ViewGroupPage() {
   return (
     <>
       <Head>
