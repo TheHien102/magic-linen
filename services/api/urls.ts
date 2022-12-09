@@ -15,6 +15,7 @@ export const API_URL = {
   categoryList: `${BASEURL}/category/getSorted`,
   register: `${BASEURL}/account/register/`,
   updateProfileUser: `${BASEURL}/account/update_profile_user/`,
+  requestForgetPassword: `${BASEURL}/account/request_forget_password`,
   permissionsList: `${BASEURL}/permission/list`,
   createPermissions: `${BASEURL}/permission/create`,
 

@@ -39,16 +39,16 @@ const CheckoutCart = (props: Props) => {
     }
   };
 
-  const getAllListProvince = async () => {
-    const result = await ProvinceApi.listProvince();
-    if (result) {
-      console.log('result: ', result);
-    }
-  };
+  // const getAllListProvince = async () => {
+  //   const result = await ProvinceApi.listProvince();
+  //   if (result) {
+  //     console.log('result: ', result);
+  //   }
+  // };
 
   useEffect(() => {
     getLocalValue();
-    getAllListProvince();
+    // getAllListProvince();
   }, []);
 
   const formik = useFormik({
@@ -97,8 +97,8 @@ const CheckoutCart = (props: Props) => {
           }}
         >
           {cartProduct &&
-            cartProduct.map((data) => (
-              <ItemCart key={data.productId} data={data} />
+            cartProduct.map((data, index) => (
+              <ItemCart key={index} data={data} />
             ))}
         </Box>
         <Box sx={{ width: '100%', mt: 4 }}>
@@ -128,7 +128,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              $71.20
+              ${totalPrice}
             </Typography>
           </Box>
           <Box

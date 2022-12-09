@@ -13,7 +13,6 @@ const Login = (props: Props) => {
       <Head>
         <title>Login | Magic Linen</title>
         <meta name='description' content='Magic Linen' />
-        <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
         <LoginUser />

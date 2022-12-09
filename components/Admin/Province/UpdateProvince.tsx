@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   FormControl,
@@ -9,6 +10,7 @@ import {
   OutlinedInput,
   Select,
   SelectChangeEvent,
+  Snackbar,
 } from '@mui/material';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { getCookie } from '../../../services/cookies';
@@ -19,6 +21,7 @@ import NewProvince from './NewProvince/NewProvince';
 import { ProvinceApi } from '../../../services/api/province';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { ProvinceParam } from '../../../services/types';
+import { useRouter } from 'next/router';
 
 let nameId = -1;
 const DISTRICT_VALUE = '2';
@@ -50,8 +53,12 @@ const UpdateProvince = () => {
 
   const [nameList, setNameList] = useState<IUpdateProvince[]>([]);
   const [dataParent, setDataParent] = useState<ProvinceParam[]>([]);
+  const [dataChild, setDataChild] = useState<ProvinceParam[]>([]);
   const [itemGroup, setItemGroup] = useState('');
-
+  const [parentId, setParentId] = useState('');
+  const [childId, setChildId] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       names: [] as string[],
@@ -68,9 +75,10 @@ const UpdateProvince = () => {
             .filter((it) => it.name.length > 0)
             .map((it) => it.name);
           console.log('values: ', values);
-          // ProvinceApi.createProvince(token, values).then((res) => {
-          //   console.log('res: ', res);
-          // });
+          ProvinceApi.createProvince(token, values).then((res) => {
+            router.reload();
+            setOpenSnackbar(true);
+          });
         }
       } catch (error) {
         console.log('error: ', error);
@@ -81,10 +89,19 @@ const UpdateProvince = () => {
   const SEARCH_PARAMS = '';
 
   const getParent = (level: number) => {
-    ProvinceApi.listProvince(SEARCH_PARAMS, level).then((res) => {
+    ProvinceApi.listProvince(SEARCH_PARAMS, level, null).then((res) => {
       console.log('res: ', res.data.data);
       setDataParent(res.data.data);
     });
+  };
+
+  const getChild = (parentId: string) => {
+    ProvinceApi.listProvince(SEARCH_PARAMS, null, Number(parentId)).then(
+      (res) => {
+        console.log('res: ', res.data.data);
+        setDataChild(res.data.data);
+      }
+    );
   };
 
   useEffect(() => {
@@ -106,20 +123,27 @@ const UpdateProvince = () => {
   };
 
   const handleAddNewProvince = () => {
-    let data = { id: nameId--, name: '' };
+    let data = { id: --nameId, name: '' };
     setNameList([...nameList, data]);
   };
 
-  const handleSelectProvince = (id: number) => {
-    ProvinceApi.getChildProvince(id)
-      .then((res) => {
-        console.log('res province: ', res);
-      })
-      .catch((e) => console.log('error: ', e));
+  const handleParentId = (_parentId: string) => {
+    setParentId(_parentId);
+    console.log('parentId: ', _parentId);
+    getChild(_parentId);
   };
 
   return (
     <Grid>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={openSnackbar}
+        autoHideDuration={3000}
+      >
+        <Alert severity='success' sx={{ width: '100%' }}>
+          Add Location Complete!
+        </Alert>
+      </Snackbar>
       <Box>
         <form onSubmit={formik.handleSubmit}>
           <Grid
@@ -202,8 +226,9 @@ const UpdateProvince = () => {
                     id='parent'
                     input={<OutlinedInput />}
                     MenuProps={MenuProps}
+                    value={parentId}
                     onChange={(e: SelectChangeEvent) =>
-                      (formik.values.parentId = Number(e.target.value))
+                      handleParentId(e.target.value)
                     }
                   >
                     {dataParent &&
@@ -224,8 +249,9 @@ const UpdateProvince = () => {
                       id='parent'
                       input={<OutlinedInput />}
                       MenuProps={MenuProps}
-                      onChange={(e) =>
-                        handleSelectProvince(Number(e.target.value))
+                      value={parentId}
+                      onChange={(e: SelectChangeEvent) =>
+                        handleParentId(e.target.value)
                       }
                     >
                       {dataParent &&
@@ -243,12 +269,14 @@ const UpdateProvince = () => {
                       id='parent'
                       input={<OutlinedInput />}
                       MenuProps={MenuProps}
-                      onChange={(e: SelectChangeEvent) =>
-                        (formik.values.parentId = Number(e.target.value))
-                      }
+                      value={childId}
+                      onChange={(e: SelectChangeEvent) => {
+                        setChildId(e.target.value);
+                        formik.values.parentId = Number(e.target.value);
+                      }}
                     >
-                      {dataParent &&
-                        dataParent.map((it) => (
+                      {dataChild &&
+                        dataChild.map((it) => (
                           <MenuItem key={it.id} value={it.id}>
                             <ListItemText primary={it.name} />
                           </MenuItem>

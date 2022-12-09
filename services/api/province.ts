@@ -3,11 +3,16 @@ import { AddAllProvinceParams } from '../types';
 import { API_URL } from './urls';
 
 export const ProvinceApi = {
-  listProvince: async function (_name: string, _level: number) {
+  listProvince: async function (
+    _name: string,
+    _level: number | null,
+    _parentId: number | null
+  ) {
     return await http.get(`${API_URL.provinceList}`, {
       params: {
         name: _name,
         level: _level,
+        parentId: _parentId,
         specification: {},
       },
     });

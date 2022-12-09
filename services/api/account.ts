@@ -64,4 +64,9 @@ export const AccountApi = {
       },
     });
   },
+  requestForgetPassword: async function (_email: string) {
+    return await http.post(`${API_URL.requestForgetPassword}`, {
+      email: _email,
+    });
+  },
 };

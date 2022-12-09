@@ -15,7 +15,6 @@ const Checkout = (props: Props) => {
       <Head>
         <title>Checkout | Magic Linen</title>
         <meta name='description' content='Magic Linen' />
-        <link rel='icon' href='/favicon.ico' />
       </Head>
       <G.Container>
         <Box sx={{ marginX: '130px' }}>

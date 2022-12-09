@@ -10,7 +10,6 @@ const Cart = () => {
       <Head>
         <title>Cart | Magic Linen</title>
         <meta name='description' content='Magic Linen' />
-        <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
         <CartUser />

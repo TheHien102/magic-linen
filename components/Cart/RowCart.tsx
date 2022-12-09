@@ -8,7 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 
 interface IRowCart {
   data: CartItemParams;
-  handleRemoveItem: (id: number) => void;
+  handleRemoveItem: (data: CartItemParams) => void;
   totalPrice: number;
   setTotalPrice: Dispatch<SetStateAction<number>>;
 }
@@ -165,7 +165,7 @@ const RowCart = ({
       <TableCell align='right'>
         <CloseIcon
           sx={{ color: 'gray', fontSize: '16px', cursor: 'pointer' }}
-          onClick={() => handleRemoveItem(data.productId)}
+          onClick={() => handleRemoveItem(data)}
         />
       </TableCell>
     </TableRow>

@@ -11,7 +11,6 @@ const Register = (props: Props) => {
       <Head>
         <title>Register | Magic Linen</title>
         <meta name='description' content='Magic Linen' />
-        <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
         <RegisterUser />

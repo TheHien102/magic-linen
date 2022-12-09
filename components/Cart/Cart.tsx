@@ -14,11 +14,12 @@ import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import { LOCAL_SAVE_LIMITER, LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
 import { CartItemParams } from '../../services/types';
 import RowCart from './RowCart';
+import { useRouter } from 'next/router';
 
 export default function CartUser() {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
-
+  const router = useRouter();
   const handleTotalPrice = () => {
     let tempTotalPrice = 0;
     for (let i = 0; i < cartProduct.length; i++) {
@@ -50,11 +51,27 @@ export default function CartUser() {
     getLocalValue();
   }, []);
 
-  const handleRemoveItem = (id: number) => {
+  useEffect(() => {
+    handleTotalPrice();
+  }, [cartProduct]);
+
+  const handleRemoveItem = (data: CartItemParams) => {
     if (cartProduct.length === 1) {
       localStorage.removeItem(LOCAL_SAVE_PREFIX);
     }
-    setCartProduct(cartProduct.filter((it) => it.productId !== id));
+    setCartProduct(cartProduct.filter((it) => it !== data));
+    let tempArray = cartProduct.filter((it) => it !== data);
+    console.log('cartProduct: ', cartProduct);
+    // let tempTotalPrice = 0;
+    // for (
+    //   let i = 0;
+    //   i < cartProduct.filter((it) => it.productId !== id).length;
+    //   i++
+    // ) {
+    //   tempTotalPrice += cartProduct.filter((it) => it.productId !== id)[i]
+    //     .totalPrice;
+    // }
+    // setTotalPrice(tempTotalPrice);
   };
 
   const handleContinueShopping = () => {
@@ -78,6 +95,7 @@ export default function CartUser() {
 
   const handleCheckout = () => {
     setNewJson();
+    router.push('/checkout');
   };
 
   return (
@@ -129,9 +147,9 @@ export default function CartUser() {
               </TableHead>
               <TableBody>
                 {cartProduct &&
-                  cartProduct.map((data) => (
+                  cartProduct.map((data, index) => (
                     <RowCart
-                      key={data.productId}
+                      key={index}
                       data={data}
                       handleRemoveItem={handleRemoveItem}
                       totalPrice={totalPrice}

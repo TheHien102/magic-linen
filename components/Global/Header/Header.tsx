@@ -3,10 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo from '../../../assets/images/logo.svg';
 import { useRouter } from 'next/router';
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import { Badge } from '@mui/material';
 import { useStorageContext } from '../../../contexts/StorageContext';
 import { getCookie } from '../../../services/cookies';
+import iconCart from '../../../assets/images/icon-cart.svg';
 
 export const Header = () => {
   const router = useRouter();
@@ -41,7 +41,7 @@ export const Header = () => {
             sx={{ ml: 2, cursor: 'pointer' }}
             onClick={() => router.push('/cart')}
           >
-            <ShoppingBasketIcon sx={{ color: '#000' }} />
+            <Image src={iconCart} alt='iconCart' />
           </Badge>
         </S.WrapBtnLogin>
       </S.Center>

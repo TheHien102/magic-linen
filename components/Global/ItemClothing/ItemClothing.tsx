@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
 import * as S from './ItemClothing.styled';
-import clothing1 from '../../../assets/images/clothing1.jpg';
 import { ProductParams } from '../../../services/types';
 import { Box } from '@mui/material';
 import Link from 'next/link';
@@ -14,8 +13,10 @@ const ItemClothing = ({ data }: IItemClothing) => {
   return (
     <S.ItemClothing>
       <S.WrapImage>
-        <Link href={`/product/${data.id}`}>
-          <Image src={data.mainImg} alt='' width={260} height={400} />
+        <Link href={`/product/${data.id}`} passHref>
+          <a>
+            <Image src={data.mainImg} alt='' width={260} height={400} />
+          </a>
         </Link>
       </S.WrapImage>
       <Link href={`/product/${data.id}`}>

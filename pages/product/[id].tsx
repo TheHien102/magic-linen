@@ -19,7 +19,6 @@ const ProductPage = ({ res }: IProductPage) => {
       <Head>
         <title>Shop | Linen A</title>
         <meta name='description' content='Magic Linen' />
-        <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
         <Box>

@@ -79,7 +79,6 @@ const ChangePassword = (props: Props) => {
       <Head>
         <title>Profile | Magic Linen</title>
         <meta name='description' content='Magic Linen' />
-        <link rel='icon' href='/favicon.ico' />
       </Head>
       <ProfileLayout>
         <form onSubmit={formik.handleSubmit}>
