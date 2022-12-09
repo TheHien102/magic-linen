@@ -9,7 +9,7 @@ const Register = (props: Props) => {
   return (
     <>
       <Head>
-        <title>Register | Magic Linen</title>
+        <title>Register | Linen A</title>
         <meta name='description' content='Magic Linen' />
       </Head>
       <Layout>

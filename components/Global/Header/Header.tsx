@@ -46,10 +46,10 @@ export const Header = () => {
         </S.WrapBtnLogin>
       </S.Center>
       <S.Navbar>
-        <Link href={'/'}>
+        <Link href={'/shop'}>
           <S.Text>Women clothing</S.Text>
         </Link>
-        <Link href={'/'}>
+        <Link href={'/shop'}>
           <S.Text>Men clothing</S.Text>
         </Link>
       </S.Navbar>

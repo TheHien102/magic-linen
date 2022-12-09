@@ -100,7 +100,7 @@ const ResetPassword = () => {
   return (
     <>
       <Head>
-        <title>Reset Password | Magic Linen</title>
+        <title>Reset Password | Linen A</title>
         <meta name='description' content='Magic Linen' />
       </Head>
       <Layout>

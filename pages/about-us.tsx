@@ -1,6 +1,8 @@
+import { Box } from '@mui/material';
 import Head from 'next/head';
 import React from 'react';
 import AboutLinenA from '../components/AboutLinenA/AboutLinenA';
+import Breadcrumb from '../components/Global/Breadcumb/Breadcumb';
 import { Layout } from '../components/Global/Layout/Layout';
 
 const AboutUs = () => {
@@ -11,7 +13,10 @@ const AboutUs = () => {
         <meta name='description' content='Magic Linen' />
       </Head>
       <Layout>
-        <AboutLinenA />
+        <Box>
+          <Breadcrumb data={['Home', 'About LinenA']} />
+          <AboutLinenA />
+        </Box>
       </Layout>
     </>
   );

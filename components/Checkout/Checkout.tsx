@@ -1,13 +1,14 @@
 import { Box, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ProvinceApi } from '../../services/api/province';
-import { CartItemParams } from '../../services/types';
+import { CartItemParams, ProvinceParam } from '../../services/types';
 import * as G from '../../styles/global.styled';
 import { LOCAL_SAVE_PREFIX, LOCAL_SAVE_LIMITER } from '../../utils/dataConfig';
 import ItemCart from './ItemCart';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { getCookie } from '../../services/cookies';
+import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 
 const validationSchema = yup.object({
   id: yup.number(),
@@ -19,6 +20,9 @@ type Props = {};
 const CheckoutCart = (props: Props) => {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [province, setProvince] = useState<ProvinceParam[]>([]);
+  const [disctrict, setDistrict] = useState<ProvinceParam[]>([]);
+  const [ward, setWard] = useState<ProvinceParam[]>([]);
 
   const getLocalValue = async () => {
     let temp: any = localStorage
@@ -45,10 +49,31 @@ const CheckoutCart = (props: Props) => {
   //     console.log('result: ', result);
   //   }
   // };
+  const SEARCH_PARAMS = '';
+
+  const getProvince = (level: number) => {
+    ProvinceApi.listProvince(SEARCH_PARAMS, level, null).then((res) => {
+      setProvince(res.data.data);
+    });
+  };
+
+  const getDistrict = (parentId: number) => {
+    ProvinceApi.listProvince(SEARCH_PARAMS, null, parentId).then((res) => {
+      setDistrict(res.data.data);
+      setWard([]);
+    });
+  };
+
+  const getWard = (parentId: number) => {
+    ProvinceApi.listProvince(SEARCH_PARAMS, null, parentId).then((res) => {
+      setWard(res.data.data);
+    });
+  };
 
   useEffect(() => {
     getLocalValue();
     // getAllListProvince();
+    getProvince(1);
   }, []);
 
   const formik = useFormik({
@@ -68,7 +93,7 @@ const CheckoutCart = (props: Props) => {
   });
 
   return (
-    <Box sx={{ display: 'flex', gap: 5, mt: 5 }}>
+    <Box sx={{ display: 'flex', gap: 5, mt: 5, mb: 5 }}>
       <Box sx={{ width: '60%' }}>
         <Typography
           sx={{
@@ -82,6 +107,66 @@ const CheckoutCart = (props: Props) => {
         </Typography>
         <G.LabelInput>E-MAIL</G.LabelInput>
         <G.Input widthFull></G.Input>
+        <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+          <Box sx={{ width: '50%' }}>
+            <G.LabelInput>FULL NAME</G.LabelInput>
+            <G.Input widthFull></G.Input>
+          </Box>
+          <Box sx={{ width: '50%' }}>
+            <G.LabelInput>PHONE</G.LabelInput>
+            <G.Input widthFull></G.Input>
+          </Box>
+        </Box>
+        <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+          <Box sx={{ width: '50%' }}>
+            <G.LabelInput>Province</G.LabelInput>
+            <G.Select
+              widthFull
+              onChange={(e) => getDistrict(Number(e.target.value))}
+            >
+              {province &&
+                province.map((data) => (
+                  <option key={data.id} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+            </G.Select>
+          </Box>
+          <Box sx={{ width: '50%' }}>
+            <G.LabelInput>District</G.LabelInput>
+            <G.Select
+              widthFull
+              disabled={disctrict && disctrict.length > 0 ? false : true}
+              onChange={(e) => getWard(Number(e.target.value))}
+            >
+              {disctrict &&
+                disctrict.map((data) => (
+                  <option key={data.id} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+            </G.Select>
+          </Box>
+        </Box>
+
+        <Box sx={{ mt: 3 }}>
+          <G.LabelInput>Ward</G.LabelInput>
+          <G.Select
+            widthFull
+            disabled={ward && ward.length > 0 ? false : true}
+            // onChange={(e) => getDistrict(Number(e.target.value))}
+          >
+            {ward &&
+              ward.map((data) => (
+                <option key={data.id} value={data.id}>
+                  {data.name}
+                </option>
+              ))}
+          </G.Select>
+        </Box>
+        <Box sx={{ width: 'fit-content', marginLeft: 'auto', mt: 5 }}>
+          <BtnShopNow title='Confirm' revertColor />
+        </Box>
       </Box>
       <Box sx={{ width: '40%', backgroundColor: '#f8f8f8', p: 2.7 }}>
         <Typography

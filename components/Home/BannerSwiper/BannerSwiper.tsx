@@ -64,16 +64,48 @@ export default function BannerSwiper() {
           <S.InnerBanner>
             <Image src={banner2} alt='banner1' />
           </S.InnerBanner>
+          <S.WrapContent>
+            <S.Center>
+              <S.Title>HOLIDAY GIFT GUIDE</S.Title>
+              <S.SubTitle>
+                Shop handmade linen gifts. Free Express Shipping to USA on
+                orders over $150
+              </S.SubTitle>
+              <S.WrapBtn>
+                <BtnShopNow revertColor={true} />
+              </S.WrapBtn>
+            </S.Center>
+          </S.WrapContent>
         </SwiperSlide>
         <SwiperSlide>
           <S.InnerBanner>
             <Image src={banner3} alt='banner1' />
           </S.InnerBanner>
+          <S.WrapContent>
+            <S.Center>
+              <S.Title>FESTIVE CHRISTMAS DEALS</S.Title>
+              <S.SubTitle>Shop handmade gifts with up to 50% off</S.SubTitle>
+              <S.WrapBtn>
+                <BtnShopNow revertColor={true} />
+              </S.WrapBtn>
+            </S.Center>
+          </S.WrapContent>
         </SwiperSlide>
         <SwiperSlide>
           <S.InnerBanner>
             <Image src={banner4} alt='banner1' />
           </S.InnerBanner>
+          <S.WrapContent>
+            <S.Center>
+              <S.Title>SWEET DREAMS</S.Title>
+              <S.SubTitle>
+                Sleep well this cozy season with handmade linen bedding
+              </S.SubTitle>
+              <S.WrapBtn>
+                <BtnShopNow revertColor={true} />
+              </S.WrapBtn>
+            </S.Center>
+          </S.WrapContent>
         </SwiperSlide>
       </Swiper>
     </S.BannerSwiper>

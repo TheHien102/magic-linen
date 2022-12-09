@@ -11,7 +11,7 @@ const Login = (props: Props) => {
   return (
     <>
       <Head>
-        <title>Login | Magic Linen</title>
+        <title>Login | Linen A</title>
         <meta name='description' content='Magic Linen' />
       </Head>
       <Layout>

@@ -31,9 +31,9 @@ const AboutLinenA = (props: Props) => {
       <iframe
         width='1175'
         height='493'
-        src='https://www.youtube.com/embed/LUzwu8xm388?list=TLGGAmaTPWeyusAwNzEyMjAyMg'
+        src='https://www.youtube.com/embed/LUzwu8xm388'
         title='MagicLinen - Our Story'
-        frameBorder='0'
+        frameBorder={0}
         allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
       ></iframe>
       <HeaderTitle title='Note from the founder' fontSize='32px' />

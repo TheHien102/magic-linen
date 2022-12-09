@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 
 export const BannerSwiper = styled.div`
-  ${tw`mx-[-150px]`}
+  ${tw`mx-[-150px] mb-10`}
 
   .swiper {
     ${tw`w-full h-full`}
   }
 
   .mySwiper {
-    ${tw`h-[580px]`}
+    ${tw`h-[535px]`}
 
     .swiper-pagination-bullet {
       width: 9px;
@@ -50,7 +50,7 @@ export const InnerBanner = styled.div`
 `;
 
 export const WrapContent = styled.div`
-  ${tw`flex px-14 justify-center items-center absolute right-0 top-0 h-[84%] mt-6 mr-6 bg-[hsla(0,0%,100%,.82)]`}
+  ${tw`flex px-14 max-w-[480px] justify-center items-center absolute right-0 top-0 h-[90%] mt-6 mr-6 bg-[hsla(0,0%,100%,.82)]`}
 `;
 
 export const Center = styled.div`
@@ -62,7 +62,7 @@ export const WrapBtn = styled.div`
 `;
 
 export const Title = styled.h1`
-  ${tw`font-normal mb-1`}
+  ${tw`font-normal mb-1 text-center`}
 
   &:after {
     content: '';
@@ -75,5 +75,5 @@ export const Title = styled.h1`
 `;
 
 export const SubTitle = styled.p`
-  ${tw`text-[22px] max-w-[330px] font-light leading-8 text-center tracking-wide`}
+  ${tw`text-[22px]  font-light leading-8 text-center tracking-wide`}
 `;

@@ -15,7 +15,7 @@ export default function Home({ listProduct }: IHome) {
   return (
     <>
       <Head>
-        <title>Magic Linen</title>
+        <title>Linen A</title>
         <meta name='description' content='Magic Linen' />
       </Head>
       <Layout>

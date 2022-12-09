@@ -77,7 +77,7 @@ const ChangePassword = (props: Props) => {
   return (
     <>
       <Head>
-        <title>Profile | Magic Linen</title>
+        <title>Profile | Linen A</title>
         <meta name='description' content='Magic Linen' />
       </Head>
       <ProfileLayout>
