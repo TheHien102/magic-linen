@@ -195,4 +195,10 @@ export type UserStorage = {
   avatarPath: string;
 };
 
+export type SetNewPassword = {
+  newPassword: string;
+  idHash: string;
+  otp: string;
+};
+
 export type AdminProductParams = {};

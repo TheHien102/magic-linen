@@ -4,6 +4,7 @@ import {
   PermissionPrams,
   PermissionRequest,
   RegisterPrams,
+  SetNewPassword,
   TokenResponse,
   UpdateProfileUserPrams,
 } from '../types';
@@ -68,5 +69,8 @@ export const AccountApi = {
     return await http.post(`${API_URL.requestForgetPassword}`, {
       email: _email,
     });
+  },
+  setNewPassword: async function (data: SetNewPassword) {
+    return await http.post(`${API_URL.setNewPassword}`, data);
   },
 };

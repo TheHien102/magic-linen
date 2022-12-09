@@ -16,6 +16,7 @@ export const API_URL = {
   register: `${BASEURL}/account/register/`,
   updateProfileUser: `${BASEURL}/account/update_profile_user/`,
   requestForgetPassword: `${BASEURL}/account/request_forget_password`,
+  setNewPassword: `${BASEURL}/account/forget_password`,
   permissionsList: `${BASEURL}/permission/list`,
   createPermissions: `${BASEURL}/permission/create`,
 

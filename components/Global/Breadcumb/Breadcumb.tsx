@@ -13,7 +13,6 @@ interface IBreadcrumb {
 }
 
 export default function Breadcrumb({ data }: IBreadcrumb) {
-  console.log('data bredcrumb: ', data);
   const finals = data?.pop();
 
   return (
