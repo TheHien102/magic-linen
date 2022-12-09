@@ -18,7 +18,7 @@ export const ProductApi = {
     token: string | undefined,
     data: AddProductPrams
   ) {
-    return await http.post(API_URL.updateProduct, data, {
+    return await http.put(API_URL.updateProduct, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',

@@ -24,7 +24,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { ProductApi } from '../../../services/api/product';
 import { getCookie } from '../../../services/cookies';
 import UploadImage from '../../../components/Global/UploadImage/UploadImage';
@@ -32,6 +32,8 @@ import { AccountApi } from '../../../services/api/account';
 import CloseIcon from '@mui/icons-material/Close';
 import ModalImage from '../../../components/Admin/Products/ModalImage';
 import Image from 'next/image';
+import { GroupApi } from '../../../services/api/group';
+import { GroupParams } from '../../../services/types';
 
 const validationSchema = yup.object({
   username: yup.string().required('Username is required'),
@@ -45,8 +47,9 @@ const validationSchema = yup.object({
 });
 
 export default function CreateAdmin() {
-  // const [imagePath, setImagePath] = useState('');
   const [kind, setKind] = useState('');
+  const [groupList, setGroupList] = useState<GroupParams[]>([]);
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -64,17 +67,33 @@ export default function CreateAdmin() {
       try {
         if (token) {
           formik.values.avatarPath = mainImage;
-          const result = await AccountApi.createAdmin(token, values);
-          if (result) {
+          console.log('values: ', values);
+
+          AccountApi.createAdmin(token, values).then(() => {
             setOpenSnackbar(true);
-            router.push('/admin/list');
-          }
+            router.push('/admin/account/view-account');
+          });
         }
       } catch (error) {
         console.log('error: ', error);
       }
     },
   });
+
+  useEffect(() => {
+    getAllGroup();
+  }, []);
+
+  const getAllGroup = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      const result = await GroupApi.listAllGroup(token);
+
+      if (result) {
+        setGroupList(result.data.data);
+      }
+    }
+  };
 
   const handleChangeKind = (event: SelectChangeEvent) => {
     setKind(event.target.value);
@@ -282,16 +301,23 @@ export default function CreateAdmin() {
                         value={kind}
                         label='Kind'
                         placeholder='Kind'
-                        sx={{ color: 'black' }}
+                        sx={{ color: 'black', textTransform: 'capitalize' }}
                         onChange={handleChangeKind}
                         error={
                           formik.touched.kind && Boolean(formik.errors.kind)
                         }
                       >
-                        <MenuItem value={1}>Admin</MenuItem>
-                        <MenuItem value={2}>Customer</MenuItem>
-                        <MenuItem value={3}>Employee</MenuItem>
-                        <MenuItem value={4}>Collaborator</MenuItem>
+                        {groupList &&
+                          groupList.map((data) => (
+                            <MenuItem
+                              key={data.id}
+                              value={data.kind}
+                              // onClick={handleGetMenuItemValue}
+                              sx={{ textTransform: 'capitalize' }}
+                            >
+                              {data.name}
+                            </MenuItem>
+                          ))}
                       </Select>
                     </FormControl>
                   </Grid>

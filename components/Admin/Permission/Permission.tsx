@@ -57,6 +57,7 @@ const Permission = ({ permissionsList }: IPermission) => {
 
   useEffect(() => {
     newPermissionList = permissionsList;
+    console.log('permissionsList: ', permissionsList);
     tableArray.map((table) => {
       if (
         permissionsList.findIndex((permission) =>
@@ -199,9 +200,9 @@ const Permission = ({ permissionsList }: IPermission) => {
               <Select
                 labelId='itemGroup'
                 id='itemGroup'
-                value={itemGroupSelect}
                 label='Item Group'
                 sx={{ color: 'black' }}
+                value={itemGroupSelect}
                 onChange={handleChangeItemGroup}
                 // error={formik.touched.kind && Boolean(formik.errors.kind)}
               >

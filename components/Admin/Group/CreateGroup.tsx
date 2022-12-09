@@ -292,6 +292,15 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
                 </Box>
               </Box>
             )}
+            <Box sx={{ width: 'fit-content', marginLeft: 'auto', mt: 3 }}>
+              <Button
+                variant='contained'
+                color='success'
+                onClick={() => handleSave()}
+              >
+                Save
+              </Button>
+            </Box>
           </FormControl>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -340,16 +349,7 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
         </Grid>
         <Grid item xs={12} md={6}></Grid>
 
-        <Grid item xs={12} md={6}>
-          <Button
-            variant='contained'
-            color='success'
-            onClick={() => handleSave()}
-            sx={{ ml: 2 }}
-          >
-            Save
-          </Button>
-        </Grid>
+        <Grid item xs={12} md={6}></Grid>
       </Grid>
     </Box>
   );

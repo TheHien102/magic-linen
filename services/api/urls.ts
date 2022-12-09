@@ -26,4 +26,6 @@ export const API_URL = {
   userListProduct: `${BASEURL}/product/list_product_for_user`,
 
   provinceList: `${BASEURL}/province/list`,
+  provinceCreateAll: `${BASEURL}/province/addAll`,
+  provinceGetChild: `${BASEURL}/province/getChild`,
 };

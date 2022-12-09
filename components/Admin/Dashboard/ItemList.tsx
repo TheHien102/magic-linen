@@ -76,7 +76,6 @@ export default function ItemList({
   selectedMenu,
   setSelectedMenu,
 }: IItemList) {
-  console.log('data menu: ', data);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const handleClick = (index: number) => {
     if (selectedIndex === index) {

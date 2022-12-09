@@ -11,11 +11,14 @@ import { getCookie } from '../../../services/cookies';
 export const Header = () => {
   const router = useRouter();
   const { userInfo, setUserInfo } = useStorageContext();
+
   return (
     <S.Header>
       <S.Center>
         <S.WrapBtnLogin>
-          <S.BtnLogin>Our Story</S.BtnLogin>
+          <S.BtnLogin onClick={() => router.push('/about-us')}>
+            Our Story
+          </S.BtnLogin>
         </S.WrapBtnLogin>
         <Link href={'/'}>
           <S.WrapImage>

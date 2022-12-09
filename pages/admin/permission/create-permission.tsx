@@ -17,9 +17,9 @@ export default function CreatePermission() {
     const token = await getCookie('token');
 
     if (token) {
-      const [res] = await Promise.all([AccountApi.permissionsList(token)]);
-      const tempArray = res.data.data;
-      if (tempArray) {
+      AccountApi.permissionsList(token).then((res) => {
+        const tempArray = res.data.data;
+
         for (let i = 0; i < tempArray.length; i++) {
           const index = menu.findIndex(
             (I: { name: string }) => I.name === tempArray[i].nameGroup
@@ -42,7 +42,7 @@ export default function CreatePermission() {
           }
         }
         setPermissionsList(menu);
-      }
+      });
     }
   };
 
@@ -58,7 +58,11 @@ export default function CreatePermission() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout>
-        <Permission permissionsList={permissionsList} />
+        {permissionsList.length > 0 ? (
+          <Permission permissionsList={permissionsList} />
+        ) : (
+          <></>
+        )}
       </Layout>
     </>
   );

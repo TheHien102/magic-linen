@@ -112,6 +112,20 @@ export type MenuItemParams = {
   name: string;
 };
 
+export type AddProvinceParams = {
+  name: string;
+  level: number;
+  parentId: number;
+};
+
+export type AddAllProvinceParams = {
+  names: string[];
+  level: number;
+  parentId: number;
+};
+
+export type ProvinceParam = { id: number; name: string; level: number };
+
 export type MenuParams = {
   name: string;
   list: MenuItemParams[];

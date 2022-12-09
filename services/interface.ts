@@ -18,3 +18,8 @@ export type IItemCheckVariant = {
   name: string;
   data: VariantCheckParams[];
 };
+
+export interface IUpdateProvince {
+  id: number;
+  name: string;
+}

@@ -15,8 +15,13 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import UpdateIcon from '@mui/icons-material/Update';
 import HttpsIcon from '@mui/icons-material/Https';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
 
 export const iconData = {
+  Province: <LocationCityIcon />,
+  Product: <InventoryIcon />,
+  Account: <AdminPanelSettingsIcon color='warning' />,
   Folder: <FolderIcon color='primary' />,
   Permission: <HttpsIcon color='primary' />,
   Group: <HealthAndSafetyIcon color='primary' />,
@@ -39,6 +44,11 @@ export const urlMenuData = {
   'Create Product': '/admin/product/create-product',
   'View Product': '/admin/product/view-product',
   'Update Product': '/admin/product/update-product',
+  'Create Account': '/admin/account/create-account',
+  'View Account': '/admin/account/view-account',
+  'Create Province': '/admin/province/create-province',
+  'View Province': '/admin/province/view-province',
+  'Update Province': '/admin/province/update-province',
 };
 
 export const LOCAL_SAVE_PREFIX = 'linenA2022_Product_';

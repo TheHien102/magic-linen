@@ -34,7 +34,7 @@ const VariantItem = ({
           label={'Property'}
           inputRef={valueRefProperty}
           defaultValue={data.property}
-          onChange={e =>
+          onChange={(e) =>
             handleOnChange(
               index,
               variantName,
