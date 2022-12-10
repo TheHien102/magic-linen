@@ -19,6 +19,8 @@ interface IModalImage {
   setArrayImage?: Dispatch<SetStateAction<AssetsParams[]>>;
 }
 
+let fakeId = -1;
+
 export default function ModalImage({
   arrayImage,
   setMainImage,
@@ -31,7 +33,6 @@ export default function ModalImage({
 
   const [fileImage, setFileImage] = useState<File>();
   const [imagePath, setImagePath] = useState('');
-  const [idNegative, setIdNegative] = useState(-1);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -59,25 +60,22 @@ export default function ModalImage({
       setCroppedImage(croppedImage);
       if (setArrayImage) {
         console.log('set array miage');
-        setIdNegative(idNegative - 1);
         let data = {
-          id: idNegative,
+          id: fakeId--,
           type: 'image',
           link: '' as any,
         };
         fetch(croppedImage)
-          .then((res) => res.blob())
-          .then((blob) => {
+          .then(res => res.blob())
+          .then(blob => {
             const file = new File([blob], 'dot.png', blob);
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = async () => {
               data.link = await reader.result;
-              // setArrayImage([...arrayImage, data]);
-              // formik.setFieldValue('assets', arrayImage);
               console.log('assets: ', data);
               if (arrayImage) {
-                setArrayImage((arrayImage) => [...arrayImage, data]);
+                setArrayImage(arrayImage => [...arrayImage, data]);
                 console.log('set ok: ');
               } else {
                 setArrayImage([data]);
@@ -85,14 +83,12 @@ export default function ModalImage({
               }
             };
           });
-        //Be careful
-        // let data = { id: 0, type: 'image', link: croppedImage };
       }
       if (setMainImage) {
         console.log('run in set main img');
         fetch(croppedImage)
-          .then((res) => res.blob())
-          .then((blob) => {
+          .then(res => res.blob())
+          .then(blob => {
             const file = new File([blob], 'dot.png', blob);
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -119,7 +115,7 @@ export default function ModalImage({
           title={title}
           setUploadComplete={setOpenModalCrop}
           setImagePath={setImagePath}
-          onFileChange={(file) => {
+          onFileChange={file => {
             setFileImage(file);
           }}
         />

@@ -50,6 +50,11 @@ export const AccountApi = {
   },
   permissionsList: async function (token: string) {
     return await http.get(`${API_URL.permissionsList}`, {
+      params: {
+        page: 0,
+        size: 999,
+        sort: '',
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },

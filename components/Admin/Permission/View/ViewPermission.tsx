@@ -31,6 +31,8 @@ const ViewPermissions = () => {
     if (token) {
       const result = await AccountApi.permissionsList(token);
 
+      console.log('result', result);
+
       if (result) {
         let filterListTemp: FilterPermissions[] = filterPermissions(
           result.data.data
