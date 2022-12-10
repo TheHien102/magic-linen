@@ -41,7 +41,7 @@ const validationSchema = yup.object({
   email: yup.string().required('Email is required'),
   fullName: yup.string().required('Full name is required'),
   avatarPath: yup.string(),
-  kind: yup.number().required('Kind is required'),
+  groupId: yup.number().required('Kind is required'),
   status: yup.number(),
   phone: yup.string().required('Phone is required'),
 });
@@ -57,12 +57,12 @@ export default function CreateAdmin() {
       email: '',
       fullName: '',
       phone: '',
-      kind: 0,
+      groupId: 0,
       status: 1,
       avatarPath: '',
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       const token = await getCookie('token');
       try {
         if (token) {
@@ -89,6 +89,8 @@ export default function CreateAdmin() {
     if (token) {
       const result = await GroupApi.listAllGroup(token);
 
+      console.log(result.data.data);
+
       if (result) {
         setGroupList(result.data.data);
       }
@@ -97,7 +99,7 @@ export default function CreateAdmin() {
 
   const handleChangeKind = (event: SelectChangeEvent) => {
     setKind(event.target.value);
-    formik.values.kind = Number(event.target.value);
+    formik.values.groupId = Number(event.target.value);
   };
 
   const [mainImage, setMainImage] = useState('');
@@ -303,14 +305,15 @@ export default function CreateAdmin() {
                         sx={{ color: 'black', textTransform: 'capitalize' }}
                         onChange={handleChangeKind}
                         error={
-                          formik.touched.kind && Boolean(formik.errors.kind)
+                          formik.touched.groupId &&
+                          Boolean(formik.errors.groupId)
                         }
                       >
                         {groupList &&
-                          groupList.map((data) => (
+                          groupList.map(data => (
                             <MenuItem
                               key={data.id}
-                              value={data.kind}
+                              value={data.id}
                               // onClick={handleGetMenuItemValue}
                               sx={{ textTransform: 'capitalize' }}
                             >
