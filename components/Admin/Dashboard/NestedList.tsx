@@ -3,14 +3,16 @@ import List from '@mui/material/List';
 import ItemList from './ItemList';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useStorageContext } from '../../../contexts/StorageContext';
-import { MenuParams } from '../../../services/types';
+import { MenuParams, PermissionPrams } from '../../../services/types';
 import { useRouter } from 'next/router';
 import { getCookie } from '../../../services/cookies';
 import { AccountApi } from '../../../services/api/account';
 
-interface INestedList {}
+interface INestedList {
+  permissions: PermissionPrams[];
+}
 
-export default function NestedList({}: INestedList) {
+export default function NestedList({ permissions }: INestedList) {
   const [selectedMenu, setSelectedMenu] = useState(-1);
   const router = useRouter();
 
@@ -22,23 +24,16 @@ export default function NestedList({}: INestedList) {
     }
   };
 
-  const { permissions, setPermissions } = useStorageContext();
   let menu: MenuParams[] = [];
 
   const [menuList, setMenuList] = useState<MenuParams[]>([]);
 
   useEffect(() => {
-    loadPermission();
-  }, []);
-
-  useEffect(() => {
     if (permissions) {
       for (let i = 0; i < permissions.length; i++) {
-        const index = menu.findIndex(
-          (I) => I.name === permissions[i].nameGroup
-        );
+        const index = menu.findIndex(I => I.name === permissions[i].nameGroup);
         if (index !== -1) {
-          menu.map((data) => {
+          menu.map(data => {
             if (data.name === permissions[i].nameGroup) {
               data.list.push(permissions[i]);
               return data;
@@ -58,19 +53,6 @@ export default function NestedList({}: INestedList) {
       setMenuList(menu);
     }
   }, [permissions]);
-
-  const loadPermission = async () => {
-    const token = await getCookie('token');
-    if (token) {
-      const [permissions] = await Promise.all([AccountApi.roleAdmin(token)]);
-
-      if (setPermissions) {
-        setPermissions(permissions.data.group.permissions);
-      }
-      return permissions.data.group.permissions;
-    }
-    return [];
-  };
 
   return (
     <List

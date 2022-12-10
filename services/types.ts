@@ -1,3 +1,5 @@
+import { type } from 'os';
+
 export type LoginAdminPrams = {
   username: string;
   password: string;
@@ -88,6 +90,20 @@ export type ProductParams = {
   price: number;
   productCategoryId: number;
   variants: VariantParams[];
+};
+
+export type ProfileParams = {
+  avatar: string;
+  email: string;
+  fullName: string;
+  group: GroupParams;
+  id: number;
+  isSuperAdmin: boolean;
+  kind: number;
+  lastLogin: string;
+  phone: string;
+  username: string;
+  createdDate: string;
 };
 
 export type GroupParams = {

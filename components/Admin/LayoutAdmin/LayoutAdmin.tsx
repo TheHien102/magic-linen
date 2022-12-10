@@ -26,6 +26,7 @@ import { AccountApi } from '../../../services/api/account';
 import { useStorageContext } from '../../../contexts/StorageContext';
 import { useRouter } from 'next/router';
 import { getCookie, removeCookie } from '../../../services/cookies';
+import { ProfileParams } from '../../../services/types';
 // import IconBreadcrumbs from "../Customers/IconBreadcrumbs";
 
 const drawerWidth = 240;
@@ -65,7 +66,7 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: prop => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
@@ -83,7 +84,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: prop => prop !== 'open',
 })(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
@@ -139,6 +140,28 @@ export default function Layout({ children }: ILayout) {
     }
   };
 
+  const { permissions, setPermissions } = useStorageContext();
+
+  React.useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const [profile, setProfile] = useState<ProfileParams>();
+
+  const loadProfile = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      const [profile] = await Promise.all([AccountApi.roleAdmin(token)]);
+
+      if (setPermissions) {
+        setProfile(profile.data);
+        setPermissions(profile.data.group.permissions);
+      }
+      return profile.data.group.permissions;
+    }
+    return [];
+  };
+
   return (
     <div className={styles.container}>
       <Box sx={{ display: 'flex' }}>
@@ -185,10 +208,10 @@ export default function Layout({ children }: ILayout) {
                   >
                     <Avatar
                       alt='Admin vacation'
-                      src={'/'}
+                      src={profile?.avatar}
                       sx={{ marginRight: '8px' }}
                     />
-                    Admin
+                    {profile?.fullName}
                   </Button>
                   <Menu
                     id='basic-menu'
@@ -206,7 +229,7 @@ export default function Layout({ children }: ILayout) {
                       <Box sx={{ textAlign: 'center', width: 270 }}>
                         <Avatar
                           alt='Admin'
-                          src={'/'}
+                          src={profile?.avatar}
                           sx={{
                             width: 80,
                             height: 80,
@@ -216,9 +239,11 @@ export default function Layout({ children }: ILayout) {
                           }}
                         />
                         <Typography variant='h6' component='p'>
-                          Admin
+                          {profile?.fullName}
                         </Typography>
-                        <Typography>Member since Feb, 2019</Typography>
+                        <Typography>
+                          Member since {profile?.createdDate}
+                        </Typography>
                       </Box>
                       <Box
                         sx={{
@@ -254,7 +279,7 @@ export default function Layout({ children }: ILayout) {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <NestedList />
+          <NestedList permissions={permissions} />
           <Divider />
         </Drawer>
 
