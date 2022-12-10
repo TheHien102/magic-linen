@@ -21,21 +21,21 @@ const Login = (props: Props) => {
   );
 };
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const token = getCookie('token', ctx);
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   const token = getCookie('token', ctx);
 
-  if (token) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      },
-    };
-  }
+//   if (token) {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: '/',
+//       },
+//     };
+//   }
 
-  return {
-    props: {},
-  };
-}
+//   return {
+//     props: {},
+//   };
+// }
 
 export default Login;
