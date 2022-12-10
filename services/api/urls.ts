@@ -31,5 +31,5 @@ export const API_URL = {
   provinceCreateAll: `${BASEURL}/province/addAll`,
   provinceGetChild: `${BASEURL}/province/getChild`,
 
-  addToCart: `${BASEURL}/cart/add_to_cart`,
+  addToCart: `${BASEURL}/cart/create`,
 };
