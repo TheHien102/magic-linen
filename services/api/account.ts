@@ -78,4 +78,11 @@ export const AccountApi = {
   setNewPassword: async function (data: SetNewPassword) {
     return await http.post(`${API_URL.setNewPassword}`, data);
   },
+  profile: async function (token: string) {
+    return await http.get(`${API_URL.profile}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };

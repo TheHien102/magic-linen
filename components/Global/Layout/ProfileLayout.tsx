@@ -39,6 +39,9 @@ export const ProfileLayout = ({ children }: LayoutProps) => {
             <S.BtnWrap onClick={() => router.push('/change-password')}>
               Password
             </S.BtnWrap>
+            <S.BtnWrap onClick={() => router.push('/account-information')}>
+              Account Information
+            </S.BtnWrap>
           </S.ColLeft>
           <S.ColRight>{children}</S.ColRight>
         </S.Flex>

@@ -21,6 +21,7 @@ export const API_URL = {
   setNewPassword: `${BASEURL}/account/forget_password`,
   permissionsList: `${BASEURL}/permission/list`,
   createPermissions: `${BASEURL}/permission/create`,
+  profile: `${BASEURL}/account/profile`,
 
   listGroupById: `${BASEURL}/group/get/`,
   listAllGroup: `${BASEURL}/group/list`,
