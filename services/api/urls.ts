@@ -10,7 +10,7 @@ export const API_URL = {
   logout: `${BASEURL}/account/logout`,
   addProduct: `${BASEURL}/product/create`,
   updateProduct: `${BASEURL}/product/update`,
-  adminListProduct: `${BASEURL}/product/list_product_for_admin`,
+  adminListProduct: `${BASEURL}/product/list`,
   getProductById: `${BASEURL}/product/get`,
   createAdmin: `${BASEURL}/account/create_admin`,
   listAdmin: `${BASEURL}/account/list`,
@@ -27,7 +27,7 @@ export const API_URL = {
   updateGroupById: `${BASEURL}/group/update/`,
   createGroup: `${BASEURL}/group/create/`,
 
-  userListProduct: `${BASEURL}/product/list_product_for_user`,
+  userListProduct: `${BASEURL}/product/list`,
 
   provinceList: `${BASEURL}/province/list`,
   provinceCreateAll: `${BASEURL}/province/addAll`,
