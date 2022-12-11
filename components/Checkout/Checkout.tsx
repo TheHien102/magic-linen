@@ -9,10 +9,15 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { getCookie } from '../../services/cookies';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
+import { CartApi } from '../../services/api/cart';
 
 const validationSchema = yup.object({
-  id: yup.number(),
-  name: yup.string(),
+  username: yup.string(),
+  phoneNumber: yup.string(),
+  note: yup.string(),
+  address: yup.string(),
+  paymentType: yup.number(),
+  cartItemsList: yup.array(),
 });
 
 type Props = {};
@@ -43,12 +48,6 @@ const CheckoutCart = (props: Props) => {
     }
   };
 
-  // const getAllListProvince = async () => {
-  //   const result = await ProvinceApi.listProvince();
-  //   if (result) {
-  //     console.log('result: ', result);
-  //   }
-  // };
   const SEARCH_PARAMS = '';
 
   const getProvince = (level: number) => {
@@ -78,13 +77,28 @@ const CheckoutCart = (props: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      id: -1,
-      name: '',
+      username: '',
+      phoneNumber: '',
+      note: '',
+      address: '',
+      paymentType: 1,
+      cartItemsList: [] as any,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      formik.values.cartItemsList = cartProduct;
+      console.log('values: ', values);
       const token = await getCookie('token');
-
+      if (token) {
+        console.log('user logged with token cart');
+      } else {
+        formik.values.cartItemsList = cartProduct;
+        // formik.values.address = province + disctrict + ward;
+        console.log('values: ', values);
+        // CartApi.createOrderGuest(values).then((res) => {
+        //   console.log('res: ', res);
+        // });
+      }
       try {
       } catch (error) {
         console.log('error: ', error);
@@ -105,68 +119,113 @@ const CheckoutCart = (props: Props) => {
         >
           BILLING
         </Typography>
-        <G.LabelInput>E-MAIL</G.LabelInput>
-        <G.Input widthFull></G.Input>
-        <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
-          <Box sx={{ width: '50%' }}>
-            <G.LabelInput>FULL NAME</G.LabelInput>
-            <G.Input widthFull></G.Input>
+        <form onSubmit={formik.handleSubmit}>
+          <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+            <Box sx={{ width: '50%' }}>
+              <G.LabelInput>FULL NAME</G.LabelInput>
+              <G.Input
+                widthFull
+                id='username'
+                name='username'
+                value={formik.values.username}
+                onChange={formik.handleChange}
+              ></G.Input>
+              {formik.touched.username && Boolean(formik.errors.username) && (
+                <G.ErrorText>{formik.errors.username}</G.ErrorText>
+              )}
+            </Box>
+            <Box sx={{ width: '50%' }}>
+              <G.LabelInput>PHONE</G.LabelInput>
+              <G.Input
+                widthFull
+                id='phoneNumber'
+                name='phoneNumber'
+                value={formik.values.phoneNumber}
+                onChange={formik.handleChange}
+              ></G.Input>
+              {formik.touched.phoneNumber &&
+                Boolean(formik.errors.phoneNumber) && (
+                  <G.ErrorText>{formik.errors.phoneNumber}</G.ErrorText>
+                )}
+            </Box>
           </Box>
-          <Box sx={{ width: '50%' }}>
-            <G.LabelInput>PHONE</G.LabelInput>
-            <G.Input widthFull></G.Input>
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
-          <Box sx={{ width: '50%' }}>
-            <G.LabelInput>Province</G.LabelInput>
-            <G.Select
+          <Box sx={{ mt: 3 }}>
+            <G.LabelInput>NOTE</G.LabelInput>
+            <G.TextArea
               widthFull
-              onChange={(e) => getDistrict(Number(e.target.value))}
-            >
-              {province &&
-                province.map((data) => (
-                  <option key={data.id} value={data.id}>
-                    {data.name}
-                  </option>
-                ))}
-            </G.Select>
+              id='note'
+              name='note'
+              value={formik.values.note}
+              onChange={formik.handleChange}
+            ></G.TextArea>
+            {formik.touched.note && Boolean(formik.errors.note) && (
+              <G.ErrorText>{formik.errors.note}</G.ErrorText>
+            )}
           </Box>
-          <Box sx={{ width: '50%' }}>
-            <G.LabelInput>District</G.LabelInput>
-            <G.Select
-              widthFull
-              disabled={disctrict && disctrict.length > 0 ? false : true}
-              onChange={(e) => getWard(Number(e.target.value))}
-            >
-              {disctrict &&
-                disctrict.map((data) => (
-                  <option key={data.id} value={data.id}>
-                    {data.name}
-                  </option>
-                ))}
-            </G.Select>
+          <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+            <Box sx={{ width: '50%' }}>
+              <G.LabelInput>Province</G.LabelInput>
+              <G.Select
+                widthFull
+                onChange={(e) => getDistrict(Number(e.target.value))}
+              >
+                {province &&
+                  province.map((data) => (
+                    <option key={data.id} value={data.id}>
+                      {data.name}
+                    </option>
+                  ))}
+              </G.Select>
+            </Box>
+            <Box sx={{ width: '50%' }}>
+              <G.LabelInput>District</G.LabelInput>
+              <G.Select
+                widthFull
+                disabled={disctrict && disctrict.length > 0 ? false : true}
+                onChange={(e) => getWard(Number(e.target.value))}
+              >
+                {disctrict &&
+                  disctrict.map((data) => (
+                    <option key={data.id} value={data.id}>
+                      {data.name}
+                    </option>
+                  ))}
+              </G.Select>
+            </Box>
           </Box>
-        </Box>
+          <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+            <Box sx={{ width: '50%' }}>
+              <G.LabelInput>Ward</G.LabelInput>
+              <G.Select
+                widthFull
+                disabled={ward && ward.length > 0 ? false : true}
+                // onChange={(e) => getDistrict(Number(e.target.value))}
+              >
+                {ward &&
+                  ward.map((data) => (
+                    <option key={data.id} value={data.id}>
+                      {data.name}
+                    </option>
+                  ))}
+              </G.Select>
+            </Box>
+            <Box sx={{ width: '50%' }}>
+              <G.LabelInput>Street</G.LabelInput>
+              <G.Input widthFull></G.Input>
+            </Box>
+          </Box>
+          <Box sx={{ mt: 3 }}>
+            <label className='wrapChecked'>
+              Ship COD
+              <input type='checkbox' disabled checked />
+              <span className='checkmark'></span>
+            </label>
+          </Box>
 
-        <Box sx={{ mt: 3 }}>
-          <G.LabelInput>Ward</G.LabelInput>
-          <G.Select
-            widthFull
-            disabled={ward && ward.length > 0 ? false : true}
-            // onChange={(e) => getDistrict(Number(e.target.value))}
-          >
-            {ward &&
-              ward.map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-          </G.Select>
-        </Box>
-        <Box sx={{ width: 'fit-content', marginLeft: 'auto', mt: 5 }}>
-          <BtnShopNow title='Confirm' revertColor />
-        </Box>
+          <Box sx={{ width: 'fit-content', marginLeft: 'auto', mt: 5 }}>
+            <BtnShopNow title='Confirm' revertColor type='submit' />
+          </Box>
+        </form>
       </Box>
       <Box sx={{ width: '40%', backgroundColor: '#f8f8f8', p: 2.7 }}>
         <Typography

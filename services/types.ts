@@ -41,8 +41,15 @@ export type AddToCartParams = {
   productId: number;
   variants: VariantParams[];
   quantity: number;
-  price: number;
   discount: number;
+  name: string;
+  price: number;
+  mainImg: string;
+};
+
+export type CartListParams = {
+  accountId: number;
+  status: number;
 };
 
 export type ProductDetailPrams = {
@@ -226,3 +233,16 @@ export type SetNewPassword = {
 };
 
 export type AdminProductParams = {};
+
+export type OrderGuestParam = {
+  cartItemsList: {
+    productId: number;
+    variants: VariantParams[];
+    quantity: number;
+  };
+  address: string;
+  note: string;
+  phoneNumber: string;
+  username: string;
+  paymentType: number;
+};

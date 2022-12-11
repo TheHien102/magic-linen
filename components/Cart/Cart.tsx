@@ -15,6 +15,8 @@ import { LOCAL_SAVE_LIMITER, LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
 import { CartItemParams } from '../../services/types';
 import RowCart from './RowCart';
 import { useRouter } from 'next/router';
+import { getCookie } from '../../services/cookies';
+import { CartApi } from '../../services/api/cart';
 
 export default function CartUser() {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
@@ -47,8 +49,29 @@ export default function CartUser() {
     }
   };
 
+  const getCartData = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      CartApi.listCart(token).then((res) => {
+        console.log('res cart: ', res);
+        setCartProduct(res.data.data);
+        let tempTotalPrice = 0;
+        for (let i = 0; i < res.data.data.length; i++) {
+          tempTotalPrice += res.data.data[i].price;
+        }
+        setTotalPrice(tempTotalPrice);
+      });
+    } else {
+      getLocalValue();
+    }
+  };
+
   useEffect(() => {
-    getLocalValue();
+    // if (checkToken()) {
+
+    // }
+    // getLocalValue();
+    getCartData();
   }, []);
 
   useEffect(() => {
@@ -76,6 +99,7 @@ export default function CartUser() {
 
   const handleContinueShopping = () => {
     setNewJson();
+    router.push('/shop');
   };
 
   const setNewJson = () => {

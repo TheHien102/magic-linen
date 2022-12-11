@@ -1,5 +1,5 @@
 import http from '../http';
-import { AddToCartParams } from '../types';
+import { AddToCartParams, CartListParams, OrderGuestParam } from '../types';
 import { API_URL } from './urls';
 
 export const CartApi = {
@@ -9,5 +9,15 @@ export const CartApi = {
         Authorization: `Bearer ${token}`,
       },
     });
+  },
+  listCart: async function (token: string) {
+    return await http.get(`${API_URL.cartList}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  createOrderGuest: async function (data: OrderGuestParam) {
+    return await http.post(`${API_URL.createOrder}`, data);
   },
 };

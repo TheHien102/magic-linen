@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import Alert from '@mui/material/Alert';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
+import { Snackbar } from '@mui/material';
 
 type Props = {};
 const phoneRegExp =
@@ -33,6 +34,7 @@ const RegisterUser = (props: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -52,7 +54,10 @@ const RegisterUser = (props: Props) => {
 
         if (result) {
           setLoading(false);
-          router.push('/login');
+          setOpenSnackbar(true);
+          setTimeout(() => {
+            router.push('/login');
+          }, 2000);
         } else {
           setError(true);
           setLoading(false);
@@ -69,6 +74,15 @@ const RegisterUser = (props: Props) => {
     <S.Register>
       <Breadcrumb />
       <HeaderTitle title='Registration' />
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={openSnackbar}
+        autoHideDuration={2000}
+      >
+        <Alert severity='success' sx={{ width: '100%' }}>
+          Register Success !
+        </Alert>
+      </Snackbar>
       <form onSubmit={formik.handleSubmit}>
         <S.WrapInput>
           <S.Col1>

@@ -92,8 +92,10 @@ const ProductDetail = ({ data }: IProductDetail) => {
         productId: data.id,
         variants: [],
         quantity: quantity,
-        price: quantity * price * ((100 - data.discount) / 100),
         discount: data.discount,
+        name: data.name,
+        price: quantity * price * ((100 - data.discount) / 100),
+        mainImg: data.mainImg,
       };
       variantList.map((it) => {
         newAddToCartParam.variants = newAddToCartParam.variants.concat(

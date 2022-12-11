@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
-export const BtnShopNow = styled.div<{
+export const BtnShopNow = styled.button<{
   revertColor?: boolean;
   widthFull?: boolean;
 }>`
