@@ -96,9 +96,15 @@ export const filterVariants = (variants: VariantParams[]) => {
       checked: false,
     };
     if (currentVariant.name === 'size') {
+      if (sizeArray.length === 0) {
+        currentVariant.checked = true;
+      }
       sizeArray.push(currentVariant);
     } else {
       if (currentVariant.name === 'color') {
+        if (colorArray.length === 0) {
+          currentVariant.checked = true;
+        }
         colorArray.push(currentVariant);
       } else {
         let isPush = false;
@@ -130,13 +136,6 @@ export const filterVariants = (variants: VariantParams[]) => {
     name: 'size',
     data: sizeArray,
   };
-
-  // OtherVariants.map((item) => {
-  //   if (item.data.length === 1) {
-  //     item.data[0].checked = true;
-  //   }
-  //   return item;
-  // });
 
   returnArray = returnArray.concat(newDataSize, newDataColor, OtherVariants);
   return returnArray;

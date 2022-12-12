@@ -44,12 +44,16 @@ const ItemClothing = ({ data }: IItemClothing) => {
             sx={{
               fontFamily: 'Josefin Sans',
               ml: 1,
-              fontSize: '24px',
+              fontSize: '18px',
               fontWeight: 'bold',
-              lineHeight: '1',
+              color: 'gray',
+              lineHeight: '1.3',
+              textAlign: 'center',
+              marginX: 'auto',
+              width: 'fit-content',
             }}
           >
-            {formatPrice(data.price)}
+            ${formatPrice(data.price)}
           </Typography>
         ) : (
           <>

@@ -58,21 +58,19 @@ const ProductDetail = ({ data }: IProductDetail) => {
   };
 
   const handleProperty = (data: VariantCheckParams) => {
+    let newPrice = price;
     setVariantList(
       variantList.map((it) => {
         if (it.name === data.name) {
           it.data.map((_it) => {
             if (_it.id === data.id) {
-              _it.checked = !_it.checked;
-
-              if (_it.checked) {
-                setPrice(price + _it.addPrice);
-              } else {
-                setPrice(price - _it.addPrice);
+              if (!_it.checked) {
+                newPrice += _it.addPrice;
               }
+              _it.checked = true;
             } else {
               if (_it.checked) {
-                setPrice(price - _it.addPrice);
+                newPrice -= _it.addPrice;
               }
               _it.checked = false;
             }
@@ -82,10 +80,12 @@ const ProductDetail = ({ data }: IProductDetail) => {
         return it;
       })
     );
+    setPrice(newPrice);
   };
 
   const handleAddToCart = async () => {
     const token = await getCookie('token');
+    console.log('token: ', token);
     if (token) {
       console.log('token: ', token);
       let newAddToCartParam: AddToCartParams = {
@@ -100,11 +100,12 @@ const ProductDetail = ({ data }: IProductDetail) => {
       });
       console.log('newAddToCartParam: ', newAddToCartParam);
       CartApi.addToCart(token, newAddToCartParam).then((res) => {
-        console.log('res: ', res);
+        router.push('/cart');
       });
     } else {
       let oneProductPrice = price * ((100 - data.discount) / 100);
       let newCartParam: CartItemParams = {
+        id: data.id,
         productId: data.id,
         name: data.name,
         price: oneProductPrice,
@@ -134,6 +135,11 @@ const ProductDetail = ({ data }: IProductDetail) => {
   const [variantList, setVariantList] = useState<IItemCheckVariant[]>([]);
   useEffect(() => {
     setVariantList(variantListTemp);
+    setPrice(
+      price +
+        variantListTemp[0].data[0].addPrice +
+        variantListTemp[1].data[0].addPrice
+    );
   }, []);
   const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
 
@@ -180,7 +186,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 lineHeight: '1',
               }}
             >
-              {formatPrice(price)}
+              ${formatPrice(price)}
             </Typography>
           ) : (
             <>

@@ -36,6 +36,7 @@ export const API_URL = {
 
   addToCart: `${BASEURL}/cart/create`,
   cartList: `${BASEURL}/cart/list`,
+  cartUpdateItem: `${BASEURL}/cart/update`,
 
   createOrder: `${BASEURL}/order/create`,
 };

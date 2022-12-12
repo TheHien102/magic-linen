@@ -28,6 +28,7 @@ export type ReivewParams = {
 };
 
 export type CartItemParams = {
+  id: number;
   productId: number;
   variants: VariantParams[];
   quantity: number;

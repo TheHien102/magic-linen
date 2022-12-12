@@ -10,6 +10,16 @@ export const CartApi = {
       },
     });
   },
+  updateCartItem: async function (
+    token: string,
+    data: { cartItemId: number; quantity: number }
+  ) {
+    return await http.put(`${API_URL.cartUpdateItem}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
   listCart: async function (token: string) {
     return await http.get(`${API_URL.cartList}`, {
       headers: {

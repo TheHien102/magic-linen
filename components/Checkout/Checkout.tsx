@@ -48,8 +48,6 @@ const CheckoutCart = (props: Props) => {
       .map((data) => JSON.parse(data.replace('\\', '')));
 
     if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
-      console.log('temp', temp);
-
       setCartProduct(temp);
       let tempTotalPrice = 0;
       for (let i = 0; i < temp.length; i++) {
@@ -80,9 +78,24 @@ const CheckoutCart = (props: Props) => {
     });
   };
 
+  const getUserValue = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      CartApi.listCart(token).then((res) => {
+        setCartProduct(res.data.data);
+        let tempTotalPrice = 0;
+        for (let i = 0; i < res.data.data.length; i++) {
+          tempTotalPrice += res.data.data[i].price * res.data.data[i].quantity;
+        }
+        setTotalPrice(tempTotalPrice);
+      });
+    } else {
+      getLocalValue();
+    }
+  };
+
   useEffect(() => {
-    getLocalValue();
-    // getAllListProvince();
+    getUserValue();
     getProvince(1);
   }, []);
 
