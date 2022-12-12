@@ -17,6 +17,7 @@ import RowCart from './RowCart';
 import { useRouter } from 'next/router';
 import { getCookie } from '../../services/cookies';
 import { CartApi } from '../../services/api/cart';
+import { formatPrice } from '../../utils/common';
 
 export default function CartUser() {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
@@ -210,7 +211,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                $71.20
+                ${formatPrice(totalPrice)}
               </Typography>
             </Box>
             <Box
@@ -277,7 +278,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                ${totalPrice}
+                ${formatPrice(totalPrice)}
               </Typography>
             </Box>
           </Box>

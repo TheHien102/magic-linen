@@ -102,7 +102,7 @@ export const filterVariants = (variants: VariantParams[]) => {
         colorArray.push(currentVariant);
       } else {
         let isPush = false;
-        OtherVariants.map(item => {
+        OtherVariants.map((item) => {
           if (item.name === currentVariant.name) {
             item.data.push(currentVariant);
             isPush = true;
@@ -141,3 +141,7 @@ export const filterVariants = (variants: VariantParams[]) => {
   returnArray = returnArray.concat(newDataSize, newDataColor, OtherVariants);
   return returnArray;
 };
+
+export function formatPrice(number: number) {
+  return number.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
+}

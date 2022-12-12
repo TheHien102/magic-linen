@@ -5,6 +5,7 @@ import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { formatPrice } from '../../utils/common';
 
 interface IRowCart {
   data: CartItemParams;
@@ -111,7 +112,7 @@ const RowCart = ({
             fontSize: '16px',
           }}
         >
-          ${data.price}
+          ${formatPrice(data.price)}
         </Typography>
       </TableCell>
       <TableCell>
@@ -156,7 +157,7 @@ const RowCart = ({
             fontSize: '16px',
           }}
         >
-          ${data.price * quantity}
+          ${formatPrice(data.price * quantity)}
         </Typography>
       </TableCell>
       <TableCell align='right'>

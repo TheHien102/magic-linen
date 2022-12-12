@@ -17,6 +17,7 @@ import UpdateIcon from '@mui/icons-material/Update';
 import HttpsIcon from '@mui/icons-material/Https';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 export const iconData = {
   Province: <LocationCityIcon />,
@@ -28,6 +29,7 @@ export const iconData = {
   Create: <AddCircleIcon color='primary' />,
   View: <PreviewIcon sx={{ color: '#cddc39' }} />,
   Update: <UpdateIcon color='secondary' />,
+  Cart: <ShoppingCartIcon />,
 };
 
 export const groupSuffix = {

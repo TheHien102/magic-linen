@@ -255,6 +255,7 @@ export default function ListDetailProduct() {
     if (listProduct) {
       setLoading(false);
       setRows(listProduct.data.data);
+      console.log('listProduct: ', listProduct.data);
     }
   };
 
@@ -388,7 +389,9 @@ export default function ListDetailProduct() {
                           <TableCell>{row.categoryName}</TableCell>
                           <TableCell>{row.discount}</TableCell>
                           <TableCell>{row.status}</TableCell>
-                          <TableCell>{removeTime(row.createdDate)}</TableCell>
+                          <TableCell>
+                            {/* {removeTime(row.createdDate)} */}
+                          </TableCell>
                           <TableCell align={'right'}>
                             <Button
                               variant='contained'

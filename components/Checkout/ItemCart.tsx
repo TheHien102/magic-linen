@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import React from 'react';
 import Image from 'next/image';
 import { CartItemParams } from '../../services/types';
+import { formatPrice } from '../../utils/common';
 
 interface IItemCart {
   data: CartItemParams;
@@ -68,7 +69,7 @@ const ItemCart = ({ data }: IItemCart) => {
             )
           )}
         <Typography sx={{ fontFamily: 'Josefin Sans', fontWeight: 'light' }}>
-          {data.quantity} x ${data.price}
+          {data.quantity} x ${formatPrice(data.price)}
         </Typography>
       </Box>
     </Box>

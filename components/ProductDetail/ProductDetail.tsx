@@ -22,7 +22,7 @@ import {
   VariantCheckParams,
   VariantParams,
 } from '../../services/types';
-import { filterVariants } from '../../utils/common';
+import { filterVariants, formatPrice } from '../../utils/common';
 import { group } from 'console';
 import style from 'styled-jsx/style';
 import Image from 'next/image';
@@ -147,11 +147,12 @@ const ProductDetail = ({ data }: IProductDetail) => {
     <Box sx={{ display: 'flex', marginX: '120px', gap: '35px' }}>
       <Box sx={{ width: '60%' }}>
         <ProductSwiper data={dataImages} />
-        <Accordion defaultExpanded>
+        <Accordion defaultExpanded sx={{ border: 0, boxShadow: 'none' }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
             id='panel1a-header'
+            sx={{ borderTop: 0 }}
           >
             <Typography sx={{ fontFamily: 'Josefin Sans', fontWeight: 'bold' }}>
               DESCRIPTION
@@ -183,7 +184,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 lineHeight: '1',
               }}
             >
-              {price}
+              {formatPrice(price)}
             </Typography>
           ) : (
             <>
@@ -197,7 +198,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1.3',
                 }}
               >
-                ${price}
+                ${formatPrice(price)}
               </Typography>
               <Typography
                 sx={{
@@ -209,7 +210,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1',
                 }}
               >
-                ${price * ((100 - data.discount) / 100)}
+                ${formatPrice(price * ((100 - data.discount) / 100))}
               </Typography>
             </>
           )}
@@ -224,7 +225,8 @@ const ProductDetail = ({ data }: IProductDetail) => {
               fontSize: '14px',
             }}
           >
-            You save ${price * (data.discount / 100)} ({data.discount}%)
+            You save ${formatPrice(price * (data.discount / 100))} (
+            {data.discount}%)
           </Typography>
         )}
         <Typography

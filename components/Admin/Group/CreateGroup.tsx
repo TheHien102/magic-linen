@@ -218,13 +218,13 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5 }}>
       <Grid
         container
-        sx={{ marginTop: '5px', maxWidth: '800px' }}
+        sx={{ marginTop: '5px', maxWidth: '1300px' }}
         spacing={2.5}
       >
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <FormControl fullWidth size='small'>
             {update ? (
               <>
@@ -232,7 +232,7 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
                 <Select
                   // labelId='nameGroup'
                   id='nameGroup'
-                  label='Name'
+                  label='Group Name'
                   value={nameGroup}
                   sx={{ color: 'black' }}
                   onChange={handleChangeNameGroup}
@@ -303,53 +303,52 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
             </Box>
           </FormControl>
         </Grid>
-        <Grid item xs={12} md={6}>
-          {filterList &&
-            filterList.map((data) => (
-              <Box
-                key={data.name}
-                sx={{
-                  border: '2px solid hsla(48,8%,88%,.6)',
-                  p: 3,
-                  borderRadius: 2,
-                  position: 'relative',
-                  mt: 3,
-                  '&:first-of-type': { mt: 0 },
-                }}
-              >
-                <Typography
+        <Grid item xs={12} md={8}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+            {filterList &&
+              filterList.map((data) => (
+                <Box
+                  key={data.name}
                   sx={{
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    fontSize: '22px',
+                    border: '2px solid hsla(48,8%,88%,.6)',
+                    p: 3,
+                    borderRadius: 2,
+                    position: 'relative',
+                    '&:first-of-type': { mt: 0 },
+                    width: '48%',
                   }}
                 >
-                  {data.name + groupSuffix.title}
-                </Typography>
-                {data.list.map((_data) => (
-                  <Box
-                    key={_data.name}
-                    onClick={() => handleModifyChecked(_data)}
+                  <Typography
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      width: 'fit-content',
-                      cursor: 'pointer',
+                      textAlign: 'center',
+                      fontWeight: 'bold',
+                      fontSize: '22px',
                     }}
                   >
-                    <Checkbox
-                      disabled={allowEnable}
-                      checked={isChecked(_data)}
-                    />
-                    <Typography>{_data.name}</Typography>
-                  </Box>
-                ))}
-              </Box>
-            ))}
+                    {data.name + groupSuffix.title}
+                  </Typography>
+                  {data.list.map((_data) => (
+                    <Box
+                      key={_data.name}
+                      onClick={() => handleModifyChecked(_data)}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: 'fit-content',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Checkbox
+                        disabled={allowEnable}
+                        checked={isChecked(_data)}
+                      />
+                      <Typography>{_data.name}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              ))}
+          </Box>
         </Grid>
-        <Grid item xs={12} md={6}></Grid>
-
-        <Grid item xs={12} md={6}></Grid>
       </Grid>
     </Box>
   );

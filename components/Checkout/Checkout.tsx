@@ -10,12 +10,20 @@ import * as yup from 'yup';
 import { getCookie } from '../../services/cookies';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import { CartApi } from '../../services/api/cart';
+import { useRef } from 'react';
+import { formatPrice } from '../../utils/common';
+
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const validationSchema = yup.object({
-  username: yup.string(),
-  phoneNumber: yup.string(),
-  note: yup.string(),
-  address: yup.string(),
+  username: yup.string().required('Username is required'),
+  phoneNumber: yup
+    .string()
+    .matches(phoneRegExp, 'Phone number is not valid')
+    .required('Phone number is required'),
+  note: yup.string().min(3, 'Must be more than 3 characters'),
+  address: yup.string().required('Address is required'),
   paymentType: yup.number(),
   cartItemsList: yup.array(),
 });
@@ -28,7 +36,10 @@ const CheckoutCart = (props: Props) => {
   const [province, setProvince] = useState<ProvinceParam[]>([]);
   const [disctrict, setDistrict] = useState<ProvinceParam[]>([]);
   const [ward, setWard] = useState<ProvinceParam[]>([]);
-
+  const provinceRef = useRef<HTMLSelectElement>(null);
+  const disctrictRef = useRef<HTMLSelectElement>(null);
+  const wardRef = useRef<HTMLSelectElement>(null);
+  const streetRef = useRef<HTMLInputElement>(null);
   const getLocalValue = async () => {
     let temp: any = localStorage
       .getItem(LOCAL_SAVE_PREFIX)
@@ -87,13 +98,22 @@ const CheckoutCart = (props: Props) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       formik.values.cartItemsList = cartProduct;
-      console.log('values: ', values);
       const token = await getCookie('token');
       if (token) {
         console.log('user logged with token cart');
       } else {
         formik.values.cartItemsList = cartProduct;
-        // formik.values.address = province + disctrict + ward;
+        if (
+          streetRef.current &&
+          wardRef.current &&
+          disctrictRef.current &&
+          provinceRef.current
+        ) {
+          formik.values.address =
+            streetRef.current.value + wardRef.current.innerText;
+          // disctrictRef.current.innerText +
+          // provinceRef.current.innerText;
+        }
         console.log('values: ', values);
         // CartApi.createOrderGuest(values).then((res) => {
         //   console.log('res: ', res);
@@ -150,7 +170,7 @@ const CheckoutCart = (props: Props) => {
             </Box>
           </Box>
           <Box sx={{ mt: 3 }}>
-            <G.LabelInput>NOTE</G.LabelInput>
+            <G.LabelInput>NOTE (Optional)</G.LabelInput>
             <G.TextArea
               widthFull
               id='note'
@@ -158,15 +178,13 @@ const CheckoutCart = (props: Props) => {
               value={formik.values.note}
               onChange={formik.handleChange}
             ></G.TextArea>
-            {formik.touched.note && Boolean(formik.errors.note) && (
-              <G.ErrorText>{formik.errors.note}</G.ErrorText>
-            )}
           </Box>
           <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
             <Box sx={{ width: '50%' }}>
               <G.LabelInput>Province</G.LabelInput>
               <G.Select
                 widthFull
+                ref={provinceRef}
                 onChange={(e) => getDistrict(Number(e.target.value))}
               >
                 {province &&
@@ -181,6 +199,7 @@ const CheckoutCart = (props: Props) => {
               <G.LabelInput>District</G.LabelInput>
               <G.Select
                 widthFull
+                ref={disctrictRef}
                 disabled={disctrict && disctrict.length > 0 ? false : true}
                 onChange={(e) => getWard(Number(e.target.value))}
               >
@@ -198,6 +217,7 @@ const CheckoutCart = (props: Props) => {
               <G.LabelInput>Ward</G.LabelInput>
               <G.Select
                 widthFull
+                ref={wardRef}
                 disabled={ward && ward.length > 0 ? false : true}
                 // onChange={(e) => getDistrict(Number(e.target.value))}
               >
@@ -211,7 +231,10 @@ const CheckoutCart = (props: Props) => {
             </Box>
             <Box sx={{ width: '50%' }}>
               <G.LabelInput>Street</G.LabelInput>
-              <G.Input widthFull></G.Input>
+              <G.Input widthFull ref={streetRef}></G.Input>
+              {formik.touched.address && Boolean(formik.errors.address) && (
+                <G.ErrorText>{formik.errors.address}</G.ErrorText>
+              )}
             </Box>
           </Box>
           <Box sx={{ mt: 3 }}>
@@ -272,7 +295,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              ${totalPrice}
+              ${formatPrice(totalPrice)}
             </Typography>
           </Box>
           <Box
@@ -339,7 +362,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              ${totalPrice}
+              ${formatPrice(totalPrice)}
             </Typography>
           </Box>
         </Box>
