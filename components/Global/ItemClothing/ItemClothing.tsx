@@ -16,13 +16,7 @@ const ItemClothing = ({ data }: IItemClothing) => {
       <S.WrapImage>
         <Link href={`/product/${data.id}`} passHref>
           <a>
-            <Image
-              src={data.mainImg}
-              alt=''
-              width={260}
-              height={380}
-              layout='responsive'
-            />
+            <Image src={data.mainImg} alt='' width={260} height={380} />
           </a>
         </Link>
       </S.WrapImage>
