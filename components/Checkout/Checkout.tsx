@@ -1,7 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ProvinceApi } from '../../services/api/province';
-import { CartItemParams, ProvinceParam } from '../../services/types';
+import {
+  CartItemParams,
+  ProfileParams,
+  ProvinceParam,
+} from '../../services/types';
 import * as G from '../../styles/global.styled';
 import { LOCAL_SAVE_PREFIX, LOCAL_SAVE_LIMITER } from '../../utils/dataConfig';
 import ItemCart from './ItemCart';
@@ -12,6 +16,8 @@ import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import { CartApi } from '../../services/api/cart';
 import { useRef } from 'react';
 import { formatPrice } from '../../utils/common';
+import { AccountApi } from '../../services/api/account';
+import { useStorageContext } from '../../contexts/StorageContext';
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -40,6 +46,8 @@ const CheckoutCart = (props: Props) => {
   const disctrictRef = useRef<HTMLSelectElement>(null);
   const wardRef = useRef<HTMLSelectElement>(null);
   const streetRef = useRef<HTMLInputElement>(null);
+  const { userInfo, setUserInfo } = useStorageContext();
+  console.log('userInfo: ', userInfo);
   const getLocalValue = async () => {
     let temp: any = localStorage
       .getItem(LOCAL_SAVE_PREFIX)
@@ -101,8 +109,8 @@ const CheckoutCart = (props: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      username: '',
-      phoneNumber: '',
+      username: userInfo ? userInfo.fullName : '',
+      phoneNumber: userInfo ? userInfo.phoneNumber : '',
       note: '',
       address: '',
       paymentType: 1,

@@ -50,6 +50,7 @@ const ItemCart = ({ data }: IItemCart) => {
                     display: 'inline-block',
                     width: 15,
                     height: 15,
+                    border: '1px solid gray',
                     backgroundColor: _data.property,
                   }}
                 ></Box>

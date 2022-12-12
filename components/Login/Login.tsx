@@ -46,6 +46,7 @@ const LoginUser = (props: Props) => {
             setUserInfo({
               fullName: result.data.fullName,
               avatarPath: result.data.avatarPath,
+              phoneNumber: result.data.phoneNumber,
             });
           router.push('/');
         } else {

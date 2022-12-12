@@ -69,8 +69,10 @@ const AccountInformation = ({
             setLoading(false);
             setUserInfo &&
               setUserInfo({
+                ...userInfo,
                 fullName: values.fullName,
                 avatarPath: '',
+                phoneNumber: values.phone,
               });
             router.push('/profile');
             console.log(result);
@@ -168,7 +170,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = getCookie('token', ctx);
 
   const [profile] = await Promise.all([AccountApi.profile(token as string)]);
-  console.log(profile);
 
   if (!token) {
     return {

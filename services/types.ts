@@ -221,6 +221,7 @@ export type UpdateProfileUserPrams = {
 export type UserStorage = {
   fullName: string;
   avatarPath: string;
+  phoneNumber: string;
 };
 
 export type SetNewPassword = {
