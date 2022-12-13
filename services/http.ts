@@ -1,7 +1,7 @@
 import Axios, { AxiosResponse } from 'axios';
 
 const http = Axios.create({
-  withCredentials: false,
+  // withCredentials: false,
 });
 
 http.interceptors.response.use(
