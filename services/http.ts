@@ -1,12 +1,12 @@
 import Axios, { AxiosResponse } from 'axios';
 
 const http = Axios.create({
-  withCredentials: true,
+  withCredentials: false,
 });
 
 http.interceptors.response.use(
   (response: AxiosResponse) => response.data,
-  (error) => {
+  error => {
     return Promise.reject({
       statusCode: error.response.status,
       errors: error.response.data,
