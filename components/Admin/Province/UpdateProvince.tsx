@@ -74,7 +74,6 @@ const UpdateProvince = () => {
           formik.values.names = nameList
             .filter((it) => it.name.length > 0)
             .map((it) => it.name);
-          console.log('values: ', values);
           ProvinceApi.createProvince(token, values).then((res) => {
             router.reload();
             setOpenSnackbar(true);
@@ -90,7 +89,6 @@ const UpdateProvince = () => {
 
   const getParent = (level: number) => {
     ProvinceApi.listProvince(SEARCH_PARAMS, level, null).then((res) => {
-      console.log('res: ', res.data.data);
       setDataParent(res.data.data);
     });
   };
@@ -98,18 +96,10 @@ const UpdateProvince = () => {
   const getChild = (parentId: string) => {
     ProvinceApi.listProvince(SEARCH_PARAMS, null, Number(parentId)).then(
       (res) => {
-        console.log('res: ', res.data.data);
         setDataChild(res.data.data);
       }
     );
   };
-
-  useEffect(() => {
-    // ProvinceApi.listProvince().then((res) => {
-    //   console.log('res: ', res);
-    //   //   setDataParent(res)
-    // });
-  }, []);
 
   const handleChangeItemGroup = (event: SelectChangeEvent) => {
     setItemGroup(event.target.value);
@@ -129,8 +119,8 @@ const UpdateProvince = () => {
 
   const handleParentId = (_parentId: string) => {
     setParentId(_parentId);
-    console.log('parentId: ', _parentId);
     getChild(_parentId);
+    formik.values.parentId = Number(_parentId);
   };
 
   return (

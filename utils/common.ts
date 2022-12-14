@@ -96,13 +96,19 @@ export const filterVariants = (variants: VariantParams[]) => {
       checked: false,
     };
     if (currentVariant.name === 'size') {
+      if (sizeArray.length === 0) {
+        currentVariant.checked = true;
+      }
       sizeArray.push(currentVariant);
     } else {
       if (currentVariant.name === 'color') {
+        if (colorArray.length === 0) {
+          currentVariant.checked = true;
+        }
         colorArray.push(currentVariant);
       } else {
         let isPush = false;
-        OtherVariants.map(item => {
+        OtherVariants.map((item) => {
           if (item.name === currentVariant.name) {
             item.data.push(currentVariant);
             isPush = true;
@@ -131,13 +137,10 @@ export const filterVariants = (variants: VariantParams[]) => {
     data: sizeArray,
   };
 
-  // OtherVariants.map((item) => {
-  //   if (item.data.length === 1) {
-  //     item.data[0].checked = true;
-  //   }
-  //   return item;
-  // });
-
   returnArray = returnArray.concat(newDataSize, newDataColor, OtherVariants);
   return returnArray;
 };
+
+export function formatPrice(number: number) {
+  return number.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
+}

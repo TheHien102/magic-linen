@@ -170,7 +170,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = getCookie('token', ctx);
 
   const [profile] = await Promise.all([AccountApi.profile(token as string)]);
-  console.log(profile);
 
   if (!token) {
     return {

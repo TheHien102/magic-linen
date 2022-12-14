@@ -22,7 +22,7 @@ import {
   VariantCheckParams,
   VariantParams,
 } from '../../services/types';
-import { filterVariants } from '../../utils/common';
+import { filterVariants, formatPrice } from '../../utils/common';
 import { group } from 'console';
 import style from 'styled-jsx/style';
 import Image from 'next/image';
@@ -58,21 +58,19 @@ const ProductDetail = ({ data }: IProductDetail) => {
   };
 
   const handleProperty = (data: VariantCheckParams) => {
+    let newPrice = price;
     setVariantList(
       variantList.map((it) => {
         if (it.name === data.name) {
           it.data.map((_it) => {
             if (_it.id === data.id) {
-              _it.checked = !_it.checked;
-
-              if (_it.checked) {
-                setPrice(price + _it.addPrice);
-              } else {
-                setPrice(price - _it.addPrice);
+              if (!_it.checked) {
+                newPrice += _it.addPrice;
               }
+              _it.checked = true;
             } else {
               if (_it.checked) {
-                setPrice(price - _it.addPrice);
+                newPrice -= _it.addPrice;
               }
               _it.checked = false;
             }
@@ -82,18 +80,18 @@ const ProductDetail = ({ data }: IProductDetail) => {
         return it;
       })
     );
+    setPrice(newPrice);
   };
 
   const handleAddToCart = async () => {
     const token = await getCookie('token');
+    console.log('token: ', token);
     if (token) {
       console.log('token: ', token);
       let newAddToCartParam: AddToCartParams = {
         productId: data.id,
         variants: [],
         quantity: quantity,
-        price: quantity * price * ((100 - data.discount) / 100),
-        discount: data.discount,
       };
       variantList.map((it) => {
         newAddToCartParam.variants = newAddToCartParam.variants.concat(
@@ -102,11 +100,12 @@ const ProductDetail = ({ data }: IProductDetail) => {
       });
       console.log('newAddToCartParam: ', newAddToCartParam);
       CartApi.addToCart(token, newAddToCartParam).then((res) => {
-        console.log('res: ', res);
+        router.push('/cart');
       });
     } else {
       let oneProductPrice = price * ((100 - data.discount) / 100);
       let newCartParam: CartItemParams = {
+        id: data.id,
         productId: data.id,
         name: data.name,
         price: oneProductPrice,
@@ -136,6 +135,11 @@ const ProductDetail = ({ data }: IProductDetail) => {
   const [variantList, setVariantList] = useState<IItemCheckVariant[]>([]);
   useEffect(() => {
     setVariantList(variantListTemp);
+    setPrice(
+      price +
+        variantListTemp[0].data[0].addPrice +
+        variantListTemp[1].data[0].addPrice
+    );
   }, []);
   const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
 
@@ -145,11 +149,12 @@ const ProductDetail = ({ data }: IProductDetail) => {
     <Box sx={{ display: 'flex', marginX: '120px', gap: '35px' }}>
       <Box sx={{ width: '60%' }}>
         <ProductSwiper data={dataImages} />
-        <Accordion defaultExpanded>
+        <Accordion defaultExpanded sx={{ border: 0, boxShadow: 'none' }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
             id='panel1a-header'
+            sx={{ borderTop: 0 }}
           >
             <Typography sx={{ fontFamily: 'Josefin Sans', fontWeight: 'bold' }}>
               DESCRIPTION
@@ -181,7 +186,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 lineHeight: '1',
               }}
             >
-              {price}
+              ${formatPrice(price)}
             </Typography>
           ) : (
             <>
@@ -195,7 +200,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1.3',
                 }}
               >
-                ${price}
+                ${formatPrice(price)}
               </Typography>
               <Typography
                 sx={{
@@ -207,7 +212,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1',
                 }}
               >
-                ${price * ((100 - data.discount) / 100)}
+                ${formatPrice(price * ((100 - data.discount) / 100))}
               </Typography>
             </>
           )}
@@ -222,7 +227,8 @@ const ProductDetail = ({ data }: IProductDetail) => {
               fontSize: '14px',
             }}
           >
-            You save ${price * (data.discount / 100)} ({data.discount}%)
+            You save ${formatPrice(price * (data.discount / 100))} (
+            {data.discount}%)
           </Typography>
         )}
         <Typography

@@ -6,27 +6,22 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Typography } from '@mui/material';
-import Image from 'next/image';
-
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import { LOCAL_SAVE_LIMITER, LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
 import { CartItemParams } from '../../services/types';
 import RowCart from './RowCart';
 import { useRouter } from 'next/router';
+import { getCookie } from '../../services/cookies';
+import { CartApi } from '../../services/api/cart';
+import { formatPrice } from '../../utils/common';
 
 export default function CartUser() {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const handleTotalPrice = () => {
-    let tempTotalPrice = 0;
-    for (let i = 0; i < cartProduct.length; i++) {
-      tempTotalPrice += cartProduct[i].totalPrice;
-    }
-    setTotalPrice(tempTotalPrice);
-  };
 
   const getLocalValue = async () => {
     let temp: any = localStorage
@@ -47,35 +42,45 @@ export default function CartUser() {
     }
   };
 
-  useEffect(() => {
-    getLocalValue();
-  }, []);
+  const getCartData = async () => {
+    setLoading(true);
+    const token = await getCookie('token');
+    if (token) {
+      CartApi.listCart(token).then((res) => {
+        console.log('res cart: ', res);
+        setCartProduct(res.data.data);
+        setLoading(false);
+        let tempTotalPrice = 0;
+        for (let i = 0; i < res.data.data.length; i++) {
+          tempTotalPrice += res.data.data[i].price * res.data.data[i].quantity;
+        }
+        setTotalPrice(tempTotalPrice);
+      });
+    } else {
+      getLocalValue();
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    handleTotalPrice();
-  }, [cartProduct]);
+    getCartData();
+  }, []);
 
   const handleRemoveItem = (data: CartItemParams) => {
     if (cartProduct.length === 1) {
       localStorage.removeItem(LOCAL_SAVE_PREFIX);
     }
     setCartProduct(cartProduct.filter((it) => it !== data));
-    let tempArray = cartProduct.filter((it) => it !== data);
-    console.log('cartProduct: ', cartProduct);
-    // let tempTotalPrice = 0;
-    // for (
-    //   let i = 0;
-    //   i < cartProduct.filter((it) => it.productId !== id).length;
-    //   i++
-    // ) {
-    //   tempTotalPrice += cartProduct.filter((it) => it.productId !== id)[i]
-    //     .totalPrice;
-    // }
-    // setTotalPrice(tempTotalPrice);
   };
 
-  const handleContinueShopping = () => {
-    setNewJson();
+  const handleContinueShopping = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      router.push('/shop');
+    } else {
+      setNewJson();
+      router.push('/shop');
+    }
   };
 
   const setNewJson = () => {
@@ -93,9 +98,14 @@ export default function CartUser() {
     }
   };
 
-  const handleCheckout = () => {
-    setNewJson();
-    router.push('/checkout');
+  const handleCheckout = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      router.push('/checkout');
+    } else {
+      setNewJson();
+      router.push('/checkout');
+    }
   };
 
   return (
@@ -186,7 +196,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                $71.20
+                ${formatPrice(totalPrice)}
               </Typography>
             </Box>
             <Box
@@ -253,7 +263,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                ${totalPrice}
+                ${formatPrice(totalPrice)}
               </Typography>
             </Box>
           </Box>
@@ -280,31 +290,39 @@ export default function CartUser() {
           </Box>
         </>
       ) : (
-        <Box>
-          <Typography
-            sx={{
-              fontWeight: '400',
-              fontFamily: 'Josefin Sans',
-              fontSize: '28px',
-              textAlign: 'center',
-              mt: 5,
-            }}
-          >
-            Your cart is empty!. Buy some thing and go back here.
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'row',
-            }}
-          >
-            <BtnShopNow
-              title='Shopping Now'
-              onClick={() => handleContinueShopping()}
-            />
-          </Box>
-        </Box>
+        <>
+          {!loading ? (
+            <Box>
+              <Typography
+                sx={{
+                  fontWeight: '400',
+                  fontFamily: 'Josefin Sans',
+                  fontSize: '28px',
+                  textAlign: 'center',
+                  mt: 5,
+                }}
+              >
+                Your cart is empty!. Buy some thing and go back here.
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                }}
+              >
+                <BtnShopNow
+                  title='Shopping Now'
+                  onClick={() => handleContinueShopping()}
+                />
+              </Box>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <CircularProgress />
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );

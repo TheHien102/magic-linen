@@ -6,7 +6,7 @@ const http = Axios.create({
 
 http.interceptors.response.use(
   (response: AxiosResponse) => response.data,
-  (error) => {
+  error => {
     return Promise.reject({
       statusCode: error.response.status,
       errors: error.response.data,

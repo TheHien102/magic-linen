@@ -1,9 +1,7 @@
-import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { Layout } from '../components/Global/Layout/Layout';
 import HomeLinen from '../components/Home/Home';
 import { ProductApi } from '../services/api/product';
-import { getCookie } from '../services/cookies';
 import { ProductParams } from '../services/types';
 
 interface IHome {
@@ -11,7 +9,6 @@ interface IHome {
 }
 
 export default function Home({ listProduct }: IHome) {
-  console.log('result: ', listProduct);
   return (
     <>
       <Head>

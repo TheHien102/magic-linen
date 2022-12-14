@@ -5,6 +5,9 @@ import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { formatPrice } from '../../utils/common';
+import { getCookie } from '../../services/cookies';
+import { CartApi } from '../../services/api/cart';
 
 interface IRowCart {
   data: CartItemParams;
@@ -20,23 +23,55 @@ const RowCart = ({
   setTotalPrice,
 }: IRowCart) => {
   const [quantity, setQuantity] = useState(data.quantity);
-  const handleQuantityUp = () => {
-    setQuantity(quantity + 1);
-    setTotalPrice(totalPrice + data.price);
+  const handleQuantityUp = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      updateQuantity(quantity + 1).then((res) => {
+        if (res?.status.toString() === 'OK') {
+          setQuantity(quantity + 1);
+          setTotalPrice(totalPrice + data.price);
+        }
+      });
+    } else {
+      setQuantity(quantity + 1);
+      setTotalPrice(totalPrice + data.price);
+    }
   };
 
-  const handleQuantityDown = () => {
+  const handleQuantityDown = async () => {
+    const token = await getCookie('token');
     if (quantity > 1) {
-      setQuantity(quantity - 1);
-      setTotalPrice(totalPrice - data.price);
+      if (token) {
+        updateQuantity(quantity - 1).then((res) => {
+          if (res?.status.toString() === 'OK') {
+            setQuantity(quantity - 1);
+            setTotalPrice(totalPrice - data.price);
+          }
+        });
+      } else {
+        setQuantity(quantity + 1);
+        setTotalPrice(totalPrice + data.price);
+      }
+    }
+  };
+
+  const updateQuantity = async (_quantity: number) => {
+    const token = await getCookie('token');
+    if (token) {
+      let cartItem = {
+        cartItemId: data.id,
+        quantity: _quantity,
+      };
+      console.log('productId: ', data);
+      return CartApi.updateCartItem(token, cartItem).then((res) => {
+        console.log('res cart item: ', res);
+        return res;
+      });
     }
   };
 
   return (
-    <TableRow
-      key={data.productId}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
+    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell component='th' scope='row'>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box
@@ -75,6 +110,7 @@ const RowCart = ({
                       fontFamily: 'Josefin Sans',
                       fontSize: '14px',
                       color: 'gray',
+
                       textTransform: 'capitalize',
                     }}
                   >
@@ -84,6 +120,7 @@ const RowCart = ({
                         display: 'inline-block',
                         width: 15,
                         height: 15,
+                        border: '1px solid gray',
                         backgroundColor: _data.property,
                       }}
                     ></Box>
@@ -114,7 +151,7 @@ const RowCart = ({
             fontSize: '16px',
           }}
         >
-          ${data.price}
+          ${formatPrice(data.price)}
         </Typography>
       </TableCell>
       <TableCell>
@@ -159,7 +196,7 @@ const RowCart = ({
             fontSize: '16px',
           }}
         >
-          ${data.price * quantity}
+          ${formatPrice(data.price * quantity)}
         </Typography>
       </TableCell>
       <TableCell align='right'>

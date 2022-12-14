@@ -45,6 +45,7 @@ let listItemGroup = [
 
 const tableArray = [
   'Account',
+  'Address',
   'Cart',
   'Category',
   'Group',
@@ -63,9 +64,9 @@ const Permission = ({ permissionsList }: IPermission) => {
 
   useEffect(() => {
     newPermissionList = permissionsList;
-    tableArray.map(table => {
+    tableArray.map((table) => {
       if (
-        permissionsList.findIndex(permission =>
+        permissionsList.findIndex((permission) =>
           permission.name.includes(table)
         ) === -1
       ) {
@@ -86,7 +87,7 @@ const Permission = ({ permissionsList }: IPermission) => {
       nameGroup: '',
     },
     validationSchema: validationSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       //   router.push('/dashboard');
       const token = await getCookie('token');
       formik.values.showMenu = showMenu;
@@ -112,7 +113,7 @@ const Permission = ({ permissionsList }: IPermission) => {
 
   const handleChangeKind = (event: SelectChangeEvent) => {
     setKind(event.target.value);
-    const item = newPermissionList.find(it => it.name === event.target.value);
+    const item = newPermissionList.find((it) => it.name === event.target.value);
     console.log('itemGroup: ', item);
     setItemGroup(item);
     formik.values.nameGroup = event.target.value;
@@ -120,7 +121,7 @@ const Permission = ({ permissionsList }: IPermission) => {
 
   const checkPermission = (name: string) => {
     //If finded then not show to list
-    const index = itemGroup?.list.findIndex(it => {
+    const index = itemGroup?.list.findIndex((it) => {
       it.name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
     });
     if (index === -1) {
@@ -172,7 +173,7 @@ const Permission = ({ permissionsList }: IPermission) => {
         </Grid>
         <Grid
           container
-          sx={{ marginTop: '5px', maxWidth: '800px' }}
+          sx={{ marginTop: '5px', maxWidth: '800px', marginX: 'auto' }}
           spacing={2.5}
         >
           <Grid item xs={12} md={6}>
@@ -216,7 +217,7 @@ const Permission = ({ permissionsList }: IPermission) => {
               >
                 {listItemGroup.length > 0 &&
                   listItemGroup.map(
-                    data =>
+                    (data) =>
                       checkPermission(data.name) && (
                         <MenuItem key={data.name} value={data.name}>
                           {data.name + ' ' + itemGroup?.name}

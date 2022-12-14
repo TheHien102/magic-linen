@@ -28,6 +28,7 @@ export type ReivewParams = {
 };
 
 export type CartItemParams = {
+  id: number;
   productId: number;
   variants: VariantParams[];
   quantity: number;
@@ -41,8 +42,11 @@ export type AddToCartParams = {
   productId: number;
   variants: VariantParams[];
   quantity: number;
-  price: number;
-  discount: number;
+};
+
+export type CartListParams = {
+  accountId: number;
+  status: number;
 };
 
 export type ProductDetailPrams = {
@@ -217,6 +221,7 @@ export type UpdateProfileUserPrams = {
 export type UserStorage = {
   fullName: string;
   avatarPath: string;
+  phoneNumber: string;
 };
 
 export type SetNewPassword = {
@@ -244,4 +249,36 @@ export type OrderListParams = {
   page: number;
   size: number;
   sort: string[];
+};
+
+export type AddressCreateParams = {
+  province_cityId: number;
+  province_districtId: number;
+  province_wardId: number;
+  details: string;
+  phone: string;
+};
+
+export type ListAddressParams = {
+  id: number;
+  receiverName: string;
+  city: ProvinceParam;
+  district: ProvinceParam;
+  ward: ProvinceParam;
+  phone: string;
+  details: string;
+};
+
+export type OrderGuestParam = {
+  cartItemsList?: {
+    productId: number;
+    variants: VariantParams[];
+    quantity: number;
+  };
+  cartItemIdsList?: number[];
+  address: string;
+  note: string;
+  phoneNumber: string;
+  username: string;
+  paymentType: number;
 };

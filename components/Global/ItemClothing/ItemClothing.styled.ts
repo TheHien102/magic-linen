@@ -14,7 +14,7 @@ export const Company = styled.div`
 `;
 
 export const Text = styled.a`
-  ${tw`hover:underline cursor-pointer text-[14px] text-gray mt-1`}
+  ${tw`hover:underline cursor-pointer text-[16px] text-gray mt-1`}
 `;
 
 export const WrapColor = styled.div`
@@ -22,7 +22,7 @@ export const WrapColor = styled.div`
 `;
 
 export const WrapPrice = styled.div`
-  ${tw`flex gap-3`}
+  ${tw`flex gap-3 mt-2 justify-between`}
 `;
 
 export const TextPrice = styled.p`

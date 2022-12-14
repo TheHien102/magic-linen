@@ -1,6 +1,5 @@
 import { GetServerSidePropsContext, NextPageContext } from 'next';
 import cookies from 'next-cookies';
-import { AppContext } from 'next/app';
 
 export const setCookie = (
   key: string,
