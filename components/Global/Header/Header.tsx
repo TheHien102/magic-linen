@@ -6,10 +6,14 @@ import { useRouter } from 'next/router';
 import { Badge } from '@mui/material';
 import iconCart from '../../../assets/images/icon-cart.svg';
 import { useEffect, useState } from 'react';
+import { CartApi } from '../../../services/api/cart';
+import { getCookie } from '../../../services/cookies';
 
 export const Header = () => {
   const router = useRouter();
   const [fullName, setFullName] = useState<string>();
+  const [cartCount, setCartCount] = useState<number>(0);
+
   useEffect(() => {
     if (localStorage.getItem('userInfo')) {
       setFullName(
@@ -18,6 +22,23 @@ export const Header = () => {
     } else {
       setFullName(undefined);
     }
+  }, []);
+
+  const getListCart = async () => {
+    const token = await getCookie('token');
+    const _count = localStorage.getItem('cartCount');
+    if (_count) {
+      setCartCount(Number(_count));
+    } else {
+      if (token) {
+        const res = await CartApi.listCart(token);
+        setCartCount(res.data.totalElements);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getListCart();
   }, []);
 
   return (
@@ -44,7 +65,7 @@ export const Header = () => {
             </Link>
           )}
           <Badge
-            badgeContent={4}
+            badgeContent={cartCount}
             color='primary'
             sx={{ ml: 2, cursor: 'pointer' }}
             onClick={() => router.push('/cart')}
