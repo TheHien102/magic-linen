@@ -160,6 +160,7 @@ export default function CartUser() {
                   cartProduct.map((data, index) => (
                     <RowCart
                       key={index}
+                      index={index}
                       data={data}
                       handleRemoveItem={handleRemoveItem}
                       totalPrice={totalPrice}

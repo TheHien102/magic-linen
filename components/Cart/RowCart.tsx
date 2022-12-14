@@ -8,9 +8,11 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { formatPrice } from '../../utils/common';
 import { getCookie } from '../../services/cookies';
 import { CartApi } from '../../services/api/cart';
+import { LOCAL_SAVE_LIMITER, LOCAL_SAVE_PREFIX } from '../../utils/dataConfig';
 
 interface IRowCart {
   data: CartItemParams;
+  index: number;
   handleRemoveItem: (data: CartItemParams) => void;
   totalPrice: number;
   setTotalPrice: Dispatch<SetStateAction<number>>;
@@ -18,11 +20,36 @@ interface IRowCart {
 
 const RowCart = ({
   data,
+  index,
   handleRemoveItem,
   totalPrice,
   setTotalPrice,
 }: IRowCart) => {
   const [quantity, setQuantity] = useState(data.quantity);
+
+  const getLocalValue = async (currentQuantity: number) => {
+    let localValue: any = localStorage
+      .getItem(LOCAL_SAVE_PREFIX)
+      ?.toString()
+      .split(LOCAL_SAVE_LIMITER)
+      .map((data) => JSON.parse(data.replace('\\', '')));
+
+    const indexOfValue = localValue.findIndex(
+      (_data: any, _index: number) => _index === index
+    );
+    localValue[indexOfValue].quantity = currentQuantity;
+    let newLocalValue = localValue;
+    console.log('localValue[indexOfValue]: ', localValue);
+    //save value to localStorage
+    if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
+      let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
+      storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newLocalValue);
+      localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
+    } else {
+      localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newLocalValue));
+    }
+  };
+
   const handleQuantityUp = async () => {
     const token = await getCookie('token');
     if (token) {
@@ -35,6 +62,15 @@ const RowCart = ({
     } else {
       setQuantity(quantity + 1);
       setTotalPrice(totalPrice + data.price);
+      getLocalValue(quantity + 1);
+
+      // if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
+      //   let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
+      //   storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newCartParam);
+      //   localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
+      // } else {
+      //   localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newCartParam));
+      // }
     }
   };
 
@@ -49,8 +85,9 @@ const RowCart = ({
           }
         });
       } else {
-        setQuantity(quantity + 1);
+        setQuantity(quantity - 1);
         setTotalPrice(totalPrice + data.price);
+        getLocalValue(quantity - 1);
       }
     }
   };

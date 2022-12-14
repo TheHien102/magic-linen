@@ -73,6 +73,8 @@ const CheckoutCart = (props: Props) => {
       .split(LOCAL_SAVE_LIMITER)
       .map((data) => JSON.parse(data.replace('\\', '')));
 
+    console.log('temp check out: ', temp);
+
     if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
       setCartProduct(temp);
       let tempTotalPrice = 0;
@@ -237,70 +239,6 @@ const CheckoutCart = (props: Props) => {
           BILLING
         </Typography>
         <form onSubmit={formik.handleSubmit}>
-          {/* <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
-            <Box sx={{ width: '50%' }}>
-              <G.LabelInput>FULL NAME</G.LabelInput>
-              <G.Input
-                widthFull
-                id='username'
-                name='username'
-                value={formik.values.username}
-                onChange={formik.handleChange}
-              ></G.Input>
-              {formik.touched.username && Boolean(formik.errors.username) && (
-                <G.ErrorText>{formik.errors.username}</G.ErrorText>
-              )}
-            </Box>
-            <Box sx={{ width: '50%' }}>
-              <G.LabelInput>PHONE</G.LabelInput>
-              <G.Input
-                widthFull
-                id='phoneNumber'
-                name='phoneNumber'
-                value={formik.values.phoneNumber}
-                onChange={formik.handleChange}
-              ></G.Input>
-              {formik.touched.phoneNumber &&
-                Boolean(formik.errors.phoneNumber) && (
-                  <G.ErrorText>{formik.errors.phoneNumber}</G.ErrorText>
-                )}
-            </Box>
-          </Box> */}
-          <FormControl>
-            {listAddress.length > 0 && (
-              <RadioGroup
-                aria-labelledby='group-address'
-                defaultValue={
-                  listAddress &&
-                  listAddress.length > 0 &&
-                  listAddress[listAddress.length - 1].id
-                }
-                onChange={(e) => handleChangeListAddress(e)}
-                name='radio-buttons-group'
-              >
-                {listAddress &&
-                  listAddress.map((data, index) => (
-                    <FormControlLabel
-                      key={data.id}
-                      value={data.id}
-                      // defaultChecked={listAddress.length === index}
-                      control={<Radio color='secondary' />}
-                      label={<DetailAddress data={data} />}
-                    />
-                  ))}
-              </RadioGroup>
-            )}
-          </FormControl>
-          <Box sx={{ mt: 3 }}>
-            <G.LabelInput>NOTE (Optional)</G.LabelInput>
-            <G.TextArea
-              widthFull
-              id='note'
-              name='note'
-              value={formik.values.note}
-              onChange={formik.handleChange}
-            ></G.TextArea>
-          </Box>
           {userInfo ? (
             <Box sx={{ mt: 3 }}>
               <BtnShopNow
@@ -311,6 +249,36 @@ const CheckoutCart = (props: Props) => {
             </Box>
           ) : (
             <>
+              <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+                <Box sx={{ width: '50%' }}>
+                  <G.LabelInput>FULL NAME</G.LabelInput>
+                  <G.Input
+                    widthFull
+                    id='username'
+                    name='username'
+                    value={formik.values.username}
+                    onChange={formik.handleChange}
+                  ></G.Input>
+                  {formik.touched.username &&
+                    Boolean(formik.errors.username) && (
+                      <G.ErrorText>{formik.errors.username}</G.ErrorText>
+                    )}
+                </Box>
+                <Box sx={{ width: '50%' }}>
+                  <G.LabelInput>PHONE</G.LabelInput>
+                  <G.Input
+                    widthFull
+                    id='phoneNumber'
+                    name='phoneNumber'
+                    value={formik.values.phoneNumber}
+                    onChange={formik.handleChange}
+                  ></G.Input>
+                  {formik.touched.phoneNumber &&
+                    Boolean(formik.errors.phoneNumber) && (
+                      <G.ErrorText>{formik.errors.phoneNumber}</G.ErrorText>
+                    )}
+                </Box>
+              </Box>
               <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
                 <Box sx={{ width: '50%' }}>
                   <G.LabelInput>Province</G.LabelInput>
@@ -376,6 +344,41 @@ const CheckoutCart = (props: Props) => {
               </Box>
             </>
           )}
+          <FormControl>
+            {listAddress.length > 0 && (
+              <RadioGroup
+                aria-labelledby='group-address'
+                defaultValue={
+                  listAddress &&
+                  listAddress.length > 0 &&
+                  listAddress[listAddress.length - 1].id
+                }
+                onChange={(e) => handleChangeListAddress(e)}
+                name='radio-buttons-group'
+              >
+                {listAddress &&
+                  listAddress.map((data, index) => (
+                    <FormControlLabel
+                      key={data.id}
+                      value={data.id}
+                      // defaultChecked={listAddress.length === index}
+                      control={<Radio color='secondary' />}
+                      label={<DetailAddress data={data} />}
+                    />
+                  ))}
+              </RadioGroup>
+            )}
+          </FormControl>
+          <Box sx={{ mt: 3 }}>
+            <G.LabelInput>NOTE (Optional)</G.LabelInput>
+            <G.TextArea
+              widthFull
+              id='note'
+              name='note'
+              value={formik.values.note}
+              onChange={formik.handleChange}
+            ></G.TextArea>
+          </Box>
 
           <Box sx={{ mt: 3 }}>
             <label className='wrapChecked'>
