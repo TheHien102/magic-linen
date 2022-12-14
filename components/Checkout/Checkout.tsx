@@ -57,8 +57,8 @@ const CheckoutCart = (props: Props) => {
   const disctrictRef = useRef<HTMLSelectElement>(null);
   const wardRef = useRef<HTMLSelectElement>(null);
   const streetRef = useRef<HTMLInputElement>(null);
-  const { userInfo, setUserInfo } = useStorageContext();
-  console.log('userInfo: ', userInfo);
+  // const { userInfo, setUserInfo } = useStorageContext();
+  // console.log('userInfo: ', userInfo);
   const [openModalAddress, setOpenModalAddress] = useState(false);
   const handleOpenModalAddress = () => setOpenModalAddress(true);
   const handleCloseModalAddress = () => {
@@ -131,11 +131,17 @@ const CheckoutCart = (props: Props) => {
       });
     }
   };
-
+  let userInfo;
   useEffect(() => {
     getUserValue();
     getListAddress();
     getProvince(1);
+
+    userInfo = localStorage.getItem('userInfo');
+    console.log(
+      'localStorage.get(userInfo): ',
+      localStorage.getItem('userInfo')
+    );
   }, []);
 
   // useEffect(() => {
@@ -241,11 +247,38 @@ const CheckoutCart = (props: Props) => {
         <form onSubmit={formik.handleSubmit}>
           {userInfo ? (
             <Box sx={{ mt: 3 }}>
-              <BtnShopNow
-                title='Add picked address'
-                type='button'
-                onClick={() => handleOpenModalAddress()}
-              />
+              <FormControl>
+                {listAddress.length > 0 && (
+                  <RadioGroup
+                    aria-labelledby='group-address'
+                    defaultValue={
+                      listAddress &&
+                      listAddress.length > 0 &&
+                      listAddress[listAddress.length - 1].id
+                    }
+                    onChange={(e) => handleChangeListAddress(e)}
+                    name='radio-buttons-group'
+                  >
+                    {listAddress &&
+                      listAddress.map((data, index) => (
+                        <FormControlLabel
+                          key={data.id}
+                          value={data.id}
+                          // defaultChecked={listAddress.length === index}
+                          control={<Radio color='secondary' />}
+                          label={<DetailAddress data={data} />}
+                        />
+                      ))}
+                  </RadioGroup>
+                )}
+              </FormControl>
+              <Box sx={{ mt: 3 }}>
+                <BtnShopNow
+                  title='Add picked address'
+                  type='button'
+                  onClick={() => handleOpenModalAddress()}
+                />
+              </Box>
             </Box>
           ) : (
             <>
@@ -344,31 +377,7 @@ const CheckoutCart = (props: Props) => {
               </Box>
             </>
           )}
-          <FormControl>
-            {listAddress.length > 0 && (
-              <RadioGroup
-                aria-labelledby='group-address'
-                defaultValue={
-                  listAddress &&
-                  listAddress.length > 0 &&
-                  listAddress[listAddress.length - 1].id
-                }
-                onChange={(e) => handleChangeListAddress(e)}
-                name='radio-buttons-group'
-              >
-                {listAddress &&
-                  listAddress.map((data, index) => (
-                    <FormControlLabel
-                      key={data.id}
-                      value={data.id}
-                      // defaultChecked={listAddress.length === index}
-                      control={<Radio color='secondary' />}
-                      label={<DetailAddress data={data} />}
-                    />
-                  ))}
-              </RadioGroup>
-            )}
-          </FormControl>
+
           <Box sx={{ mt: 3 }}>
             <G.LabelInput>NOTE (Optional)</G.LabelInput>
             <G.TextArea
@@ -381,8 +390,18 @@ const CheckoutCart = (props: Props) => {
           </Box>
 
           <Box sx={{ mt: 3 }}>
+            <Typography
+              sx={{
+                fontWeight: 'bold',
+                fontFamily: 'Josefin Sans',
+                mb: 1.5,
+                borderBottom: '1px solid hsla(48,8%,88%,.6)',
+              }}
+            >
+              PAYMENT
+            </Typography>
             <label className='wrapChecked'>
-              Ship COD
+              Ship COD (Cash On Delivery)
               <input type='checkbox' disabled checked />
               <span className='checkmark'></span>
             </label>

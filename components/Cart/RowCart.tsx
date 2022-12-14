@@ -40,13 +40,16 @@ const RowCart = ({
     localValue[indexOfValue].quantity = currentQuantity;
     let newLocalValue = localValue;
     console.log('localValue[indexOfValue]: ', localValue);
+    localStorage.removeItem(LOCAL_SAVE_PREFIX);
     //save value to localStorage
     if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
       let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
       storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newLocalValue);
       localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
+      console.log('save storage');
     } else {
       localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newLocalValue));
+      console.log('save normal');
     }
   };
 
@@ -63,14 +66,6 @@ const RowCart = ({
       setQuantity(quantity + 1);
       setTotalPrice(totalPrice + data.price);
       getLocalValue(quantity + 1);
-
-      // if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
-      //   let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
-      //   storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newCartParam);
-      //   localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
-      // } else {
-      //   localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newCartParam));
-      // }
     }
   };
 
