@@ -7,7 +7,7 @@ import * as G from '../styles/global.styled';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { AccountApi } from '../services/api/account';
-import { Alert, Box } from '@mui/material';
+import { Alert, Box, Snackbar } from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
 import { getCookie } from '../services/cookies';
 
@@ -24,9 +24,7 @@ const validationSchema = yup.object({
     .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.'),
   passwordRepeat: yup
     .string()
-    .required('Password is required')
-    .min(8, 'Password is too short - should be 8 chars minimum.')
-    .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.'),
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 type Props = {};
@@ -35,6 +33,7 @@ const ChangePassword = (props: Props) => {
   const router = useRouter();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -59,16 +58,18 @@ const ChangePassword = (props: Props) => {
           );
 
           if (result) {
+            setOpenSnackbar(true);
             setLoading(false);
             console.log(result);
-            router.push('/');
+            setTimeout(() => {
+              router.push('/profile');
+            }, 1000);
           } else {
             setError(true);
             setLoading(false);
           }
         }
       } catch (error) {
-        setError(true);
         setLoading(false);
         console.log('error: ', error);
       }
@@ -81,6 +82,15 @@ const ChangePassword = (props: Props) => {
         <meta name='description' content='Magic Linen' />
       </Head>
       <ProfileLayout>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={openSnackbar}
+          autoHideDuration={3000}
+        >
+          <Alert severity='success' sx={{ width: '100%' }}>
+            Change password complete !
+          </Alert>
+        </Snackbar>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ mb: '20px' }}>
             <G.LabelInput>Old Password</G.LabelInput>
@@ -120,13 +130,15 @@ const ChangePassword = (props: Props) => {
               value={formik.values.passwordRepeat}
               onChange={formik.handleChange}
             ></G.Input>
-            {formik.touched.password && Boolean(formik.errors.password) && (
-              <G.ErrorText>{formik.errors.password}</G.ErrorText>
-            )}
+            {formik.touched.passwordRepeat &&
+              Boolean(formik.errors.passwordRepeat) && (
+                <G.ErrorText>{formik.errors.passwordRepeat}</G.ErrorText>
+              )}
           </Box>
 
           <BtnShopNow
             title='Submit'
+            type='submit'
             revertColor
             widthFull
             onClick={() => formik.submitForm()}
