@@ -7,7 +7,7 @@ import * as G from '../styles/global.styled';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { AccountApi } from '../services/api/account';
-import { Alert, Box } from '@mui/material';
+import { Alert, Box, Snackbar } from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
 import { getCookie } from '../services/cookies';
 
@@ -37,6 +37,7 @@ const AccountInformation = ({
   const router = useRouter();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -74,8 +75,10 @@ const AccountInformation = ({
                 address: '',
               })
             );
-            router.push('/profile');
-            console.log(result);
+            setOpenSnackbar(true);
+            setTimeout(() => {
+              router.reload();
+            }, 1000);
           } else {
             setError(true);
             setLoading(false);
@@ -95,6 +98,15 @@ const AccountInformation = ({
         <meta name='description' content='Magic Linen' />
       </Head>
       <ProfileLayout>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={openSnackbar}
+          autoHideDuration={3000}
+        >
+          <Alert severity='success' sx={{ width: '100%' }}>
+            Change info complete !
+          </Alert>
+        </Snackbar>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ mb: '20px' }}>
             <G.LabelInput>Username</G.LabelInput>

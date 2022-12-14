@@ -10,18 +10,6 @@ import { useEffect, useState } from 'react';
 export const Header = () => {
   const router = useRouter();
   const [fullName, setFullName] = useState<string>();
-  // const logUser = async () => {
-  //   const token = await getCookie('token');
-  //   if (token) {
-  //     const profile = await AccountApi.profile(token as string);
-  //     setFullName(profile.data.fullName);
-  //   } else {
-  //     setFullName('');
-  //   }
-  //   console.log(userInfo);
-  //   console.log(permissions);
-  //   console.log(token);
-  // };
   useEffect(() => {
     if (localStorage.getItem('userInfo')) {
       setFullName(
