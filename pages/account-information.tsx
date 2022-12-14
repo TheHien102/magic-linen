@@ -10,7 +10,6 @@ import { AccountApi } from '../services/api/account';
 import { Alert, Box } from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
 import { getCookie } from '../services/cookies';
-import { useStorageContext } from '../contexts/StorageContext';
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -38,7 +37,6 @@ const AccountInformation = ({
   const router = useRouter();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { userInfo, setUserInfo } = useStorageContext();
 
   const formik = useFormik({
     initialValues: {
@@ -67,11 +65,15 @@ const AccountInformation = ({
 
           if (result) {
             setLoading(false);
-            setUserInfo &&
-              setUserInfo({
+            localStorage.setItem(
+              'userInfo',
+              JSON.stringify({
                 fullName: values.fullName,
                 avatarPath: '',
-              });
+                phone: values.phone,
+                address: '',
+              })
+            );
             router.push('/profile');
             console.log(result);
           } else {

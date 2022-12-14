@@ -5,7 +5,6 @@ import Breadcrumb from '../Breadcumb/Breadcumb';
 import { useRouter } from 'next/router';
 import { AccountApi } from '../../../services/api/account';
 import { getCookie, removeCookie } from '../../../services/cookies';
-import { useStorageContext } from '../../../contexts/StorageContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,14 +12,13 @@ interface LayoutProps {
 
 export const ProfileLayout = ({ children }: LayoutProps) => {
   const router = useRouter();
-  const { userInfo, setUserInfo } = useStorageContext();
 
   const logOut = async () => {
     try {
       const token = await getCookie('token');
       const res = await AccountApi.logout(token as string);
       if (res) {
-        setUserInfo && setUserInfo(undefined);
+        localStorage.removeItem('userInfo');
         await removeCookie('token');
         router.push('/login');
       }

@@ -226,3 +226,22 @@ export type SetNewPassword = {
 };
 
 export type AdminProductParams = {};
+
+export type ProductDetail = {
+  id: number;
+  productId: number;
+  variants: VariantParams[];
+  quantity: number;
+  price: number;
+  discount: number;
+  mainImg: string;
+  name: string;
+  createdDate: string;
+  modifiedDate: string;
+};
+
+export type OrderListParams = {
+  page: number;
+  size: number;
+  sort: string[];
+};

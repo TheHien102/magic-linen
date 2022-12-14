@@ -10,7 +10,6 @@ import { AccountApi } from '../../services/api/account';
 import * as yup from 'yup';
 import { getCookie, setCookie } from '../../services/cookies';
 import Alert from '@mui/material/Alert';
-import { useStorageContext } from '../../contexts/StorageContext';
 import Link from 'next/link';
 import { Box, Typography } from '@mui/material';
 
@@ -25,7 +24,6 @@ const LoginUser = (props: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const { userInfo, setUserInfo } = useStorageContext();
 
   const formik = useFormik({
     initialValues: {
@@ -42,11 +40,15 @@ const LoginUser = (props: Props) => {
         if (result.data && result.data.token) {
           setCookie('token', result.data.token);
           setLoading(false);
-          setUserInfo &&
-            setUserInfo({
+          localStorage.setItem(
+            'userInfo',
+            JSON.stringify({
               fullName: result.data.fullName,
               avatarPath: result.data.avatarPath,
-            });
+              phone: result.data.phone,
+              address: result.data.address,
+            })
+          );
           router.push('/');
         } else {
           setError(true);

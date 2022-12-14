@@ -4,13 +4,33 @@ import Link from 'next/link';
 import logo from '../../../assets/images/logo.svg';
 import { useRouter } from 'next/router';
 import { Badge } from '@mui/material';
-import { useStorageContext } from '../../../contexts/StorageContext';
-import { getCookie } from '../../../services/cookies';
 import iconCart from '../../../assets/images/icon-cart.svg';
+import { useEffect, useState } from 'react';
 
 export const Header = () => {
   const router = useRouter();
-  const { userInfo, setUserInfo } = useStorageContext();
+  const [fullName, setFullName] = useState<string>();
+  // const logUser = async () => {
+  //   const token = await getCookie('token');
+  //   if (token) {
+  //     const profile = await AccountApi.profile(token as string);
+  //     setFullName(profile.data.fullName);
+  //   } else {
+  //     setFullName('');
+  //   }
+  //   console.log(userInfo);
+  //   console.log(permissions);
+  //   console.log(token);
+  // };
+  useEffect(() => {
+    if (localStorage.getItem('userInfo')) {
+      setFullName(
+        JSON.parse(localStorage.getItem('userInfo') as string).fullName
+      );
+    } else {
+      setFullName(undefined);
+    }
+  }, []);
 
   return (
     <S.Header>
@@ -26,13 +46,13 @@ export const Header = () => {
           </S.WrapImage>
         </Link>
         <S.WrapBtnLogin>
-          {!userInfo ? (
+          {!fullName ? (
             <Link href={'/login'}>
               <S.BtnLogin>sign in</S.BtnLogin>
             </Link>
           ) : (
             <Link href={'/profile'}>
-              <S.BtnLogin>{userInfo?.fullName}</S.BtnLogin>
+              <S.BtnLogin>{fullName}</S.BtnLogin>
             </Link>
           )}
           <Badge

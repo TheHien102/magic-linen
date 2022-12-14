@@ -22,6 +22,7 @@ export const API_URL = {
   permissionsList: `${BASEURL}/permission/list`,
   createPermissions: `${BASEURL}/permission/create`,
   profile: `${BASEURL}/account/profile`,
+  orderList: `${BASEURL}/order/list`,
 
   listGroupById: `${BASEURL}/group/get/`,
   listAllGroup: `${BASEURL}/group/list`,
