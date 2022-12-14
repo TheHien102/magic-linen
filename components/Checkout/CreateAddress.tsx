@@ -8,6 +8,7 @@ import { ProvinceParam } from '../../services/types';
 import * as G from '../../styles/global.styled';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 import { AddressApi } from '../../services/api/address';
+import { ShippingFeeApi } from '../../services/api/shippingFee';
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -26,9 +27,13 @@ const validationSchema = yup.object({
 
 interface ICreateAddress {
   handleCloseModalAddress: () => void;
+  setShippingFee: (number: number) => void;
 }
 
-const CreateAddress = ({ handleCloseModalAddress }: ICreateAddress) => {
+const CreateAddress = ({
+  handleCloseModalAddress,
+  setShippingFee,
+}: ICreateAddress) => {
   const [province, setProvince] = useState<ProvinceParam[]>([]);
   const [disctrict, setDistrict] = useState<ProvinceParam[]>([]);
   const [ward, setWard] = useState<ProvinceParam[]>([]);
@@ -80,14 +85,12 @@ const CreateAddress = ({ handleCloseModalAddress }: ICreateAddress) => {
       setDistrict(res.data.data);
       setWard([]);
     });
-    formik.handleChange;
   };
 
   const getWard = (parentId: number) => {
     ProvinceApi.listProvince(SEARCH_PARAMS, null, parentId).then((res) => {
       setWard(res.data.data);
     });
-    formik.handleChange;
   };
 
   useEffect(() => {
@@ -138,7 +141,10 @@ const CreateAddress = ({ handleCloseModalAddress }: ICreateAddress) => {
               widthFull
               ref={provinceRef}
               disabled
-              onChange={(e) => getDistrict(Number(e.target.value))}
+              onChange={(e) => {
+                getDistrict(Number(e.target.value));
+                formik.handleChange;
+              }}
             >
               {province &&
                 province.map((data) => (
@@ -156,11 +162,14 @@ const CreateAddress = ({ handleCloseModalAddress }: ICreateAddress) => {
               name='province_districtId'
               defaultValue={-1}
               ref={disctrictRef}
-              onChange={(e) => getWard(Number(e.target.value))}
-              value={formik.values.province_districtId}
+              onChange={(e) => {
+                getWard(Number(e.target.value));
+                formik.handleChange;
+              }}
+              // value={formik.values.province_districtId}
             >
               <option value={-1} disabled>
-                -Select Disctrict
+                -Select District
               </option>
               {disctrict &&
                 disctrict.map((data) => (
@@ -181,7 +190,7 @@ const CreateAddress = ({ handleCloseModalAddress }: ICreateAddress) => {
               ref={wardRef}
               disabled={ward && ward.length > 0 ? false : true}
               // onChange={(e) => getDistrict(Number(e.target.value))}
-              value={formik.values.province_wardId}
+              // value={formik.values.province_wardId}
               onChange={formik.handleChange}
             >
               {ward &&

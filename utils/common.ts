@@ -142,5 +142,5 @@ export const filterVariants = (variants: VariantParams[]) => {
 };
 
 export function formatPrice(number: number) {
-  return number.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
+  return number.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
 }

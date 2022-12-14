@@ -53,6 +53,7 @@ type Props = {};
 const CheckoutCart = (props: Props) => {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [total, setTotal] = useState(0);
   const [listAddress, setListAddress] = useState<ListAddressParams[]>([]);
   const [province, setProvince] = useState<ProvinceParam[]>([]);
   const [disctrict, setDistrict] = useState<ProvinceParam[]>([]);
@@ -62,6 +63,7 @@ const CheckoutCart = (props: Props) => {
   const wardRef = useRef<HTMLSelectElement>(null);
   const streetRef = useRef<HTMLInputElement>(null);
   const [userInfo, setUserInfo] = useState<any>();
+  const [shippingFee, setShippingFee] = useState<number>(0);
   const router = useRouter();
   // const { userInfo, setUserInfo } = useStorageContext();
   // console.log('userInfo: ', userInfo);
@@ -112,10 +114,15 @@ const CheckoutCart = (props: Props) => {
   };
 
   const getWardGuest = (data: string) => {
-    console.log('data: ', data);
     const parentId = Number(data.split(',')[0]);
     ProvinceApi.listProvince(SEARCH_PARAMS, null, parentId).then((res) => {
       setWard(res.data.data);
+      if (disctrictRef.current && wardRef.current) {
+        getFeeGHN(
+          disctrictRef.current?.value.split(',')[1],
+          wardRef.current?.value.split(',')[1]
+        );
+      }
     });
   };
 
@@ -146,12 +153,16 @@ const CheckoutCart = (props: Props) => {
     }
   };
 
+  // useEffect(() => {
+  //   console.log('test token GHN: ');
+  //   ShippingFeeApi.getFeeShip(10).then((res) => {
+  //     console.log('GHN: ', res);
+  //   });
+  // }, []);
+
   useEffect(() => {
-    console.log('test token GHN: ');
-    ShippingFeeApi.getFeeShip(10).then((res) => {
-      console.log('GHN: ', res);
-    });
-  }, []);
+    setTotal(totalPrice + shippingFee);
+  }, [shippingFee, totalPrice]);
 
   useEffect(() => {
     getUserValue();
@@ -219,6 +230,27 @@ const CheckoutCart = (props: Props) => {
     },
   });
 
+  const getFeeGHN = async (districtName: string, wardName: string) => {
+    const districtListGHN = await ShippingFeeApi.getDistrict();
+    if (districtListGHN) {
+      const DistrictID = districtListGHN.data.data.filter(
+        (it: any) => it.DistrictName === districtName
+      )[0].DistrictID;
+
+      const wardListGHN = await ShippingFeeApi.getWard(DistrictID);
+      if (wardListGHN) {
+        const WardCode = wardListGHN.data.data.filter(
+          (it: any) => it.WardName === wardName
+        )[0].WardCode;
+
+        const fee = await ShippingFeeApi.getFeeShip(DistrictID, WardCode);
+
+        const result = Math.round((fee.data.data.total / 23560) * 100) / 100;
+        setShippingFee(result);
+        console.log(wardListGHN);
+      }
+    }
+  };
   const handleChangeListAddress = (e: any) => {
     console.log('value list: ', e.target.labels[0].innerText);
     let addressRaw = e.target.labels[0].innerText;
@@ -226,7 +258,27 @@ const CheckoutCart = (props: Props) => {
     let info = addressRaw.split('\n')[0];
     formik.values.username = info.split('|')[0].trim();
     formik.values.phoneNumber = info.split('|')[1].trim();
+
+    const curAddress = listAddress.filter((it) => e.target.value == it.id)[0];
+    console.log(curAddress);
+
+    getFeeGHN(curAddress.district.name, curAddress.ward.name);
   };
+
+  useEffect(() => {
+    if (listAddress && listAddress.length) {
+      getFeeGHN(
+        listAddress[listAddress.length - 1].district.name,
+        listAddress[listAddress.length - 1].ward.name
+      );
+    }
+    if (disctrictRef.current && wardRef.current) {
+      getFeeGHN(
+        disctrictRef.current?.value.split(',')[1],
+        wardRef.current?.value.split(',')[1]
+      );
+    }
+  }, [listAddress]);
 
   return (
     <Box sx={{ display: 'flex', gap: 5, mt: 5, mb: 5 }}>
@@ -267,7 +319,10 @@ const CheckoutCart = (props: Props) => {
               Add New Address
             </Typography>
 
-            <CreateAddress handleCloseModalAddress={handleCloseModalAddress} />
+            <CreateAddress
+              setShippingFee={setShippingFee}
+              handleCloseModalAddress={handleCloseModalAddress}
+            />
           </Box>
         </Modal>
         <Typography
@@ -284,7 +339,7 @@ const CheckoutCart = (props: Props) => {
           {userInfo !== null ? (
             <Box sx={{ mt: 3 }}>
               <FormControl>
-                {listAddress.length > 0 && (
+                {listAddress && listAddress.length > 0 && (
                   <RadioGroup
                     aria-labelledby='group-address'
                     defaultValue={
@@ -391,7 +446,14 @@ const CheckoutCart = (props: Props) => {
                     widthFull
                     ref={wardRef}
                     disabled={ward && ward.length > 0 ? false : true}
-                    // onChange={(e) => getDistrict(Number(e.target.value))}
+                    onChange={(e) => {
+                      if (disctrictRef.current && wardRef.current) {
+                        getFeeGHN(
+                          disctrictRef.current?.value.split(',')[1],
+                          wardRef.current?.value.split(',')[1]
+                        );
+                      }
+                    }}
                   >
                     {ward &&
                       ward.map((data) => (
@@ -530,7 +592,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              $5.00
+              ${shippingFee}
             </Typography>
           </Box>
           <Box
@@ -567,7 +629,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              ${formatPrice(totalPrice)}
+              ${formatPrice(total)}
             </Typography>
           </Box>
         </Box>
