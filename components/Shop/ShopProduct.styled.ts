@@ -10,5 +10,5 @@ export const Banner = styled.figure`
 `;
 
 export const Center = styled.div`
-  ${tw`flex justify-center`}
+  ${tw`flex justify-center mt-4`}
 `;

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   FormControl,
   FormControlLabel,
@@ -6,6 +7,7 @@ import {
   Modal,
   Radio,
   RadioGroup,
+  Snackbar,
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -32,15 +34,17 @@ import { useStorageContext } from '../../contexts/StorageContext';
 import { AddressApi } from '../../services/api/address';
 import CreateAddress from './CreateAddress';
 import DetailAddress from './DetailAddress';
+import { useRouter } from 'next/router';
+import { ShippingFeeApi } from '../../services/api/shippingFee';
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const validationSchema = yup.object({
-  username: yup.string(),
-  phoneNumber: yup.string(),
+  username: yup.string().required('USername is required'),
+  phoneNumber: yup.string().required('Phone is required'),
   note: yup.string().min(3, 'Must be more than 3 characters'),
-  address: yup.string(),
+  address: yup.string().required('Missing field of address'),
   paymentType: yup.number(),
 });
 
@@ -57,14 +61,20 @@ const CheckoutCart = (props: Props) => {
   const disctrictRef = useRef<HTMLSelectElement>(null);
   const wardRef = useRef<HTMLSelectElement>(null);
   const streetRef = useRef<HTMLInputElement>(null);
+  const [userInfo, setUserInfo] = useState<any>();
+  const router = useRouter();
   // const { userInfo, setUserInfo } = useStorageContext();
   // console.log('userInfo: ', userInfo);
   const [openModalAddress, setOpenModalAddress] = useState(false);
   const handleOpenModalAddress = () => setOpenModalAddress(true);
-  const handleCloseModalAddress = () => {
+  const handleCloseModalAddress = async () => {
     setOpenModalAddress(false);
-    getListAddress();
+    const token = getCookie('token');
+    if (token) {
+      getListAddress();
+    }
   };
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const getLocalValue = async () => {
     let temp: any = localStorage
@@ -87,20 +97,23 @@ const CheckoutCart = (props: Props) => {
 
   const SEARCH_PARAMS = '';
 
-  const getProvince = (level: number) => {
+  const getProvinceGuest = (level: number) => {
     ProvinceApi.listProvince(SEARCH_PARAMS, level, null).then((res) => {
       setProvince(res.data.data);
     });
   };
 
-  const getDistrict = (parentId: number) => {
+  const getDistrictGuest = (data: string) => {
+    const parentId = Number(data.split(',')[0]);
     ProvinceApi.listProvince(SEARCH_PARAMS, null, parentId).then((res) => {
       setDistrict(res.data.data);
       setWard([]);
     });
   };
 
-  const getWard = (parentId: number) => {
+  const getWardGuest = (data: string) => {
+    console.log('data: ', data);
+    const parentId = Number(data.split(',')[0]);
     ProvinceApi.listProvince(SEARCH_PARAMS, null, parentId).then((res) => {
       setWard(res.data.data);
     });
@@ -117,6 +130,7 @@ const CheckoutCart = (props: Props) => {
         }
         setTotalPrice(tempTotalPrice);
       });
+      getListAddress();
     } else {
       getLocalValue();
     }
@@ -131,23 +145,21 @@ const CheckoutCart = (props: Props) => {
       });
     }
   };
-  let userInfo;
-  useEffect(() => {
-    getUserValue();
-    getListAddress();
-    getProvince(1);
 
-    userInfo = localStorage.getItem('userInfo');
-    console.log(
-      'localStorage.get(userInfo): ',
-      localStorage.getItem('userInfo')
-    );
+  useEffect(() => {
+    console.log('test token GHN: ');
+    ShippingFeeApi.getFeeShip(10).then((res) => {
+      console.log('GHN: ', res);
+    });
   }, []);
 
-  // useEffect(() => {
-  //   formik.values.username = listAddress[listAddress.length - 1].receiverName;
-  //   formik.values.phoneNumber = listAddress[listAddress.length - 1].phone;
-  // }, [listAddress]);
+  useEffect(() => {
+    getUserValue();
+
+    getProvinceGuest(1);
+    getDistrictGuest('127,temp');
+    setUserInfo(localStorage.getItem('userInfo'));
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -164,9 +176,13 @@ const CheckoutCart = (props: Props) => {
         let cartItemIdsList: number[] = cartProduct.map((data) => data.id);
         let data: any = values;
         data.cartItemIdsList = cartItemIdsList;
-        console.log('values: ', data);
-        CartApi.createOrderGuest(token, data).then((res) => {
+        console.log('values token: ', data);
+        CartApi.createOrderUser(token, data).then((res) => {
           console.log('res: ', res);
+          setOpenSnackbar(true);
+          setTimeout(() => {
+            router.push('/');
+          }, 1500);
         });
       } else {
         if (
@@ -176,11 +192,22 @@ const CheckoutCart = (props: Props) => {
           provinceRef.current
         ) {
           formik.values.address =
-            streetRef.current.value + wardRef.current.innerText;
+            streetRef.current.value +
+            ', ' +
+            wardRef.current.value.split(',')[1] +
+            ', ' +
+            disctrictRef.current.value.split(',')[1] +
+            ', ' +
+            provinceRef.current.value.split(',')[1];
+          //   streetRef.current.value + wardRef.current.innerText;
           // disctrictRef.current.innerText +
           // provinceRef.current.innerText;
+          console.log('formik.values.address: ', formik.values.address);
         }
-        console.log('values: ', values);
+        let cartItemsList = cartProduct;
+        let data: any = values;
+        data.cartItemsList = cartItemsList;
+        console.log('values no token: ', data);
         // CartApi.createOrderGuest(values).then((res) => {
         //   console.log('res: ', res);
         // });
@@ -204,6 +231,15 @@ const CheckoutCart = (props: Props) => {
   return (
     <Box sx={{ display: 'flex', gap: 5, mt: 5, mb: 5 }}>
       <Box sx={{ width: '60%' }}>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={openSnackbar}
+          autoHideDuration={3000}
+        >
+          <Alert severity='success' sx={{ width: '100%' }}>
+            Buying Complete!
+          </Alert>
+        </Snackbar>
         <Modal
           open={openModalAddress}
           onClose={handleCloseModalAddress}
@@ -245,7 +281,7 @@ const CheckoutCart = (props: Props) => {
           BILLING
         </Typography>
         <form onSubmit={formik.handleSubmit}>
-          {userInfo ? (
+          {userInfo !== null ? (
             <Box sx={{ mt: 3 }}>
               <FormControl>
                 {listAddress.length > 0 && (
@@ -319,11 +355,11 @@ const CheckoutCart = (props: Props) => {
                     widthFull
                     disabled
                     ref={provinceRef}
-                    onChange={(e) => getDistrict(Number(e.target.value))}
+                    onChange={(e) => getDistrictGuest(e.target.value)}
                   >
                     {province &&
                       province.map((data) => (
-                        <option key={data.id} value={data.id}>
+                        <option key={data.id} value={data.id + ',' + data.name}>
                           {data.name}
                         </option>
                       ))}
@@ -334,14 +370,14 @@ const CheckoutCart = (props: Props) => {
                   <G.Select
                     widthFull
                     ref={disctrictRef}
-                    onChange={(e) => getWard(Number(e.target.value))}
+                    onChange={(e) => getWardGuest(e.target.value)}
                   >
                     <option value={-1} disabled>
                       -Select Disctrict
                     </option>
                     {disctrict &&
                       disctrict.map((data) => (
-                        <option key={data.id} value={data.id}>
+                        <option key={data.id} value={data.id + ',' + data.name}>
                           {data.name}
                         </option>
                       ))}
@@ -359,7 +395,7 @@ const CheckoutCart = (props: Props) => {
                   >
                     {ward &&
                       ward.map((data) => (
-                        <option key={data.id} value={data.id}>
+                        <option key={data.id} value={data.id + ',' + data.name}>
                           {data.name}
                         </option>
                       ))}
@@ -369,7 +405,14 @@ const CheckoutCart = (props: Props) => {
                   <G.LabelInput>
                     Street, Building, Apartment Number
                   </G.LabelInput>
-                  <G.Input widthFull ref={streetRef}></G.Input>
+                  <G.Input
+                    widthFull
+                    id='address'
+                    name='address'
+                    ref={streetRef}
+                    value={formik.values.address}
+                    onChange={formik.handleChange}
+                  ></G.Input>
                   {formik.touched.address && Boolean(formik.errors.address) && (
                     <G.ErrorText>Missing Info of Address</G.ErrorText>
                   )}

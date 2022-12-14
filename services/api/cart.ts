@@ -27,7 +27,10 @@ export const CartApi = {
       },
     });
   },
-  createOrderGuest: async function (token: string, data: OrderGuestParam) {
+  createOrderGuest: async function (data: OrderGuestParam) {
+    return await http.post(`${API_URL.createOrder}`, data);
+  },
+  createOrderUser: async function (token: string, data: OrderGuestParam) {
     return await http.post(`${API_URL.createOrder}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
