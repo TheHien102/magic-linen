@@ -37,4 +37,14 @@ export const CartApi = {
       },
     });
   },
+  deleteCart: async function (token: string, id: number) {
+    return await http.delete(`${API_URL.deleteCart}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        id: id,
+      },
+    });
+  },
 };

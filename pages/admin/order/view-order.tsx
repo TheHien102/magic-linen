@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Admin/LayoutAdmin/LayoutAdmin';
 import SearchBar from '../../../components/Global/SearchBar/SearchBar';
@@ -90,7 +91,7 @@ const ViewOrder = () => {
       if (res && res.data && res.data.totalElements) {
         console.log(res);
 
-        setOrderList(res.data);
+        setOrderList(res.data.data);
       } else {
         console.log('No data');
       }
@@ -124,7 +125,7 @@ const ViewOrder = () => {
                   <TableRow>
                     <TableCell align='center'>ID</TableCell>
                     <TableCell align='center'>Product ID</TableCell>
-                    <TableCell align='center'>Variants</TableCell>
+                    {/* <TableCell align='center'>Variants</TableCell> */}
                     <TableCell align='center'>Quantity</TableCell>
                     <TableCell align='center'>Price</TableCell>
                     <TableCell align='center'>Discount</TableCell>
@@ -144,19 +145,26 @@ const ViewOrder = () => {
                         {row.id}
                       </TableCell>
                       <TableCell align='center'>{row.productId}</TableCell>
-                      <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
+                      {/* <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
                         {row.variants.map((it, id) => (
                           <Box
                             key={id}
                             sx={{ textAlign: 'left' }}
                           >{`${it.name}: ${it.property}`}</Box>
                         ))}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align='center'>{row.quantity}</TableCell>
                       <TableCell align='center'>{row.price}</TableCell>
                       <TableCell align='center'>{row.discount}</TableCell>
                       <TableCell align='center'>{row.name}</TableCell>
-                      <TableCell align='center'>{row.mainImg}</TableCell>
+                      <TableCell align='center'>
+                        <Image
+                          src={row.mainImg}
+                          height={100}
+                          width={75}
+                          objectFit='contain'
+                        ></Image>
+                      </TableCell>
                       <TableCell align='center'>{row.createdDate}</TableCell>
                       <TableCell align='center'>{row.modifiedDate}</TableCell>
                     </TableRow>

@@ -66,10 +66,13 @@ export default function CartUser() {
     getCartData();
   }, []);
 
-  const handleRemoveItem = (data: CartItemParams) => {
+  const handleRemoveItem = async (data: CartItemParams) => {
+    const token = await getCookie('token');
     if (cartProduct.length === 1) {
       localStorage.removeItem(LOCAL_SAVE_PREFIX);
     }
+    const res = await CartApi.deleteCart(token as string, data.id);
+    console.log(res);
     setCartProduct(cartProduct.filter((it) => it !== data));
   };
 
