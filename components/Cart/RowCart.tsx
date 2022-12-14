@@ -23,23 +23,35 @@ const RowCart = ({
   setTotalPrice,
 }: IRowCart) => {
   const [quantity, setQuantity] = useState(data.quantity);
-  const handleQuantityUp = () => {
-    updateQuantity(quantity + 1).then((res) => {
-      if (res?.status.toString() === 'OK') {
+  const handleQuantityUp = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      updateQuantity(quantity + 1).then((res) => {
+        if (res?.status.toString() === 'OK') {
+          setQuantity(quantity + 1);
+          setTotalPrice(totalPrice + data.price);
+        }
+      });
+    } else {
+      setQuantity(quantity + 1);
+      setTotalPrice(totalPrice + data.price);
+    }
+  };
+
+  const handleQuantityDown = async () => {
+    const token = await getCookie('token');
+    if (quantity > 1) {
+      if (token) {
+        updateQuantity(quantity - 1).then((res) => {
+          if (res?.status.toString() === 'OK') {
+            setQuantity(quantity - 1);
+            setTotalPrice(totalPrice - data.price);
+          }
+        });
+      } else {
         setQuantity(quantity + 1);
         setTotalPrice(totalPrice + data.price);
       }
-    });
-  };
-
-  const handleQuantityDown = () => {
-    if (quantity > 1) {
-      updateQuantity(quantity - 1).then((res) => {
-        if (res?.status.toString() === 'OK') {
-          setQuantity(quantity - 1);
-          setTotalPrice(totalPrice - data.price);
-        }
-      });
     }
   };
 

@@ -1,8 +1,19 @@
-import { Box, Typography } from '@mui/material';
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Modal,
+  Radio,
+  RadioGroup,
+  Typography,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ProvinceApi } from '../../services/api/province';
 import {
   CartItemParams,
+  ListAddressParams,
+  OrderGuestParam,
   ProfileParams,
   ProvinceParam,
 } from '../../services/types';
@@ -18,20 +29,19 @@ import { useRef } from 'react';
 import { formatPrice } from '../../utils/common';
 import { AccountApi } from '../../services/api/account';
 import { useStorageContext } from '../../contexts/StorageContext';
+import { AddressApi } from '../../services/api/address';
+import CreateAddress from './CreateAddress';
+import DetailAddress from './DetailAddress';
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const validationSchema = yup.object({
-  username: yup.string().required('Username is required'),
-  phoneNumber: yup
-    .string()
-    .matches(phoneRegExp, 'Phone number is not valid')
-    .required('Phone number is required'),
+  username: yup.string(),
+  phoneNumber: yup.string(),
   note: yup.string().min(3, 'Must be more than 3 characters'),
-  address: yup.string().required('Address is required'),
+  address: yup.string(),
   paymentType: yup.number(),
-  cartItemsList: yup.array(),
 });
 
 type Props = {};
@@ -39,6 +49,7 @@ type Props = {};
 const CheckoutCart = (props: Props) => {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [listAddress, setListAddress] = useState<ListAddressParams[]>([]);
   const [province, setProvince] = useState<ProvinceParam[]>([]);
   const [disctrict, setDistrict] = useState<ProvinceParam[]>([]);
   const [ward, setWard] = useState<ProvinceParam[]>([]);
@@ -48,6 +59,13 @@ const CheckoutCart = (props: Props) => {
   const streetRef = useRef<HTMLInputElement>(null);
   const { userInfo, setUserInfo } = useStorageContext();
   console.log('userInfo: ', userInfo);
+  const [openModalAddress, setOpenModalAddress] = useState(false);
+  const handleOpenModalAddress = () => setOpenModalAddress(true);
+  const handleCloseModalAddress = () => {
+    setOpenModalAddress(false);
+    getListAddress();
+  };
+
   const getLocalValue = async () => {
     let temp: any = localStorage
       .getItem(LOCAL_SAVE_PREFIX)
@@ -102,28 +120,47 @@ const CheckoutCart = (props: Props) => {
     }
   };
 
+  const getListAddress = async () => {
+    const token = await getCookie('token');
+    if (token) {
+      await AddressApi.listAddress(token).then((res) => {
+        console.log('address: ', res);
+        setListAddress(res.data);
+      });
+    }
+  };
+
   useEffect(() => {
     getUserValue();
+    getListAddress();
     getProvince(1);
   }, []);
 
+  // useEffect(() => {
+  //   formik.values.username = listAddress[listAddress.length - 1].receiverName;
+  //   formik.values.phoneNumber = listAddress[listAddress.length - 1].phone;
+  // }, [listAddress]);
+
   const formik = useFormik({
     initialValues: {
-      username: userInfo ? userInfo.fullName : '',
-      phoneNumber: userInfo ? userInfo.phoneNumber : '',
+      username: '',
+      phoneNumber: '',
       note: '',
       address: '',
       paymentType: 1,
-      cartItemsList: [] as any,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      formik.values.cartItemsList = cartProduct;
       const token = await getCookie('token');
       if (token) {
-        console.log('user logged with token cart');
+        let cartItemIdsList: number[] = cartProduct.map((data) => data.id);
+        let data: any = values;
+        data.cartItemIdsList = cartItemIdsList;
+        console.log('values: ', data);
+        CartApi.createOrderGuest(token, data).then((res) => {
+          console.log('res: ', res);
+        });
       } else {
-        formik.values.cartItemsList = cartProduct;
         if (
           streetRef.current &&
           wardRef.current &&
@@ -147,9 +184,48 @@ const CheckoutCart = (props: Props) => {
     },
   });
 
+  const handleChangeListAddress = (e: any) => {
+    console.log('value list: ', e.target.labels[0].innerText);
+    let addressRaw = e.target.labels[0].innerText;
+    formik.values.address = addressRaw.split('\n')[1];
+    let info = addressRaw.split('\n')[0];
+    formik.values.username = info.split('|')[0].trim();
+    formik.values.phoneNumber = info.split('|')[1].trim();
+  };
+
   return (
     <Box sx={{ display: 'flex', gap: 5, mt: 5, mb: 5 }}>
       <Box sx={{ width: '60%' }}>
+        <Modal
+          open={openModalAddress}
+          onClose={handleCloseModalAddress}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 800,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <Typography
+              sx={{ fontFamily: 'Josefin Sans' }}
+              id='modal-modal-title'
+              variant='h5'
+              component='h1'
+            >
+              Add New Address
+            </Typography>
+
+            <CreateAddress handleCloseModalAddress={handleCloseModalAddress} />
+          </Box>
+        </Modal>
         <Typography
           sx={{
             fontWeight: 'bold',
@@ -161,7 +237,7 @@ const CheckoutCart = (props: Props) => {
           BILLING
         </Typography>
         <form onSubmit={formik.handleSubmit}>
-          <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+          {/* <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
             <Box sx={{ width: '50%' }}>
               <G.LabelInput>FULL NAME</G.LabelInput>
               <G.Input
@@ -189,7 +265,32 @@ const CheckoutCart = (props: Props) => {
                   <G.ErrorText>{formik.errors.phoneNumber}</G.ErrorText>
                 )}
             </Box>
-          </Box>
+          </Box> */}
+          <FormControl>
+            {listAddress.length > 0 && (
+              <RadioGroup
+                aria-labelledby='group-address'
+                defaultValue={
+                  listAddress &&
+                  listAddress.length > 0 &&
+                  listAddress[listAddress.length - 1].id
+                }
+                onChange={(e) => handleChangeListAddress(e)}
+                name='radio-buttons-group'
+              >
+                {listAddress &&
+                  listAddress.map((data, index) => (
+                    <FormControlLabel
+                      key={data.id}
+                      value={data.id}
+                      // defaultChecked={listAddress.length === index}
+                      control={<Radio color='secondary' />}
+                      label={<DetailAddress data={data} />}
+                    />
+                  ))}
+              </RadioGroup>
+            )}
+          </FormControl>
           <Box sx={{ mt: 3 }}>
             <G.LabelInput>NOTE (Optional)</G.LabelInput>
             <G.TextArea
@@ -200,64 +301,82 @@ const CheckoutCart = (props: Props) => {
               onChange={formik.handleChange}
             ></G.TextArea>
           </Box>
-          <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
-            <Box sx={{ width: '50%' }}>
-              <G.LabelInput>Province</G.LabelInput>
-              <G.Select
-                widthFull
-                ref={provinceRef}
-                onChange={(e) => getDistrict(Number(e.target.value))}
-              >
-                {province &&
-                  province.map((data) => (
-                    <option key={data.id} value={data.id}>
-                      {data.name}
+          {userInfo ? (
+            <Box sx={{ mt: 3 }}>
+              <BtnShopNow
+                title='Add picked address'
+                type='button'
+                onClick={() => handleOpenModalAddress()}
+              />
+            </Box>
+          ) : (
+            <>
+              <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+                <Box sx={{ width: '50%' }}>
+                  <G.LabelInput>Province</G.LabelInput>
+                  <G.Select
+                    widthFull
+                    disabled
+                    ref={provinceRef}
+                    onChange={(e) => getDistrict(Number(e.target.value))}
+                  >
+                    {province &&
+                      province.map((data) => (
+                        <option key={data.id} value={data.id}>
+                          {data.name}
+                        </option>
+                      ))}
+                  </G.Select>
+                </Box>
+                <Box sx={{ width: '50%' }}>
+                  <G.LabelInput>District</G.LabelInput>
+                  <G.Select
+                    widthFull
+                    ref={disctrictRef}
+                    onChange={(e) => getWard(Number(e.target.value))}
+                  >
+                    <option value={-1} disabled>
+                      -Select Disctrict
                     </option>
-                  ))}
-              </G.Select>
-            </Box>
-            <Box sx={{ width: '50%' }}>
-              <G.LabelInput>District</G.LabelInput>
-              <G.Select
-                widthFull
-                ref={disctrictRef}
-                disabled={disctrict && disctrict.length > 0 ? false : true}
-                onChange={(e) => getWard(Number(e.target.value))}
-              >
-                {disctrict &&
-                  disctrict.map((data) => (
-                    <option key={data.id} value={data.id}>
-                      {data.name}
-                    </option>
-                  ))}
-              </G.Select>
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
-            <Box sx={{ width: '50%' }}>
-              <G.LabelInput>Ward</G.LabelInput>
-              <G.Select
-                widthFull
-                ref={wardRef}
-                disabled={ward && ward.length > 0 ? false : true}
-                // onChange={(e) => getDistrict(Number(e.target.value))}
-              >
-                {ward &&
-                  ward.map((data) => (
-                    <option key={data.id} value={data.id}>
-                      {data.name}
-                    </option>
-                  ))}
-              </G.Select>
-            </Box>
-            <Box sx={{ width: '50%' }}>
-              <G.LabelInput>Street</G.LabelInput>
-              <G.Input widthFull ref={streetRef}></G.Input>
-              {formik.touched.address && Boolean(formik.errors.address) && (
-                <G.ErrorText>{formik.errors.address}</G.ErrorText>
-              )}
-            </Box>
-          </Box>
+                    {disctrict &&
+                      disctrict.map((data) => (
+                        <option key={data.id} value={data.id}>
+                          {data.name}
+                        </option>
+                      ))}
+                  </G.Select>
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
+                <Box sx={{ width: '50%' }}>
+                  <G.LabelInput>Ward</G.LabelInput>
+                  <G.Select
+                    widthFull
+                    ref={wardRef}
+                    disabled={ward && ward.length > 0 ? false : true}
+                    // onChange={(e) => getDistrict(Number(e.target.value))}
+                  >
+                    {ward &&
+                      ward.map((data) => (
+                        <option key={data.id} value={data.id}>
+                          {data.name}
+                        </option>
+                      ))}
+                  </G.Select>
+                </Box>
+                <Box sx={{ width: '50%' }}>
+                  <G.LabelInput>
+                    Street, Building, Apartment Number
+                  </G.LabelInput>
+                  <G.Input widthFull ref={streetRef}></G.Input>
+                  {formik.touched.address && Boolean(formik.errors.address) && (
+                    <G.ErrorText>Missing Info of Address</G.ErrorText>
+                  )}
+                </Box>
+              </Box>
+            </>
+          )}
+
           <Box sx={{ mt: 3 }}>
             <label className='wrapChecked'>
               Ship COD

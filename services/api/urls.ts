@@ -38,5 +38,9 @@ export const API_URL = {
   cartList: `${BASEURL}/cart/list`,
   cartUpdateItem: `${BASEURL}/cart/update`,
 
+  addressList: `${BASEURL}/address/list`,
+  addressCreate: `${BASEURL}/address/create`,
+
   createOrder: `${BASEURL}/order/create`,
+  listOrder: `${BASEURL}/order/list`,
 };

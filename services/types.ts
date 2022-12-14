@@ -230,14 +230,31 @@ export type SetNewPassword = {
   otp: string;
 };
 
-export type AdminProductParams = {};
+export type AddressCreateParams = {
+  province_cityId: number;
+  province_districtId: number;
+  province_wardId: number;
+  details: string;
+  phone: string;
+};
+
+export type ListAddressParams = {
+  id: number;
+  receiverName: string;
+  city: ProvinceParam;
+  district: ProvinceParam;
+  ward: ProvinceParam;
+  phone: string;
+  details: string;
+};
 
 export type OrderGuestParam = {
-  cartItemsList: {
+  cartItemsList?: {
     productId: number;
     variants: VariantParams[];
     quantity: number;
   };
+  cartItemIdsList?: number[];
   address: string;
   note: string;
   phoneNumber: string;

@@ -38,7 +38,11 @@ const Profile = (props: Props) => {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = getCookie('token', ctx);
 
-  if (!token) {
+  if (token) {
+    return {
+      props: {},
+    };
+  } else {
     return {
       redirect: {
         permanent: false,
@@ -46,10 +50,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       },
     };
   }
-
-  return {
-    props: {},
-  };
 }
 
 export default Profile;

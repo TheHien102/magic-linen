@@ -45,6 +45,7 @@ let listItemGroup = [
 
 const tableArray = [
   'Account',
+  'Address',
   'Cart',
   'Category',
   'Group',
