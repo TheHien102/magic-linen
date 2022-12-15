@@ -389,9 +389,7 @@ export default function ListDetailProduct() {
                           <TableCell>{row.categoryName}</TableCell>
                           <TableCell>{row.discount}</TableCell>
                           <TableCell>{row.status}</TableCell>
-                          <TableCell>
-                            {/* {removeTime(row.createdDate)} */}
-                          </TableCell>
+                          <TableCell>{removeTime(row.createdDate)}</TableCell>
                           <TableCell align={'right'}>
                             <Button
                               variant='contained'
@@ -399,13 +397,13 @@ export default function ListDetailProduct() {
                             >
                               <EditIcon />
                             </Button>
-                            <Button
+                            {/* <Button
                               variant='contained'
                               color={'error'}
                               sx={{ ml: 1 }}
                             >
                               <DoDisturbOnIcon />
-                            </Button>
+                            </Button> */}
                           </TableCell>
                         </TableRow>
                       );

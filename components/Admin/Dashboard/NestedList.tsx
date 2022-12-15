@@ -31,10 +31,15 @@ export default function NestedList({ permissions }: INestedList) {
   useEffect(() => {
     if (permissions) {
       for (let i = 0; i < permissions.length; i++) {
-        const index = menu.findIndex(I => I.name === permissions[i].nameGroup);
+        const index = menu.findIndex(
+          (I) => I.name === permissions[i].nameGroup
+        );
         if (index !== -1) {
-          menu.map(data => {
-            if (data.name === permissions[i].nameGroup) {
+          menu.map((data) => {
+            if (
+              data.name === permissions[i].nameGroup &&
+              permissions[i].showMenu === true
+            ) {
               data.list.push(permissions[i]);
               return data;
             } else {
@@ -42,14 +47,16 @@ export default function NestedList({ permissions }: INestedList) {
             }
           });
         } else {
-          let newMenuParam = {
-            name: permissions[i].nameGroup,
-            list: [permissions[i]],
-          };
-          menu.push(newMenuParam);
+          if (permissions[i].showMenu === true) {
+            let newMenuParam = {
+              name: permissions[i].nameGroup,
+              list: [permissions[i]],
+            };
+            menu.push(newMenuParam);
+          }
         }
       }
-      // if (setPermissions) {
+
       setMenuList(menu);
     }
   }, [permissions]);

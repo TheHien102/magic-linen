@@ -6,6 +6,7 @@ import ListCompany from './ListCompany/ListCompany';
 import BannerSwiper from './BannerSwiper/BannerSwiper';
 import ItemClothing from '../Global/ItemClothing/ItemClothing';
 import { ProductParams } from '../../services/types';
+import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
 
 interface IHomeLinen {
   listProduct: ProductParams[];
@@ -23,7 +24,7 @@ const HomeLinen = ({ listProduct }: IHomeLinen) => {
           listProduct.map((data) => <ItemClothing key={data.id} data={data} />)}
       </S.ListClothing>
       <S.Center>
-        <S.BtnShopNow>Shop now</S.BtnShopNow>
+        <BtnShopNow title='SHOP NOW' />
       </S.Center>
     </G.Container>
   );

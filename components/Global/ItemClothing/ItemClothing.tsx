@@ -75,6 +75,7 @@ const ItemClothing = ({ data }: IItemClothing) => {
                 fontWeight: 'bold',
                 color: '#9e1a1a',
                 lineHeight: '1',
+                fontSize: '22px',
               }}
             >
               ${formatPrice(data.price * ((100 - data.discount) / 100))}

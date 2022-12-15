@@ -203,36 +203,7 @@ export default function CartUser() {
                 ${formatPrice(totalPrice)}
               </Typography>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                mt: 2,
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: '400',
-                  fontFamily: 'Josefin Sans',
-                  fontSize: '18px',
-                  textAlign: 'right',
-                }}
-              >
-                Shipping:
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: '400',
-                  fontFamily: 'Josefin Sans',
-                  fontSize: '18px',
-                  ml: 10,
-                  textAlign: 'right',
-                }}
-              >
-                $5.00
-              </Typography>
-            </Box>
+
             <Box
               sx={{
                 borderTop: '1px solid hsla(48,8%,88%,.6)',

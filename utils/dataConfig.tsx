@@ -40,15 +40,17 @@ export const urlMenuData = {
   'Create Group': '/admin/group/create-group',
   'View Group': '/admin/group/view-group',
   'Update Group': '/admin/group/update-group',
+  'View All Group': '/admin/group/view-group',
 
   'Create Permission': '/admin/permission/create-permission',
   'View Permission': '/admin/permission/view-permission',
   'Update Permission': '/admin/permission/update-permission',
-  'View All Permission': '/admin/permission/list-permission',
+  'View All Permission': '/admin/permission/view-permission',
 
   'Create Product': '/admin/product/create-product',
   'View Product': '/admin/product/view-product',
   'Update Product': '/admin/product/update-product',
+  'View All Product': '/admin/product/view-product',
 
   'Create Account': '/admin/account/create-account',
   'View Account': '/admin/account/view-account',
@@ -56,6 +58,8 @@ export const urlMenuData = {
   'Create Province': '/admin/province/create-province',
   'View Province': '/admin/province/view-province',
   'Update Province': '/admin/province/update-province',
+
+  'View All Order': '/admin/order/view-order',
 };
 
 export const LOCAL_SAVE_PREFIX = 'linenA2022_Product_';

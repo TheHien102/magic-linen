@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useStorageContext } from '../../../contexts/StorageContext';
 import { AccountApi } from '../../../services/api/account';
@@ -41,7 +42,7 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
   const [groupName, setGroupName] = useState('');
   const [listChecked, setListChecked] = useState<FilterPermissions[]>([]);
   const [filterList, setFilterList] = useState<FilterPermissions[]>([]);
-
+  const router = useRouter();
   const getListById = async (id: number) => {
     const token = await getCookie('token');
     if (token) {
@@ -99,6 +100,10 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
     if (token) {
       if (update) {
         const result = await GroupApi.updateGroupById(token, data);
+        if (result) {
+          alert('Update success!');
+          router.reload();
+        }
       } else {
         console.log('dataCreate: ', dataCreate);
         const result = await GroupApi.createGroup(token, dataCreate);

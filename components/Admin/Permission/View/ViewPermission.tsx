@@ -72,12 +72,12 @@ const ViewPermissions = () => {
                 <TableRow>
                   <TableCell>Name</TableCell>
                   <TableCell align='center'>Permissions</TableCell>
-                  <TableCell align='right'></TableCell>
+                  {/* <TableCell align='right'></TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filterList &&
-                  filterList.map(data => (
+                  filterList.map((data) => (
                     <TableRow
                       key={data.name}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -137,7 +137,7 @@ const ViewPermissions = () => {
                           ))}
                         </Box>
                       </TableCell>
-                      <TableCell align='right'>
+                      {/* <TableCell align='right'>
                         {edit ? (
                           <Button
                             variant='outlined'
@@ -153,7 +153,7 @@ const ViewPermissions = () => {
                             <EditIcon />
                           </Button>
                         )}
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
               </TableBody>

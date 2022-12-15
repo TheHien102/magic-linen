@@ -149,19 +149,25 @@ const CheckoutCart = (props: Props) => {
       await AddressApi.listAddress(token).then((res) => {
         console.log('address: ', res);
         setListAddress(res.data);
+        //set initial value for formik
+        let temp = res.data[res.data.length - 1];
+        formik.values.username = temp.receiverName;
+        formik.values.phoneNumber = temp.phone;
+        formik.values.address =
+          temp.details +
+          ', ' +
+          temp.ward.name +
+          ', ' +
+          temp.district.name +
+          ', ' +
+          temp.city.name;
       });
     }
   };
 
-  // useEffect(() => {
-  //   console.log('test token GHN: ');
-  //   ShippingFeeApi.getFeeShip(10).then((res) => {
-  //     console.log('GHN: ', res);
-  //   });
-  // }, []);
-
   useEffect(() => {
-    setTotal(totalPrice + shippingFee);
+    let sumPrice = Number((totalPrice + shippingFee).toFixed(2));
+    setTotal(sumPrice);
   }, [shippingFee, totalPrice]);
 
   useEffect(() => {
@@ -219,9 +225,14 @@ const CheckoutCart = (props: Props) => {
         let data: any = values;
         data.cartItemsList = cartItemsList;
         console.log('values no token: ', data);
-        // CartApi.createOrderGuest(values).then((res) => {
-        //   console.log('res: ', res);
-        // });
+        CartApi.createOrderGuest(data).then((res) => {
+          console.log('res: ', res);
+          setOpenSnackbar(true);
+          localStorage.removeItem(LOCAL_SAVE_PREFIX);
+          setTimeout(() => {
+            router.push('/');
+          }, 1500);
+        });
       }
       try {
       } catch (error) {
@@ -239,9 +250,14 @@ const CheckoutCart = (props: Props) => {
 
       const wardListGHN = await ShippingFeeApi.getWard(DistrictID);
       if (wardListGHN) {
+        //Check if WardCode available
         const WardCode = wardListGHN.data.data.filter(
           (it: any) => it.WardName === wardName
-        )[0].WardCode;
+        )[0]
+          ? wardListGHN.data.data.filter(
+              (it: any) => it.WardName === wardName
+            )[0].WardCode
+          : wardListGHN.data.data[0].WardCode;
 
         const fee = await ShippingFeeApi.getFeeShip(DistrictID, WardCode);
 
@@ -251,6 +267,7 @@ const CheckoutCart = (props: Props) => {
       }
     }
   };
+
   const handleChangeListAddress = (e: any) => {
     console.log('value list: ', e.target.labels[0].innerText);
     let addressRaw = e.target.labels[0].innerText;
@@ -365,7 +382,7 @@ const CheckoutCart = (props: Props) => {
               </FormControl>
               <Box sx={{ mt: 3 }}>
                 <BtnShopNow
-                  title='Add picked address'
+                  title='Add Address'
                   type='button'
                   onClick={() => handleOpenModalAddress()}
                 />
@@ -424,6 +441,7 @@ const CheckoutCart = (props: Props) => {
                   <G.LabelInput>District</G.LabelInput>
                   <G.Select
                     widthFull
+                    defaultValue={-1}
                     ref={disctrictRef}
                     onChange={(e) => getWardGuest(e.target.value)}
                   >

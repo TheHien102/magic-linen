@@ -68,7 +68,7 @@ const ListAdmin = (props: any) => {
                 <TableCell align='left' sx={{ fontWeight: 'bold' }}>
                   Status
                 </TableCell>
-                <TableCell align='right'></TableCell>
+                {/* <TableCell align='right'></TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -121,7 +121,7 @@ const ListAdmin = (props: any) => {
                         {data.status === 1 ? 'Active' : 'Disable'}
                       </Typography>
                     </TableCell>
-                    <TableCell align='right'>
+                    {/* <TableCell align='right'>
                       <Box
                         sx={{
                           display: 'flex',
@@ -136,14 +136,14 @@ const ListAdmin = (props: any) => {
                           <DeleteIcon />
                         </Button>
                       </Box>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Pagination count={10} variant='outlined' shape='rounded' />
-          </Box>
+          </Box> */}
         </TableContainer>
       </Layout>
     </>

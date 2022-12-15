@@ -8,6 +8,8 @@ import {
   TableBody,
   Box,
   TablePagination,
+  Typography,
+  Button,
 } from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -18,6 +20,8 @@ import SearchBar from '../../../components/Global/SearchBar/SearchBar';
 import { OrderApi } from '../../../services/api/order';
 import { getCookie } from '../../../services/cookies';
 import { OrderListParams, ProductDetail } from '../../../services/types';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 
 interface ViewOrderProps {
   orderList: ProductDetail[];
@@ -79,6 +83,7 @@ const ViewOrder = () => {
     size: 1,
     sort: [],
   });
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -114,7 +119,10 @@ const ViewOrder = () => {
       <Layout>
         {orderList && orderList.length ? (
           <Box>
-            <SearchBar value={search} setValue={setSearch} />
+            {/* <SearchBar value={search} setValue={setSearch} /> */}
+            <Typography sx={{ mb: 3, fontWeight: 'bold' }}>
+              List Order
+            </Typography>
             <TableContainer component={Paper}>
               <Table
                 sx={{ minWidth: 650 }}
@@ -133,6 +141,7 @@ const ViewOrder = () => {
                     <TableCell align='center'>Main Image</TableCell>
                     <TableCell align='center'>Created Date</TableCell>
                     <TableCell align='center'>Modified Date</TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -167,6 +176,23 @@ const ViewOrder = () => {
                       </TableCell>
                       <TableCell align='center'>{row.createdDate}</TableCell>
                       <TableCell align='center'>{row.modifiedDate}</TableCell>
+                      <TableCell align='right'>
+                        <TableCell align={'right'}>
+                          <Button
+                            variant='contained'
+                            // onClick={() => handleEdit(row.id)}
+                          >
+                            <CheckCircleIcon />
+                          </Button>
+                          <Button
+                            variant='contained'
+                            color={'error'}
+                            sx={{ ml: 1 }}
+                          >
+                            <DoDisturbOnIcon />
+                          </Button>
+                        </TableCell>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -5,7 +5,7 @@ import React from 'react';
 import CheckoutCart from '../components/Checkout/Checkout';
 import HeaderTitle from '../components/Global/HeaderTitle/HeaderTitle';
 import * as G from '../styles/global.styled';
-import logo from '../assets/images/logo.svg';
+import logo from '../assets/images/logo2.jpg';
 import Link from 'next/link';
 
 type Props = {};

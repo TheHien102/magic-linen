@@ -6,7 +6,7 @@ export const Home = styled.div`
 `;
 
 export const Center = styled.div`
-  ${tw`flex justify-center`}
+  ${tw`flex justify-center mt-4`}
 `;
 
 export const BtnShopNow = styled.div`
@@ -14,5 +14,5 @@ export const BtnShopNow = styled.div`
 `;
 
 export const ListClothing = styled.div`
-  ${tw`flex gap-3`}
+  ${tw`flex gap-3 justify-center`}
 `;

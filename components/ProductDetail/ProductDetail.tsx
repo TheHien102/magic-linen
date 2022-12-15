@@ -212,7 +212,10 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1',
                 }}
               >
-                ${formatPrice(price * ((100 - data.discount) / 100))}
+                $
+                {formatPrice(
+                  Number((price * ((100 - data.discount) / 100)).toFixed(2))
+                )}
               </Typography>
             </>
           )}
@@ -227,7 +230,8 @@ const ProductDetail = ({ data }: IProductDetail) => {
               fontSize: '14px',
             }}
           >
-            You save ${formatPrice(price * (data.discount / 100))} (
+            You save $
+            {formatPrice(Number((price * (data.discount / 100)).toFixed(2)))}(
             {data.discount}%)
           </Typography>
         )}
