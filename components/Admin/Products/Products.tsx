@@ -387,7 +387,7 @@ export default function ListDetailProduct() {
                           <TableCell>{row.name}</TableCell>
                           <TableCell>{row.price}</TableCell>
                           <TableCell>{row.categoryName}</TableCell>
-                          <TableCell>{row.discount}</TableCell>
+                          <TableCell>{row.discount}%</TableCell>
                           <TableCell>{row.status}</TableCell>
                           <TableCell>{removeTime(row.createdDate)}</TableCell>
                           <TableCell align={'right'}>

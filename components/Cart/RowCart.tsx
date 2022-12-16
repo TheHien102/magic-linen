@@ -183,7 +183,7 @@ const RowCart = ({
             fontSize: '16px',
           }}
         >
-          ${formatPrice(data.price)}
+          {formatPrice(data.price)} VND
         </Typography>
       </TableCell>
       <TableCell>
@@ -228,7 +228,7 @@ const RowCart = ({
             fontSize: '16px',
           }}
         >
-          ${formatPrice(data.price * quantity)}
+          {formatPrice(data.price * quantity)} VND
         </Typography>
       </TableCell>
       <TableCell align='right'>

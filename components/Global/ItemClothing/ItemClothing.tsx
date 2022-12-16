@@ -53,7 +53,7 @@ const ItemClothing = ({ data }: IItemClothing) => {
               width: 'fit-content',
             }}
           >
-            ${formatPrice(data.price)}
+            {formatPrice(data.price)}đ
           </Typography>
         ) : (
           <>
@@ -66,7 +66,7 @@ const ItemClothing = ({ data }: IItemClothing) => {
                 lineHeight: '1.3',
               }}
             >
-              ${formatPrice(data.price)}
+              {formatPrice(data.price)}đ
             </Typography>
             <Typography
               sx={{
@@ -78,7 +78,7 @@ const ItemClothing = ({ data }: IItemClothing) => {
                 fontSize: '22px',
               }}
             >
-              ${formatPrice(data.price * ((100 - data.discount) / 100))}
+              {formatPrice(data.price * ((100 - data.discount) / 100))}đ
             </Typography>
           </>
         )}

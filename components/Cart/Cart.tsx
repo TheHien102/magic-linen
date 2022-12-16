@@ -205,7 +205,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                ${formatPrice(totalPrice)}
+                {formatPrice(totalPrice)} VND
               </Typography>
             </Box>
 
@@ -243,7 +243,7 @@ export default function CartUser() {
                   textAlign: 'right',
                 }}
               >
-                ${formatPrice(totalPrice)}
+                {formatPrice(totalPrice)} VND
               </Typography>
             </Box>
           </Box>

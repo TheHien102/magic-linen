@@ -45,4 +45,5 @@ export const API_URL = {
 
   createOrder: `${BASEURL}/order/create`,
   listOrder: `${BASEURL}/order/list`,
+  updateOrder: `${BASEURL}/order/update`,
 };

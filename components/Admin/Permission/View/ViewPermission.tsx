@@ -98,9 +98,8 @@ const ViewPermissions = () => {
                           }}
                         >
                           {data.list.map((_data, index) => (
-                            <>
+                            <React.Fragment key={index}>
                               <Typography
-                                key={index}
                                 sx={[
                                   {
                                     textTransform: 'capitalize',
@@ -133,7 +132,7 @@ const ViewPermissions = () => {
                                   />
                                 </FormGroup>
                               )}
-                            </>
+                            </React.Fragment>
                           ))}
                         </Box>
                       </TableCell>

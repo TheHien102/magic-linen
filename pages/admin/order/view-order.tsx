@@ -10,6 +10,8 @@ import {
   TablePagination,
   Typography,
   Button,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -22,70 +24,50 @@ import { getCookie } from '../../../services/cookies';
 import { OrderListParams, ProductDetail } from '../../../services/types';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
+import { formatPrice } from '../../../utils/common';
+import { useRouter } from 'next/router';
 
 interface ViewOrderProps {
-  orderList: ProductDetail[];
+  orderList: any;
 }
-
-// const orderListData = [
-//   {
-//     id: 0,
-//     productId: 0,
-//     variants: [
-//       {
-//         id: 0,
-//         name: 'Size',
-//         property: 'L',
-//         addPrice: 0,
-//       },
-//       {
-//         id: 0,
-//         name: 'Color',
-//         property: 'red',
-//         addPrice: 0,
-//       },
-//     ],
-//     quantity: 0,
-//     price: 0,
-//     discount: 0,
-//     name: 'string',
-//     mainImg: 'string',
-//     createdDate: '2022-12-11',
-//     modifiedDate: '2022-12-11',
-//   },
-//   {
-//     id: 0,
-//     productId: 0,
-//     variants: [
-//       {
-//         id: 0,
-//         name: 'Size',
-//         property: 'M',
-//         addPrice: 0,
-//       },
-//     ],
-//     quantity: 0,
-//     price: 0,
-//     discount: 0,
-//     name: 'string',
-//     mainImg: 'string',
-//     createdDate: '2022-12-11',
-//     modifiedDate: '2022-12-11',
-//   },
-// ];
 
 const ViewOrder = () => {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
-  const [orderList, setOrderList] = useState<ProductDetail[]>();
+  const [orderList, setOrderList] = useState<any>();
   const [params, setParams] = useState<OrderListParams>({
     page: 0,
-    size: 1,
+    size: 20,
     sort: [],
   });
+  const router = useRouter();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const APPROVE = -1;
+  const DECLINE = -2;
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+  };
+
+  console.log('list: ', orderList);
+
+  const handleUpdateOrder = async (_id: number, _status: number) => {
+    let data = {
+      id: _id,
+      status: _status,
+    };
+    console.log('data orrder update: ', data);
+    const token = await getCookie('token');
+    if (token) {
+      await OrderApi.updateOrder(token, data).then((res) => {
+        console.log('res :', res);
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          router.reload();
+        }, 1000);
+      });
+    }
   };
 
   const getData = async () => {
@@ -119,6 +101,15 @@ const ViewOrder = () => {
       <Layout>
         {orderList && orderList.length ? (
           <Box>
+            <Snackbar
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              open={openSnackbar}
+              autoHideDuration={3000}
+            >
+              <Alert severity='success' sx={{ width: '100%' }}>
+                Update Order Complete !
+              </Alert>
+            </Snackbar>
             {/* <SearchBar value={search} setValue={setSearch} /> */}
             <Typography sx={{ mb: 3, fontWeight: 'bold' }}>
               List Order
@@ -132,20 +123,22 @@ const ViewOrder = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell align='center'>ID</TableCell>
-                    <TableCell align='center'>Product ID</TableCell>
+                    <TableCell align='center'>Receiver Name</TableCell>
                     {/* <TableCell align='center'>Variants</TableCell> */}
-                    <TableCell align='center'>Quantity</TableCell>
+                    <TableCell align='center'>Phone Number</TableCell>
                     <TableCell align='center'>Price</TableCell>
-                    <TableCell align='center'>Discount</TableCell>
-                    <TableCell align='center'>Name</TableCell>
-                    <TableCell align='center'>Main Image</TableCell>
+                    <TableCell align='center'>Shipping Fee</TableCell>
+                    <TableCell align='center'>Address</TableCell>
+                    <TableCell align='center'>Note</TableCell>
+                    <TableCell align='center'>Payment Type</TableCell>
+
                     <TableCell align='center'>Created Date</TableCell>
                     <TableCell align='center'>Modified Date</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {orderList.map((row, rowId) => (
+                  {orderList.map((row: any, rowId: any) => (
                     <TableRow
                       key={rowId}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -153,7 +146,9 @@ const ViewOrder = () => {
                       <TableCell component='th' scope='row' align='center'>
                         {row.id}
                       </TableCell>
-                      <TableCell align='center'>{row.productId}</TableCell>
+                      <TableCell component='th' scope='row' align='center'>
+                        {row.receiverName}
+                      </TableCell>
                       {/* <TableCell style={{ width: '1px', whiteSpace: 'nowrap' }}>
                         {row.variants.map((it, id) => (
                           <Box
@@ -162,36 +157,66 @@ const ViewOrder = () => {
                           >{`${it.name}: ${it.property}`}</Box>
                         ))}
                       </TableCell> */}
-                      <TableCell align='center'>{row.quantity}</TableCell>
-                      <TableCell align='center'>{row.price}</TableCell>
-                      <TableCell align='center'>{row.discount}</TableCell>
-                      <TableCell align='center'>{row.name}</TableCell>
+                      <TableCell align='center'>{row.phoneNumber}</TableCell>
                       <TableCell align='center'>
-                        <Image
-                          src={row.mainImg}
-                          height={100}
-                          width={75}
-                          objectFit='contain'
-                        ></Image>
+                        {formatPrice(row.totalPrice)} VND
+                      </TableCell>
+                      <TableCell align='center'>
+                        {formatPrice(row.shippingFee)} VND
+                      </TableCell>
+                      <TableCell align='center'>{row.address}</TableCell>
+                      <TableCell align='center'>{row.note}</TableCell>
+                      <TableCell align='center'>
+                        {row.paymentType === 1 && 'COD'}
                       </TableCell>
                       <TableCell align='center'>{row.createdDate}</TableCell>
                       <TableCell align='center'>{row.modifiedDate}</TableCell>
                       <TableCell align='right'>
-                        <TableCell align={'right'}>
-                          <Button
-                            variant='contained'
-                            // onClick={() => handleEdit(row.id)}
+                        {row.status === 1 ? (
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Button
+                              variant='contained'
+                              onClick={() => handleUpdateOrder(row.id, APPROVE)}
+                            >
+                              <CheckCircleIcon />
+                            </Button>
+                            <Button
+                              variant='contained'
+                              color={'error'}
+                              onClick={() => handleUpdateOrder(row.id, DECLINE)}
+                            >
+                              <DoDisturbOnIcon />
+                            </Button>
+                          </Box>
+                        ) : row.status === -1 ? (
+                          <Typography
+                            sx={{
+                              textTransform: 'capitalize',
+                              bgcolor: '#4caf50',
+                              color: 'white',
+                              borderRadius: '15px',
+                              whiteSpace: 'nowrap',
+                              textAlign: 'center',
+                              fontWeight: 'bold',
+                            }}
                           >
-                            <CheckCircleIcon />
-                          </Button>
-                          <Button
-                            variant='contained'
-                            color={'error'}
-                            sx={{ ml: 1 }}
+                            Accept
+                          </Typography>
+                        ) : (
+                          <Typography
+                            sx={{
+                              textTransform: 'capitalize',
+                              bgcolor: 'red',
+                              color: 'white',
+                              borderRadius: '15px',
+                              whiteSpace: 'nowrap',
+                              textAlign: 'center',
+                              fontWeight: 'bold',
+                            }}
                           >
-                            <DoDisturbOnIcon />
-                          </Button>
-                        </TableCell>
+                            Decline
+                          </Typography>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

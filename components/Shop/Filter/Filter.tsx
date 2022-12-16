@@ -111,7 +111,7 @@ export default function Filter() {
           </Box>
         </AccordionDetails>
       </Accordion>
-      <Accordion defaultExpanded>
+      {/* <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel3a-content'
@@ -134,7 +134,7 @@ export default function Filter() {
             $100 - $150
           </Typography>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
     </>
   );
 }

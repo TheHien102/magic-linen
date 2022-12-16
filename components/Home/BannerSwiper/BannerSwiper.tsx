@@ -68,8 +68,8 @@ export default function BannerSwiper() {
             <S.Center>
               <S.Title>HOLIDAY GIFT GUIDE</S.Title>
               <S.SubTitle>
-                Shop handmade linen gifts. Free Express Shipping to USA on
-                orders over $150
+                Shop handmade linen gifts. Free Express Shipping to HCM City on
+                orders over 1,000,000 VND
               </S.SubTitle>
               <S.WrapBtn>
                 <BtnShopNow revertColor={true} />

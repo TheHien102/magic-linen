@@ -186,7 +186,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                 lineHeight: '1',
               }}
             >
-              ${formatPrice(price)}
+              {formatPrice(price)} VND
             </Typography>
           ) : (
             <>
@@ -200,7 +200,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1.3',
                 }}
               >
-                ${formatPrice(price)}
+                {formatPrice(price)} VND
               </Typography>
               <Typography
                 sx={{
@@ -212,10 +212,10 @@ const ProductDetail = ({ data }: IProductDetail) => {
                   lineHeight: '1',
                 }}
               >
-                $
                 {formatPrice(
                   Number((price * ((100 - data.discount) / 100)).toFixed(2))
-                )}
+                )}{' '}
+                VND
               </Typography>
             </>
           )}
@@ -230,9 +230,9 @@ const ProductDetail = ({ data }: IProductDetail) => {
               fontSize: '14px',
             }}
           >
-            You save $
+            You save &nbsp;
             {formatPrice(Number((price * (data.discount / 100)).toFixed(2)))}(
-            {data.discount}%)
+            {data.discount}%) VND
           </Typography>
         )}
         <Typography
@@ -425,7 +425,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
             textAlign: 'center',
           }}
         >
-          Free shipping for orders over $75
+          Free shipping for orders over 1,000,000 VND
         </Typography>
         <Typography
           sx={{

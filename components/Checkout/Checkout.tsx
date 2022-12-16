@@ -193,6 +193,7 @@ const CheckoutCart = (props: Props) => {
         let cartItemIdsList: number[] = cartProduct.map((data) => data.id);
         let data: any = values;
         data.cartItemIdsList = cartItemIdsList;
+        data.shippingFee = shippingFee;
         console.log('values token: ', data);
         CartApi.createOrderUser(token, data).then((res) => {
           console.log('res: ', res);
@@ -224,6 +225,7 @@ const CheckoutCart = (props: Props) => {
         let cartItemsList = cartProduct;
         let data: any = values;
         data.cartItemsList = cartItemsList;
+        data.shippingFee = shippingFee;
         console.log('values no token: ', data);
         CartApi.createOrderGuest(data).then((res) => {
           console.log('res: ', res);
@@ -260,9 +262,9 @@ const CheckoutCart = (props: Props) => {
           : wardListGHN.data.data[0].WardCode;
 
         const fee = await ShippingFeeApi.getFeeShip(DistrictID, WardCode);
-
-        const result = Math.round((fee.data.data.total / 23560) * 100) / 100;
-        setShippingFee(result);
+        //convert to dollars
+        // const result = Math.round((fee.data.data.total / 23560) * 100) / 100;
+        setShippingFee(fee.data.data.total);
         console.log(wardListGHN);
       }
     }
@@ -580,7 +582,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              ${formatPrice(totalPrice)}
+              {formatPrice(totalPrice)} VND
             </Typography>
           </Box>
           <Box
@@ -610,7 +612,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              ${shippingFee}
+              {formatPrice(shippingFee)} VND
             </Typography>
           </Box>
           <Box
@@ -647,7 +649,7 @@ const CheckoutCart = (props: Props) => {
                 textAlign: 'right',
               }}
             >
-              ${formatPrice(total)}
+              {formatPrice(total)} VND
             </Typography>
           </Box>
         </Box>

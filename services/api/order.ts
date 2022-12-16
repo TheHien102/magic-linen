@@ -1,5 +1,5 @@
 import http from '../http';
-import { OrderListParams } from '../types';
+import { OrderListParams, OrderUpdateParams } from '../types';
 import { API_URL } from './urls';
 
 export const OrderApi = {
@@ -9,6 +9,13 @@ export const OrderApi = {
         Authorization: `Bearer ${token}`,
       },
       params: params,
+    });
+  },
+  updateOrder: async function (token: string, data: OrderUpdateParams) {
+    return await http.put(`${API_URL.updateOrder}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   },
 };

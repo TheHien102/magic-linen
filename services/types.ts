@@ -245,10 +245,28 @@ export type ProductDetail = {
   modifiedDate: string;
 };
 
+export type OrderDetailParam = {
+  id: number;
+  productId: number;
+  variants: VariantParams[];
+  quantity: number;
+  price: number;
+  discount: number;
+  mainImg: string;
+  name: string;
+  createdDate: string;
+  modifiedDate: string;
+};
+
 export type OrderListParams = {
   page: number;
   size: number;
   sort: string[];
+};
+
+export type OrderUpdateParams = {
+  id: number;
+  status: number;
 };
 
 export type AddressCreateParams = {
@@ -281,4 +299,5 @@ export type OrderGuestParam = {
   phoneNumber: string;
   username: string;
   paymentType: number;
+  shippingFee: number;
 };
