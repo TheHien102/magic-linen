@@ -23,7 +23,7 @@ const AboutLinenA = (props: Props) => {
           mb: 3,
         }}
       >
-        At MagicLinen we believe that home linen should be both functional and
+        At LinenA we believe that home linen should be both functional and
         beautiful. With our rich color palette and unique design details, we
         invite you to celebrate effortless style, surround yourself with beauty
         and fall in love with linen.
@@ -59,13 +59,13 @@ const AboutLinenA = (props: Props) => {
           reintroduce that feeling back into my household. I kept coming across
           brands that offer linen basics with few color choices and nothing
           seemed to fit my family’s modern lifestyle. After a long search, I sat
-          down and came up with a few designs of my own. MagicLinen was born on
-          my kitchen table and what started as a few bedding sets made
-          exclusively for my friends and family has now flourished into a wide
-          range of kitchen, bath, table, bedding, and clothing linen
-          collections. I’m proud that today I have a whole team of experts
-          behind me, working with passion to create products that help celebrate
-          the effortless beauty of linen.
+          down and came up with a few designs of my own. LinenA was born on my
+          kitchen table and what started as a few bedding sets made exclusively
+          for my friends and family has now flourished into a wide range of
+          kitchen, bath, table, bedding, and clothing linen collections. I’m
+          proud that today I have a whole team of experts behind me, working
+          with passion to create products that help celebrate the effortless
+          beauty of linen.
         </Typography>
         {/* If have 3 images us this code bellow */}
         {/* <Box
@@ -115,9 +115,9 @@ const AboutLinenA = (props: Props) => {
           their field and contributes to the final product that you use at home.{' '}
           <br></br>
           <br></br>
-          MagicLinen has an in-house production facility where we hand-make
-          every product with love, care, and a bit of magic. Not only does
-          having a production facility help us better understand the production
+          LinenA has an in-house production facility where we hand-make every
+          product with love, care, and a bit of magic. Not only does having a
+          production facility help us better understand the production
           processes, but we also create jobs for our local community. Keeping in
           mind that the textile and fashion industry is notorious for bad
           working conditions, we take extra care of our production house workers
@@ -149,11 +149,11 @@ const AboutLinenA = (props: Props) => {
           letterSpacing: '0.5px',
         }}
       >
-        Each MagicLinen product is carefully designed and handcrafted in
-        Vilnius, Lithuania. We believe that it is the little details that matter
-        in life so we’ve added magical touches to our products in the form of
-        ruffles, pom poms, coconut buttons and more. We also have rich color
-        palettes for home textiles and clothing you can choose from.
+        Each LinenA product is carefully designed and handcrafted in Vilnius,
+        Lithuania. We believe that it is the little details that matter in life
+        so we’ve added magical touches to our products in the form of ruffles,
+        pom poms, coconut buttons and more. We also have rich color palettes for
+        home textiles and clothing you can choose from.
       </Typography>
       <Typography
         sx={{
