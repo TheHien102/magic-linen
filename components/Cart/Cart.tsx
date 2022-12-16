@@ -46,16 +46,21 @@ export default function CartUser() {
     setLoading(true);
     const token = await getCookie('token');
     if (token) {
-      CartApi.listCart(token).then((res) => {
-        console.log('res cart: ', res);
-        setCartProduct(res.data.data);
-        setLoading(false);
-        let tempTotalPrice = 0;
-        for (let i = 0; i < res.data.data.length; i++) {
-          tempTotalPrice += res.data.data[i].price * res.data.data[i].quantity;
-        }
-        setTotalPrice(tempTotalPrice);
-      });
+      CartApi.listCart(token)
+        .then((res) => {
+          console.log('res cart: ', res);
+          setCartProduct(res.data.data);
+          setLoading(false);
+          let tempTotalPrice = 0;
+          for (let i = 0; i < res.data.data.length; i++) {
+            tempTotalPrice +=
+              res.data.data[i].price * res.data.data[i].quantity;
+          }
+          setTotalPrice(tempTotalPrice);
+        })
+        .catch(() => {
+          setCartProduct([]);
+        });
     } else {
       getLocalValue();
       setLoading(false);
@@ -113,7 +118,7 @@ export default function CartUser() {
 
   return (
     <Box sx={{ pb: 20 }}>
-      {cartProduct.length > 0 ? (
+      {cartProduct && cartProduct.length > 0 ? (
         <>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>

@@ -7,12 +7,14 @@ import BannerSwiper from './BannerSwiper/BannerSwiper';
 import ItemClothing from '../Global/ItemClothing/ItemClothing';
 import { ProductParams } from '../../services/types';
 import BtnShopNow from '../Global/BtnShopNow/BtnShopNow';
+import { useRouter } from 'next/router';
 
 interface IHomeLinen {
   listProduct: ProductParams[];
 }
 
 const HomeLinen = ({ listProduct }: IHomeLinen) => {
+  const router = useRouter();
   return (
     <G.Container>
       <BannerSwiper />
@@ -24,7 +26,7 @@ const HomeLinen = ({ listProduct }: IHomeLinen) => {
           listProduct.map((data) => <ItemClothing key={data.id} data={data} />)}
       </S.ListClothing>
       <S.Center>
-        <BtnShopNow title='SHOP NOW' />
+        <BtnShopNow title='SHOP NOW' onClick={() => router.push('/shop')} />
       </S.Center>
     </G.Container>
   );
