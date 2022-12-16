@@ -138,7 +138,7 @@ const ResetPassword = () => {
                 title='Continue'
                 revertColor
                 widthFull
-                onClick={() => formikEmail.submitForm()}
+                type='submit'
               />
               {error && (
                 <Alert severity='error' style={{ margin: '20px 0 0' }}>
