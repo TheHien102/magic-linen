@@ -9,7 +9,11 @@ import { GetServerSidePropsContext } from 'next';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Alert from '@mui/material/Alert';
-import { KIND_ADMIN, KIND_EMPLOYEE } from '../../../utils/dataConfig';
+import {
+  KIND_ADMIN,
+  KIND_COLABORATOR,
+  KIND_EMPLOYEE,
+} from '../../../utils/dataConfig';
 
 const validationSchema = yup.object({
   username: yup.string().required('User name is required'),
