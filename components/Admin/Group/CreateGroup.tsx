@@ -1,5 +1,6 @@
 import { TextFields } from '@mui/icons-material';
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -10,6 +11,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
@@ -42,6 +44,8 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
   const [groupName, setGroupName] = useState('');
   const [listChecked, setListChecked] = useState<FilterPermissions[]>([]);
   const [filterList, setFilterList] = useState<FilterPermissions[]>([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
   const router = useRouter();
   const getListById = async (id: number) => {
     const token = await getCookie('token');
@@ -109,6 +113,10 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
         const result = await GroupApi.createGroup(token, dataCreate);
         if (result) {
           console.log('result create: ', result);
+          setOpenSnackbar(true);
+          setTimeout(() => {
+            router.reload();
+          }, 1000);
         }
       }
     }
@@ -224,6 +232,15 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5 }}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={openSnackbar}
+        autoHideDuration={3000}
+      >
+        <Alert severity='success' sx={{ width: '100%' }}>
+          Create Group Complete !
+        </Alert>
+      </Snackbar>
       <Grid
         container
         sx={{ marginTop: '5px', maxWidth: '1300px' }}
