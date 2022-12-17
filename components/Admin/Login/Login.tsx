@@ -9,6 +9,7 @@ import { GetServerSidePropsContext } from 'next';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Alert from '@mui/material/Alert';
+import { KIND_ADMIN, KIND_EMPLOYEE } from '../../../utils/dataConfig';
 
 const validationSchema = yup.object({
   username: yup.string().required('User name is required'),
@@ -32,7 +33,12 @@ const Login = () => {
       try {
         const result = await AccountApi.loginAdmin(values);
 
-        if (result.data && result.data.token) {
+        if (
+          result.data &&
+          result.data.token &&
+          (result.data.kind === KIND_ADMIN ||
+            result.data.kind === KIND_EMPLOYEE)
+        ) {
           setCookie('token', result.data.token);
           router.push('/admin/dashboard');
           setLoading(false);

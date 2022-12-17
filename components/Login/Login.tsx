@@ -12,6 +12,7 @@ import { getCookie, setCookie } from '../../services/cookies';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link';
 import { Box, Typography } from '@mui/material';
+import { KIND_USER } from '../../utils/dataConfig';
 
 type Props = {};
 
@@ -37,7 +38,11 @@ const LoginUser = (props: Props) => {
       try {
         const result = await AccountApi.loginAdmin(values);
 
-        if (result.data && result.data.token) {
+        if (
+          result.data &&
+          result.data.token &&
+          result.data.kind === KIND_USER
+        ) {
           setCookie('token', result.data.token);
           setLoading(false);
           localStorage.setItem(

@@ -19,6 +19,10 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
+export const KIND_ADMIN = 1;
+export const KIND_USER = 2;
+export const KIND_EMPLOYEE = 3;
+
 export const iconData = {
   Province: <LocationCityIcon />,
   Product: <InventoryIcon />,
