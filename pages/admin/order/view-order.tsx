@@ -200,7 +200,7 @@ const ViewOrder = () => {
                               fontWeight: 'bold',
                             }}
                           >
-                            Accept
+                            Accepted
                           </Typography>
                         ) : (
                           <Typography
@@ -214,7 +214,7 @@ const ViewOrder = () => {
                               fontWeight: 'bold',
                             }}
                           >
-                            Decline
+                            Rejected
                           </Typography>
                         )}
                       </TableCell>
