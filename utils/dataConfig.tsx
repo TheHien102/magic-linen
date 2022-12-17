@@ -22,6 +22,10 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 export const KIND_ADMIN = 1;
 export const KIND_USER = 2;
 export const KIND_EMPLOYEE = 3;
+export const KIND_COLABORATOR = 4;
+
+export const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 export const iconData = {
   Province: <LocationCityIcon />,

@@ -37,7 +37,8 @@ const Login = () => {
           result.data &&
           result.data.token &&
           (result.data.kind === KIND_ADMIN ||
-            result.data.kind === KIND_EMPLOYEE)
+            result.data.kind === KIND_EMPLOYEE ||
+            result.data.kind === KIND_COLABORATOR)
         ) {
           setCookie('token', result.data.token);
           router.push('/admin/dashboard');
