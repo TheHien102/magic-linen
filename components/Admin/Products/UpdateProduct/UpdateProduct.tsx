@@ -251,8 +251,15 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       validationSchema.validate(values);
       const token = await getCookie('token');
       let finalArray: VariantParams[] = [];
-      finalArray = sizeArray;
-      finalArray = finalArray.concat(colorArray);
+      if (colorArray.length < 1) {
+        alert('Missing Color!');
+      } else {
+        finalArray = sizeArray;
+      }
+      if (sizeArray.length < 1) {
+        alert('Missing Size!');
+        finalArray = finalArray.concat(colorArray);
+      }
       variantsList.forEach((value) => {
         value.data.forEach((_value) => finalArray.push(_value));
       });
