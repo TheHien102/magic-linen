@@ -40,7 +40,7 @@ import * as G from '../../../../styles/global.styled';
 const validationSchema = yup.object({
   id: yup.number(),
   name: yup.string().required('Name product is required'),
-  mainImg: yup.string().required('Main image is required'),
+  mainImg: yup.string(),
   discount: yup.number().min(0).max(100),
   description: yup.string(),
   price: yup.number().min(0).required('Price product is required'),
@@ -390,9 +390,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   value={formik.values.name}
                   onChange={formik.handleChange}
                   error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={
-                    formik.touched.name && Boolean(formik.errors.name)
-                  }
                   FormHelperTextProps={{
                     style: { position: 'absolute', bottom: '-25px' },
                   }}
@@ -413,9 +410,6 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   value={formik.values.price}
                   onChange={formik.handleChange}
                   error={formik.touched.price && Boolean(formik.errors.price)}
-                  helperText={
-                    formik.touched.price && Boolean(formik.errors.price)
-                  }
                   FormHelperTextProps={{
                     style: { position: 'absolute', bottom: '-25px' },
                   }}
