@@ -147,17 +147,19 @@ const CheckoutCart = (props: Props) => {
         console.log('address: ', res);
         setListAddress(res.data);
         //set initial value for formik
-        let temp = res.data[res.data.length - 1];
-        formik.values.username = temp.receiverName;
-        formik.values.phoneNumber = temp.phone;
-        formik.values.address =
-          temp.details +
-          ', ' +
-          temp.ward.name +
-          ', ' +
-          temp.district.name +
-          ', ' +
-          temp.city.name;
+        if (res.data) {
+          let temp = res.data[res.data.length - 1];
+          formik.values.username = temp.receiverName;
+          formik.values.phoneNumber = temp.phone;
+          formik.values.address =
+            temp.details +
+            ', ' +
+            temp.ward.name +
+            ', ' +
+            temp.district.name +
+            ', ' +
+            temp.city.name;
+        }
       });
     }
   };
