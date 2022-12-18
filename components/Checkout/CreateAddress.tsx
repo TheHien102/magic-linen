@@ -97,7 +97,7 @@ const CreateAddress = ({
 
   useEffect(() => {
     getProvince(1);
-    getDistrict(127);
+    getDistrict(28);
   }, []);
 
   return (

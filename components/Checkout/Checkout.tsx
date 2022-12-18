@@ -173,7 +173,7 @@ const CheckoutCart = (props: Props) => {
     getUserValue();
 
     getProvinceGuest(1);
-    getDistrictGuest('19,temp');
+    getDistrictGuest('28,temp');
     setUserInfo(localStorage.getItem('userInfo'));
   }, []);
 
