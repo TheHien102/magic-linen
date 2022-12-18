@@ -35,14 +35,15 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import MapListCategory from './MapListCategory';
 import Snackbar from '@mui/material/Snackbar';
 import CancelIcon from '@mui/icons-material/Cancel';
+import * as G from '../../../../styles/global.styled';
 
 const validationSchema = yup.object({
   id: yup.number(),
-  name: yup.string(),
-  mainImg: yup.string(),
+  name: yup.string().required('Name product is required'),
+  mainImg: yup.string().required('Main image is required'),
   discount: yup.number().min(0).max(100),
   description: yup.string(),
-  price: yup.number().min(0),
+  price: yup.number().min(0).required('Price product is required'),
   productCategoryId: yup.number(),
   variants: yup.array<VariantParams>(
     yup.object({
@@ -367,10 +368,15 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   />
                 </Box>
               ) : (
-                <ModalImage
-                  title='Add main Image'
-                  setMainImage={setMainImage}
-                />
+                <Box>
+                  <ModalImage
+                    title='Add main Image'
+                    setMainImage={setMainImage}
+                  />
+                  {formik.touched.mainImg && Boolean(formik.errors.mainImg) && (
+                    <G.ErrorText>Missing Main Image</G.ErrorText>
+                  )}
+                </Box>
               )}
             </Box>
             <Grid container sx={{ marginTop: '5px' }} spacing={3.5}>
@@ -384,11 +390,16 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   value={formik.values.name}
                   onChange={formik.handleChange}
                   error={formik.touched.name && Boolean(formik.errors.name)}
-                  //   helperText={formik.touched.name && formik.errors.name}
+                  helperText={
+                    formik.touched.name && Boolean(formik.errors.name)
+                  }
                   FormHelperTextProps={{
                     style: { position: 'absolute', bottom: '-25px' },
                   }}
                 />
+                {formik.touched.name && formik.errors.name && (
+                  <G.ErrorText>Name product is required</G.ErrorText>
+                )}
               </Grid>
 
               <Grid item xs={12} md={3}>
@@ -402,11 +413,16 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
                   value={formik.values.price}
                   onChange={formik.handleChange}
                   error={formik.touched.price && Boolean(formik.errors.price)}
-                  //   helperText={formik.touched.price && formik.errors.price}
+                  helperText={
+                    formik.touched.price && Boolean(formik.errors.price)
+                  }
                   FormHelperTextProps={{
                     style: { position: 'absolute', bottom: '-25px' },
                   }}
                 />
+                {formik.touched.price && formik.errors.price && (
+                  <G.ErrorText>Price product is not valid</G.ErrorText>
+                )}
               </Grid>
               <Grid item xs={12} md={3}>
                 <TextField
