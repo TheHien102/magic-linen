@@ -250,14 +250,18 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
     onSubmit: async (values) => {
       validationSchema.validate(values);
       const token = await getCookie('token');
+      let isValid = true;
       let finalArray: VariantParams[] = [];
       if (colorArray.length < 1) {
         alert('Missing Color!');
+        isValid = false;
       } else {
         finalArray = sizeArray;
       }
       if (sizeArray.length < 1) {
         alert('Missing Size!');
+        isValid = false;
+      } else {
         finalArray = finalArray.concat(colorArray);
       }
       variantsList.forEach((value) => {
@@ -274,7 +278,7 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
       formik.values.variants = finalArray;
 
       try {
-        if (DATA_DETAIL.id === -1) {
+        if (DATA_DETAIL.id === -1 && isValid) {
           formik.values.id--;
           const res = await ProductApi.addProduct(token as string, values);
           setOpenSnackbar(true);
@@ -284,14 +288,16 @@ const UpdateProduct = ({ data, categoryList }: IUpdateProduct) => {
             }, 2000);
           }
         } else {
-          console.log('values formik', values);
-          const res = await ProductApi.updateProduct(token as string, values);
-          setOpenSnackbar(true);
-          console.log('res update: ', res);
-          if (res) {
-            setTimeout(() => {
-              router.push('/admin/product/view-product');
-            }, 2000);
+          if (isValid) {
+            console.log('values formik', values);
+            const res = await ProductApi.updateProduct(token as string, values);
+            setOpenSnackbar(true);
+            console.log('res update: ', res);
+            if (res) {
+              setTimeout(() => {
+                router.push('/admin/product/view-product');
+              }, 2000);
+            }
           }
         }
       } catch (error) {
