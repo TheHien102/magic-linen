@@ -170,7 +170,7 @@ const RegisterUser = (props: Props) => {
                 title='continue'
                 revertColor
                 widthFull
-                onClick={() => formik.submitForm()}
+                type='submit'
               />
             </S.WrapBtn>
           </S.Col1>

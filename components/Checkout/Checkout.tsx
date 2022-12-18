@@ -37,9 +37,6 @@ import DetailAddress from './DetailAddress';
 import { useRouter } from 'next/router';
 import { ShippingFeeApi } from '../../services/api/shippingFee';
 
-const phoneRegExp =
-  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
 const validationSchema = yup.object({
   username: yup.string().required('USername is required'),
   phoneNumber: yup.string().required('Phone is required'),
@@ -174,7 +171,7 @@ const CheckoutCart = (props: Props) => {
     getUserValue();
 
     getProvinceGuest(1);
-    getDistrictGuest('127,temp');
+    getDistrictGuest('19,temp');
     setUserInfo(localStorage.getItem('userInfo'));
   }, []);
 

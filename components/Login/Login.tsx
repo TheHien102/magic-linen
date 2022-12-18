@@ -116,12 +116,7 @@ const LoginUser = (props: Props) => {
                 <G.ErrorText>{formik.errors.password}</G.ErrorText>
               )}
             </S.WrapInput>
-            <BtnShopNow
-              revertColor
-              title='login'
-              widthFull
-              onClick={() => formik.submitForm()}
-            />
+            <BtnShopNow revertColor title='login' widthFull type='submit' />
             {error && (
               <Alert severity='error' style={{ margin: '20px 0 0' }}>
                 Wrong Password or Username

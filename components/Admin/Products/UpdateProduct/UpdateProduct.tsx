@@ -40,9 +40,9 @@ const validationSchema = yup.object({
   id: yup.number(),
   name: yup.string(),
   mainImg: yup.string(),
-  discount: yup.number(),
+  discount: yup.number().min(0).max(100),
   description: yup.string(),
-  price: yup.number(),
+  price: yup.number().min(0),
   productCategoryId: yup.number(),
   variants: yup.array<VariantParams>(
     yup.object({

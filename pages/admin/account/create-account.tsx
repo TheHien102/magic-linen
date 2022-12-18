@@ -34,16 +34,34 @@ import ModalImage from '../../../components/Admin/Products/ModalImage';
 import Image from 'next/image';
 import { GroupApi } from '../../../services/api/group';
 import { GroupParams } from '../../../services/types';
+import { phoneRegExp } from '../../../utils/dataConfig';
+
+// const NameRegExp = /[a-zA-Z]+/;
 
 const validationSchema = yup.object({
-  username: yup.string().required('Username is required'),
-  password: yup.string().required('Password is required'),
-  email: yup.string().required('Email is required'),
-  fullName: yup.string().required('Full name is required'),
+  username: yup
+    .string()
+    .matches(
+      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+      'Username should have only characters'
+    )
+    .required('Username is required'),
+  password: yup.string().min(8).max(16).required('Password is required'),
+  email: yup.string().email().required('Email is required'),
+  fullName: yup
+    .string()
+    .matches(
+      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+      'Full   name should have only characters'
+    )
+    .required('Full name is required'),
   avatarPath: yup.string(),
   groupId: yup.number().required('Kind is required'),
   status: yup.number(),
-  phone: yup.string().required('Phone is required'),
+  phone: yup
+    .string()
+    .matches(phoneRegExp, 'Phone number is not valid')
+    .required('Phone is required'),
 });
 
 export default function CreateAdmin() {
@@ -62,7 +80,7 @@ export default function CreateAdmin() {
       avatarPath: '',
     },
     validationSchema: validationSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       const token = await getCookie('token');
       try {
         if (token) {
@@ -310,7 +328,7 @@ export default function CreateAdmin() {
                         }
                       >
                         {groupList &&
-                          groupList.map(data => (
+                          groupList.map((data) => (
                             <MenuItem
                               key={data.id}
                               value={data.id}

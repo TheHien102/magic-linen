@@ -100,6 +100,7 @@ const ProductDetail = ({ data }: IProductDetail) => {
       });
       console.log('newAddToCartParam: ', newAddToCartParam);
       CartApi.addToCart(token, newAddToCartParam).then((res) => {
+        console.log('res add cart: ', res);
         router.push('/cart');
       });
     } else {

@@ -75,6 +75,7 @@ const Permission = ({ permissionsList }: IPermission) => {
       }
     });
     setNPermissionList(newPermissionList);
+    console.log('newPermissionList: ', newPermissionList);
   }, []);
 
   const router = useRouter();
@@ -119,14 +120,20 @@ const Permission = ({ permissionsList }: IPermission) => {
     formik.values.nameGroup = event.target.value;
   };
 
-  const checkPermission = (name: string) => {
-    //If finded then not show to list
-    const index = itemGroup?.list.findIndex((it) => {
-      it.name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
-    });
-    if (index === -1) {
-      return true;
-    } else return false;
+  const checkPermission = (_name: string) => {
+    console.log('item group: ', itemGroup);
+    console.log('name: ', _name);
+    let currentGroup = kind;
+    _name = _name + ' ' + currentGroup;
+    if (itemGroup) {
+      //If finded then not show to list
+      const index = itemGroup.list.findIndex(
+        (it) => it.name.toLocaleLowerCase() === _name.toLocaleLowerCase()
+      );
+      if (index === -1) {
+        return true;
+      } else return false;
+    }
   };
 
   const handleChangeItemGroup = (event: SelectChangeEvent) => {
