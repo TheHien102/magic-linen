@@ -38,7 +38,6 @@ interface IProductDetail {
 }
 
 const ProductDetail = ({ data }: IProductDetail) => {
-  console.log('data detail: ', data);
   const [quantity, setQuantity] = useState(1);
   // const [addPrice, setAddPrice] = useState(0);
   const [price, setPrice] = useState(data.price);
@@ -121,13 +120,23 @@ const ProductDetail = ({ data }: IProductDetail) => {
         );
       });
 
-      if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
-        let storage = localStorage.getItem(LOCAL_SAVE_PREFIX)?.toString();
-        storage = storage + LOCAL_SAVE_LIMITER + JSON.stringify(newCartParam);
-        localStorage.setItem(LOCAL_SAVE_PREFIX, storage);
+      let KEY =
+        LOCAL_SAVE_PREFIX +
+        data.id +
+        '_' +
+        newCartParam.variants.map((it) => it.id).join('_');
+
+      if (localStorage.getItem(KEY) !== null) {
+        let a = localStorage.getItem(KEY);
+        if (a) {
+          let newA = JSON.parse(a);
+          newA.quantity++;
+          localStorage.setItem(KEY, JSON.stringify(newA));
+        }
       } else {
-        localStorage.setItem(LOCAL_SAVE_PREFIX, JSON.stringify(newCartParam));
+        localStorage.setItem(KEY, JSON.stringify(newCartParam));
       }
+
       router.push('/cart');
     }
   };
@@ -143,8 +152,6 @@ const ProductDetail = ({ data }: IProductDetail) => {
     );
   }, []);
   const dataImages = data.assets.map((it) => it.link).concat(data.mainImg);
-
-  console.log('dataImages: ', dataImages);
 
   return (
     <Box sx={{ display: 'flex', marginX: '120px', gap: '35px' }}>

@@ -11,6 +11,8 @@ import {
   SelectChangeEvent,
   Switch,
   TextField,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
@@ -62,6 +64,8 @@ const Permission = ({ permissionsList }: IPermission) => {
     []
   );
 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
   useEffect(() => {
     newPermissionList = permissionsList;
     tableArray.map((table) => {
@@ -97,8 +101,10 @@ const Permission = ({ permissionsList }: IPermission) => {
         if (token) {
           const result = await AccountApi.createPermission(token, values);
           if (result) {
-            // router.push('/permission/view-permission');
-            console.log('create permission complete ');
+            setOpenSnackbar(true);
+            setTimeout(() => {
+              router.push('/admin/permission/view-permission');
+            }, 1000);
           }
         }
       } catch (error) {
@@ -155,6 +161,15 @@ const Permission = ({ permissionsList }: IPermission) => {
 
   return (
     <Box>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={openSnackbar}
+        autoHideDuration={3000}
+      >
+        <Alert severity='success' sx={{ width: '100%' }}>
+          Create Permission Complete !
+        </Alert>
+      </Snackbar>
       <form onSubmit={formik.handleSubmit}>
         <Grid
           display={'flex'}

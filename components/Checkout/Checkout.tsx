@@ -76,22 +76,24 @@ const CheckoutCart = (props: Props) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const getLocalValue = async () => {
-    let temp: any = localStorage
-      .getItem(LOCAL_SAVE_PREFIX)
-      ?.toString()
-      .split(LOCAL_SAVE_LIMITER)
-      .map((data) => JSON.parse(data.replace('\\', '')));
+    var archive = [],
+      keys = Object.keys(localStorage),
+      i = 0,
+      key;
 
-    console.log('temp check out: ', temp);
+    // var assert = chai.assert;
+    for (; (key = keys[i]); i++) {
+      let localValue: string = localStorage.getItem(key) as string;
 
-    if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
-      setCartProduct(temp);
-      let tempTotalPrice = 0;
-      for (let i = 0; i < temp.length; i++) {
-        tempTotalPrice += temp[i].totalPrice;
-      }
-      setTotalPrice(tempTotalPrice);
+      // assert(localValue !== null);
+      archive.push(JSON.parse(localValue));
     }
+    setCartProduct(archive);
+    let tempTotalPrice = 0;
+    for (let i = 0; i < archive.length; i++) {
+      tempTotalPrice += archive[i].totalPrice;
+    }
+    setTotalPrice(tempTotalPrice);
   };
 
   const SEARCH_PARAMS = '';

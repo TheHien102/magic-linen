@@ -329,7 +329,7 @@ export default function ListDetailProduct() {
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <>
-          {rows.length > 0 ? (
+          {rows && rows.length > 0 ? (
             <TableContainer>
               <Table
                 sx={{ minWidth: 750 }}

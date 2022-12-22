@@ -120,7 +120,9 @@ const ViewPermissions = () => {
                                     : { bgcolor: '#4caf50' },
                                 ]}
                               >
-                                {_data.name.split(' ')[0]}
+                                {_data.name.search('View All')
+                                  ? _data.name.split(' ').shift()
+                                  : 'View All'}
                               </Typography>
                               {edit && (
                                 <FormGroup>

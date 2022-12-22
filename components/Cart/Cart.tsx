@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { getCookie } from '../../services/cookies';
 import { CartApi } from '../../services/api/cart';
 import { formatPrice } from '../../utils/common';
+// import { chai } from 'chai';
 
 export default function CartUser() {
   const [cartProduct, setCartProduct] = useState<CartItemParams[]>([]);
@@ -24,21 +25,41 @@ export default function CartUser() {
   const router = useRouter();
 
   const getLocalValue = async () => {
-    let temp: any = localStorage
-      .getItem(LOCAL_SAVE_PREFIX)
-      ?.toString()
-      .split(LOCAL_SAVE_LIMITER)
-      .map((data) => JSON.parse(data.replace('\\', '')));
+    var archive = [],
+      keys = Object.keys(localStorage),
+      i = 0,
+      key;
 
-    if (localStorage.getItem(LOCAL_SAVE_PREFIX) !== null) {
-      console.log('temp', temp);
+    let tempTotalPrice = 0;
 
-      setCartProduct(temp);
-      let tempTotalPrice = 0;
-      for (let i = 0; i < temp.length; i++) {
-        tempTotalPrice += temp[i].totalPrice;
+    for (; (key = keys[i]); i++) {
+      let localValue: string = localStorage.getItem(key) as string;
+
+      archive.push(JSON.parse(localValue));
+      tempTotalPrice += archive[i].price * archive[i].quantity;
+    }
+    setCartProduct(archive);
+    setTotalPrice(tempTotalPrice);
+  };
+
+  const updateLocalValue = (data: CartItemParams, action: string) => {
+    let KEY =
+      LOCAL_SAVE_PREFIX +
+      data.id +
+      '_' +
+      data.variants.map((it) => it.id).join('_');
+
+    let a = localStorage.getItem(KEY);
+    if (a) {
+      let newA = JSON.parse(a);
+      if (action === 'plus') {
+        newA.quantity++;
+        setTotalPrice(totalPrice + data.price);
+      } else {
+        newA.quantity--;
+        setTotalPrice(totalPrice - data.price);
       }
-      setTotalPrice(tempTotalPrice);
+      localStorage.setItem(KEY, JSON.stringify(newA));
     }
   };
 
@@ -73,47 +94,34 @@ export default function CartUser() {
 
   const handleRemoveItem = async (data: CartItemParams) => {
     const token = await getCookie('token');
-    if (cartProduct.length === 1) {
-      localStorage.removeItem(LOCAL_SAVE_PREFIX);
+
+    if (token) {
+      const res = await CartApi.deleteCart(token as string, data.id);
+      console.log(res);
+    } else {
+      let KEY =
+        LOCAL_SAVE_PREFIX +
+        data.id +
+        '_' +
+        data.variants.map((it) => it.id).join('_');
+      localStorage.removeItem(KEY);
     }
-    const res = await CartApi.deleteCart(token as string, data.id);
-    console.log(res);
-    setCartProduct(cartProduct.filter((it) => it !== data));
+    let tempTotalPrice = 0;
+
+    let filterData = cartProduct.filter((it) => it !== data);
+    setCartProduct(filterData);
+    for (let i = 0; i < filterData.length; i++) {
+      tempTotalPrice += filterData[i].price * filterData[i].quantity;
+    }
+    setTotalPrice(tempTotalPrice);
   };
 
   const handleContinueShopping = async () => {
-    const token = await getCookie('token');
-    if (token) {
-      router.push('/shop');
-    } else {
-      setNewJson();
-      router.push('/shop');
-    }
-  };
-
-  const setNewJson = () => {
-    let newJSON = '';
-    cartProduct.map((data, index) => {
-      if (index === cartProduct.length - 1) {
-        newJSON += JSON.stringify(data);
-      } else {
-        newJSON += JSON.stringify(data) + LOCAL_SAVE_LIMITER;
-      }
-    });
-
-    if (cartProduct.length > 0) {
-      localStorage.setItem(LOCAL_SAVE_PREFIX, newJSON);
-    }
+    router.push('/shop');
   };
 
   const handleCheckout = async () => {
-    const token = await getCookie('token');
-    if (token) {
-      router.push('/checkout');
-    } else {
-      setNewJson();
-      router.push('/checkout');
-    }
+    router.push('/checkout');
   };
 
   return (
@@ -173,6 +181,7 @@ export default function CartUser() {
                       handleRemoveItem={handleRemoveItem}
                       totalPrice={totalPrice}
                       setTotalPrice={setTotalPrice}
+                      updateLocalValue={updateLocalValue}
                     />
                   ))}
               </TableBody>
