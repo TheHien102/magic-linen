@@ -62,6 +62,7 @@ export const urlMenuData = {
 
   'Create Account': '/admin/account/create-account',
   'View Account': '/admin/account/view-account',
+  'View All Account': '/admin/account/view-account',
 
   'Create Province': '/admin/province/create-province',
   'View Province': '/admin/province/view-province',
