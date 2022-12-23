@@ -114,12 +114,10 @@ const AccountInformation = ({
               widthFull
               id='username'
               name='username'
+              disabled={true}
               value={formik.values.username}
               onChange={formik.handleChange}
             ></G.Input>
-            {formik.touched.username && Boolean(formik.errors.username) && (
-              <G.ErrorText>{formik.errors.username}</G.ErrorText>
-            )}
           </Box>
           <Box sx={{ mb: '20px' }}>
             <G.LabelInput>Full Name</G.LabelInput>

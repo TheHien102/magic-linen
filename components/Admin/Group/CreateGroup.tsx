@@ -130,8 +130,10 @@ const CreateGroupAdmin = ({ update }: CreateGroupAdminProps) => {
       const result = await GroupApi.listAllGroup(token);
 
       if (result) {
-        console.log('result all group: ', result);
+        // console.log('result all group: ', result.data.data);
+        result.data.data.shift();
         setGroupList(result.data.data);
+        // console.log('list all group shift: ', result.data.data.shift());
       }
     }
   };
